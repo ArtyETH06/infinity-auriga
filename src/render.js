@@ -363,17 +363,19 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
         // Subjects
         for (const subject of module.subjects) {
             const subjectCard = h('div', { class: 'subject card' });
+            const isSingle = subject.marks.length === 1;
 
             // Info panel (left side)
             const info = h('div', { class: 'info' });
-
             const infoTop = h('div', { class: 'top' });
-            // Show short code as the bold ID, resolved name below (if different)
-            const displayId = subject.id.replace(/_/g, ' ');
-            const displayName = subject.name !== subject.id.replace(/_/g, ' ') ? subject.name : '';
-            infoTop.appendChild(h('div', { class: 'id' }, displayId));
-            if (displayName) {
-                infoTop.appendChild(h('div', { class: 'name' }, displayName.length > 30 ? displayName.slice(0, 28) + '...' : displayName));
+
+            if (isSingle) {
+                // Single mark: use mark name as the subject title
+                infoTop.appendChild(h('div', { class: 'id' }, subject.marks[0].name));
+            } else {
+                // Multi marks: show resolved name or code
+                const displayName = subject.name !== subject.id.replace(/_/g, ' ') ? subject.name : subject.id.replace(/_/g, ' ');
+                infoTop.appendChild(h('div', { class: 'id' }, displayName));
             }
             info.appendChild(infoTop);
 
@@ -394,10 +396,10 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
             info.appendChild(h('hr', { class: 'bottom-line' }));
             subjectCard.appendChild(info);
 
-            // Marks list (right side)
+            // Marks list (right side) - only show for multi-mark subjects
             if (subject.marks.length === 0) {
                 subjectCard.appendChild(h('div', { class: 'no-marks' }, 'Aucune note'));
-            } else {
+            } else if (!isSingle) {
                 const marksDiv = h('div', { class: 'marks' });
 
                 for (const mark of subject.marks) {
@@ -412,10 +414,8 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
                     valueDiv.appendChild(h('span', { class: 'itself', style: { color: gc(mark.value) } }, fmt(mark.value)));
                     valueDiv.appendChild(document.createTextNode('\u00a0/ 20'));
                     lineDiv.appendChild(valueDiv);
-
                     markEl.appendChild(lineDiv);
 
-                    // Class average and coefficient (only show when there's data)
                     const markMeta = [];
                     if (mark.classAverage != null) markMeta.push(`moyenne: ${fmt(mark.classAverage)}`);
                     if (!hasEqualCoefficients(subject)) markMeta.push(`${Math.round(mark.coefficient * 100)}%`);
@@ -426,10 +426,8 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
                         classAvg.appendChild(h('span', { class: 'parenthesis' }, ')'));
                         markEl.appendChild(classAvg);
                     }
-
                     marksDiv.appendChild(markEl);
                 }
-
                 subjectCard.appendChild(marksDiv);
             }
 
