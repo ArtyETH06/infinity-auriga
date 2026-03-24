@@ -41,7 +41,7 @@ export default function userscriptPlugin() {
             for (const file of Object.values(bundle)) {
                 if (file.type === 'chunk' && file.isEntry) {
                     const cssInjection = css
-                        ? `\n;(function(){var s=document.createElement('style');s.setAttribute('data-infinity','1');s.textContent=${JSON.stringify(css)};(document.head||document.documentElement).appendChild(s)})();\n`
+                        ? `\n;(function(){if(localStorage.getItem('infinity_auriga_enabled')==='0')return;var s=document.createElement('style');s.setAttribute('data-infinity','1');s.textContent=${JSON.stringify(css)};(document.head||document.documentElement).appendChild(s)})();\n`
                         : '';
 
                     file.code = USERSCRIPT_HEADER + cssInjection + file.code;
