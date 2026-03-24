@@ -497,6 +497,7 @@
 	var s07_2526_fisa_default;
 	var init_s07_2526_fisa = __esmMin((() => {
 		s07_2526_fisa_default = {
+			"2526_I_INF_FISA_S07_AEE_EAE3_EX": 8,
 			"2526_I_INF_FISA_S07_CS_GR_WS_EX": 2,
 			"2526_I_INF_FISA_S07_CS_SAE_DEVSEC_PROJ_EX": 3,
 			"2526_I_INF_FISA_S07_CS_SAE_INT_MAS_EX": 2,

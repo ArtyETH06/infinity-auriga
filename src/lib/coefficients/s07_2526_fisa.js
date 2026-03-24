@@ -10,9 +10,9 @@
  * each line's 4th value is the exam code.
  */
 export default {
-    // Evaluation en entreprise
-    `2526_I_INF_FISA_S07_AEE_EAE3_EX`:8, 
-    
+    // Evaluation en entreprise (coeff 8)
+    '2526_I_INF_FISA_S07_AEE_EAE3_EX': 8,
+
     // Gérer > Windows sécurité (coeff 2, vs LAN concepts coeff 1)
     '2526_I_INF_FISA_S07_CS_GR_WS_EX': 2,
 
