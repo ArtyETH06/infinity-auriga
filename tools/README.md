@@ -14,7 +14,7 @@
 
 ### Setting up local dev
 
-Rename the downloaded file to `auriga-capture.json` and place it in this `tools/` directory:
+The file downloads as `auriga-capture.json`. Move it into this `tools/` directory:
 
 ```
 tools/auriga-capture.json
