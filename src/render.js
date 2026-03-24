@@ -363,20 +363,17 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
         // Subjects
         for (const subject of module.subjects) {
             const isSingle = subject.marks.length === 1;
-            const subjectCard = h('div', { class: 'subject card' + (isSingle ? ' single' : '') });
+            const subjectCard = h('div', { class: 'subject card' });
 
             // Info panel (left side)
             const info = h('div', { class: 'info' });
             const infoTop = h('div', { class: 'top' });
 
-            if (isSingle) {
-                // Single mark: use mark name as the subject title
-                infoTop.appendChild(h('div', { class: 'id' }, subject.marks[0].name));
-            } else {
-                // Multi marks: show resolved name or code
-                const displayName = subject.name !== subject.id.replace(/_/g, ' ') ? subject.name : subject.id.replace(/_/g, ' ');
-                infoTop.appendChild(h('div', { class: 'id' }, displayName));
-            }
+            // Show the best available name
+            const displayName = isSingle
+                ? subject.marks[0].name
+                : (subject.name !== subject.id.replace(/_/g, ' ') ? subject.name : subject.id.replace(/_/g, ' '));
+            infoTop.appendChild(h('div', { class: 'id' }, displayName));
             info.appendChild(infoTop);
 
             const infoBottom = h('div', { class: 'bottom' });
