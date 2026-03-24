@@ -1,18 +1,23 @@
 /**
  * Coefficients — S07 FISA 2025/2026
  *
- * Only list exams whose coefficient is NOT 1.
- * The key is the full exam code from Auriga's API.
- * The value is the coefficient (weight) for that exam.
+ * Override coefficients at any level of the hierarchy:
+ *   - Module:  use the module code  (e.g. '2526_I_INF_FISA_S07_AEE')
+ *   - Subject: use the subject code (e.g. '2526_I_INF_FISA_S07_CS_GR')
+ *   - Mark:    use the full exam code (e.g. '2526_I_INF_FISA_S07_CS_GR_WS_EX')
  *
- * To find exam codes: open Auriga → DevTools → Network tab →
+ * Only list entries whose coefficient is NOT 1 (default).
+ *
+ * To find codes: open Auriga → DevTools → Network tab →
  * look for POST requests to /api/menuEntries/.../searchResult →
- * each line's 4th value is the exam code.
+ * each line's 4th value is the exam code. Trim segments for subject/module.
  */
 export default {
-    // Evaluation en entreprise (coeff 8)
-    '2526_I_INF_FISA_S07_AEE_EAE3_EX': 8,
+    // --- Module-level overrides ---
+    // Alternance / Evaluation en entreprise (coeff 8)
+    '2526_I_INF_FISA_S07_AEE': 8,
 
+    // --- Mark-level overrides ---
     // Gérer > Windows sécurité (coeff 2, vs LAN concepts coeff 1)
     '2526_I_INF_FISA_S07_CS_GR_WS_EX': 2,
 

@@ -202,12 +202,18 @@ function renderSubject(subject, moduleId) {
     const metaParts = [];
     if (subject.classAverage != null) metaParts.push(`promo: ${formatGrade(subject.classAverage)}`);
     if (subject.coefficient != null && subject.coefficient !== 1) metaParts.push(`coeff. ${formatGrade(subject.coefficient)}`);
+    const subOverriddenEl = subject._overridden
+        ? h('span', { class: 'coeff-override' }, `\u00d7${subject.coefficient}`)
+        : null;
 
     const info = h('div', { class: 'info' },
         h('div', { class: 'top' }, h('div', { class: 'id' }, codeLabel)),
         h('div', { class: 'bottom' },
             h('div', { class: 'average' }, gradeSpan(subject.average), '\u00a0/ 20'),
-            ...(metaParts.length ? [h('div', { class: 'class-average' }, `(${metaParts.join(', ')})`)] : [])
+            ...(metaParts.length || subOverriddenEl ? [h('div', { class: 'class-average' },
+                ...(metaParts.length ? [`(${metaParts.join(', ')})`] : []),
+                ...(subOverriddenEl ? [subOverriddenEl] : [])
+            )] : [])
         ),
         h('hr', { class: 'bottom-line' })
     );
@@ -282,7 +288,11 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
         { label: 'Promotion', value: averages.promo, colored: false },
     ];
 
-    const moduleEls = marks.flatMap(mod => [
+    const moduleEls = marks.flatMap(mod => {
+        const modOverriddenEl = mod._overridden
+            ? h('span', { class: 'coeff-override' }, `\u00d7${mod.coefficient}`)
+            : null;
+        return [
         h('div', { class: 'header module' },
             h('div', { class: 'text' },
                 h('div', { class: 'name' }, mod.name),
@@ -290,13 +300,14 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
                 h('div', { class: 'bottom' },
                     h('span', { class: 'average', style: { color: gradeColor(mod.average) } }, formatGrade(mod.average)),
                     h('span', { class: 'max' }, '\u00a0/ 20'),
-                    ...(mod.classAverage != null ? [h('span', { class: 'class-average' }, `(promo: ${formatGrade(mod.classAverage)})`)] : [])
+                    ...(mod.classAverage != null ? [h('span', { class: 'class-average' }, `(promo: ${formatGrade(mod.classAverage)})`)] : []),
+                    ...(modOverriddenEl ? [modOverriddenEl] : [])
                 )
             ),
             h('hr', { class: 'bottom-line' })
         ),
         ...mod.subjects.map(s => renderSubject(s, mod.id))
-    ]);
+    ];});
 
     container.appendChild(h('div', { id: 'content', class: 'variable wide' },
         h('div', { id: 'header' },

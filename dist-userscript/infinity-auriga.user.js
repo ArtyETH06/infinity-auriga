@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Infinity Auriga
 // @namespace    infinity-auriga
-// @version      1.1.1
+// @version      1.2.0
 // @description  Make Auriga Great Again - enhanced grades UI for EPITA
 // @author       KazeTachinuu & contributors
 // @match        https://auriga.epita.fr/*
@@ -307,6 +307,7 @@
 				}
 				modules.set(moduleCode, {
 					id: moduleId,
+					_code: moduleCode,
 					name,
 					credits: 0,
 					average: null,
@@ -319,6 +320,7 @@
 				const info = resolveName(subject.code, "_" + subject.id, nameLookup);
 				mod.subjects.set(subject.code, {
 					id: subject.id,
+					_code: subject.code,
 					name: info && info.name.length <= 40 ? info.name : subject.id.replace(/_/g, " "),
 					average: null,
 					classAverage: null,
@@ -497,7 +499,7 @@
 	var s07_2526_fisa_default;
 	var init_s07_2526_fisa = __esmMin((() => {
 		s07_2526_fisa_default = {
-			"2526_I_INF_FISA_S07_AEE_EAE3_EX": 8,
+			"2526_I_INF_FISA_S07_AEE": 8,
 			"2526_I_INF_FISA_S07_CS_GR_WS_EX": 2,
 			"2526_I_INF_FISA_S07_CS_SAE_DEVSEC_PROJ_EX": 3,
 			"2526_I_INF_FISA_S07_CS_SAE_INT_MAS_EX": 2,
@@ -510,17 +512,20 @@
 	* Coefficient override system.
 	*
 	* Auriga returns all coefficients as 100 (equal weight).
-	* This module provides the real coefficients per exam code.
+	* This module provides the real coefficients at any level:
+	*   - Module code  → weights the module in the student average
+	*   - Subject code → weights the subject in the module average
+	*   - Mark code    → weights the mark in the subject average
 	*
 	* To add coefficients for a new semester:
 	*   1. Create src/lib/coefficients/{semester}_{year}_{track}.js  (e.g. s07_2526_fisa.js)
-	*   2. Export a default object mapping exam codes to their coefficient.
+	*   2. Export a default object mapping codes to their coefficient.
 	*   3. Open a PR. That's it — no registry to update.
 	*
 	* Filename convention: s{semester}_{year}_{track}.js (all lowercase)
 	*   → looked up as S{SEMESTER}_{YEAR}_{TRACK}
 	*
-	* Only exams with non-default coefficients need to be listed (default is 1).
+	* Only entries with non-default coefficients need to be listed (default is 1).
 	*/
 	var modules = /* @__PURE__ */ Object.assign({ "./s07_2526_fisa.js": () => Promise.resolve().then(() => (init_s07_2526_fisa(), s07_2526_fisa_exports)).then((m) => m["default"]) });
 	/**
@@ -546,15 +551,29 @@
 	* @returns {{ average: number|null }}
 	*/
 	function applyCoefficients(marks, overrides) {
-		for (const mod of marks) for (const sub of mod.subjects) for (const mark of sub.marks) {
-			if (overrides && mark._code && overrides.has(mark._code)) {
-				mark.coefficient = overrides.get(mark._code);
-				mark._overridden = true;
+		for (const mod of marks) {
+			if (overrides && mod._code && overrides.has(mod._code)) {
+				mod.coefficient = overrides.get(mod._code);
+				mod._overridden = true;
 			}
-			if (mark.coefficient === 100) mark.coefficient = 1;
+			if (!mod.coefficient || mod.coefficient === 100) mod.coefficient = 1;
+			for (const sub of mod.subjects) {
+				if (overrides && sub._code && overrides.has(sub._code)) {
+					sub.coefficient = overrides.get(sub._code);
+					sub._overridden = true;
+				}
+				if (sub.coefficient === 100) sub.coefficient = 1;
+				for (const mark of sub.marks) {
+					if (overrides && mark._code && overrides.has(mark._code)) {
+						mark.coefficient = overrides.get(mark._code);
+						mark._overridden = true;
+					}
+					if (mark.coefficient === 100) mark.coefficient = 1;
+				}
+			}
 		}
 		let totalAvg = 0;
-		let totalMods = 0;
+		let totalWeight = 0;
 		for (const mod of marks) {
 			let modTotal = 0;
 			let modWeight = 0;
@@ -571,17 +590,17 @@
 					mark.coefficient = mark.coefficient / subWeight;
 				}
 				if (sub.average != null) {
-					modTotal += sub.average;
-					modWeight += 1;
+					modTotal += sub.average * sub.coefficient;
+					modWeight += sub.coefficient;
 				}
 			}
 			mod.average = modWeight > 0 ? modTotal / modWeight : null;
 			if (mod.average != null) {
-				totalAvg += mod.average;
-				totalMods += 1;
+				totalAvg += mod.average * mod.coefficient;
+				totalWeight += mod.coefficient;
 			}
 		}
-		return { average: totalMods > 0 ? totalAvg / totalMods : null };
+		return { average: totalWeight > 0 ? totalAvg / totalWeight : null };
 	}
 	//#endregion
 	//#region src/lib/session.js
@@ -901,7 +920,8 @@
 		const metaParts = [];
 		if (subject.classAverage != null) metaParts.push(`promo: ${formatGrade(subject.classAverage)}`);
 		if (subject.coefficient != null && subject.coefficient !== 1) metaParts.push(`coeff. ${formatGrade(subject.coefficient)}`);
-		const info = h("div", { class: "info" }, h("div", { class: "top" }, h("div", { class: "id" }, codeLabel)), h("div", { class: "bottom" }, h("div", { class: "average" }, gradeSpan(subject.average), "\xA0/ 20"), ...metaParts.length ? [h("div", { class: "class-average" }, `(${metaParts.join(", ")})`)] : []), h("hr", { class: "bottom-line" }));
+		const subOverriddenEl = subject._overridden ? h("span", { class: "coeff-override" }, `\u00d7${subject.coefficient}`) : null;
+		const info = h("div", { class: "info" }, h("div", { class: "top" }, h("div", { class: "id" }, codeLabel)), h("div", { class: "bottom" }, h("div", { class: "average" }, gradeSpan(subject.average), "\xA0/ 20"), ...metaParts.length || subOverriddenEl ? [h("div", { class: "class-average" }, ...metaParts.length ? [`(${metaParts.join(", ")})`] : [], ...subOverriddenEl ? [subOverriddenEl] : [])] : []), h("hr", { class: "bottom-line" }));
 		const marksContent = subject.marks.map((mark) => {
 			const meta = [];
 			if (mark.classAverage != null) meta.push(`moyenne: ${formatGrade(mark.classAverage)}`);
@@ -959,10 +979,13 @@
 			value: averages.promo,
 			colored: false
 		}];
-		const moduleEls = marks.flatMap((mod) => [h("div", { class: "header module" }, h("div", { class: "text" }, h("div", { class: "name" }, mod.name), h("div", { class: "point" }), h("div", { class: "bottom" }, h("span", {
-			class: "average",
-			style: { color: gradeColor(mod.average) }
-		}, formatGrade(mod.average)), h("span", { class: "max" }, "\xA0/ 20"), ...mod.classAverage != null ? [h("span", { class: "class-average" }, `(promo: ${formatGrade(mod.classAverage)})`)] : [])), h("hr", { class: "bottom-line" })), ...mod.subjects.map((s) => renderSubject(s, mod.id))]);
+		const moduleEls = marks.flatMap((mod) => {
+			const modOverriddenEl = mod._overridden ? h("span", { class: "coeff-override" }, `\u00d7${mod.coefficient}`) : null;
+			return [h("div", { class: "header module" }, h("div", { class: "text" }, h("div", { class: "name" }, mod.name), h("div", { class: "point" }), h("div", { class: "bottom" }, h("span", {
+				class: "average",
+				style: { color: gradeColor(mod.average) }
+			}, formatGrade(mod.average)), h("span", { class: "max" }, "\xA0/ 20"), ...mod.classAverage != null ? [h("span", { class: "class-average" }, `(promo: ${formatGrade(mod.classAverage)})`)] : [], ...modOverriddenEl ? [modOverriddenEl] : [])), h("hr", { class: "bottom-line" })), ...mod.subjects.map((s) => renderSubject(s, mod.id))];
+		});
 		container.appendChild(h("div", {
 			id: "content",
 			class: "variable wide"

@@ -45,19 +45,36 @@ Filename: `s{semester}_{year}_{track}.js` (all lowercase)
 
 ### 3. Fill in your coefficients
 
+You can override coefficients at **three levels** independently — module, subject, or individual mark. Use the appropriate code prefix:
+
+```
+Full code:   2526_I_INF_FISA_S07_CS_GR_WS_EX
+                                 │   │  │  └─── mark level (full code)
+                                 │   │  └────── subject level (trim exam + eval type)
+                                 │   └───────── module level (first segment after semester)
+```
+
 Copy this template:
 
 ```js
 /**
  * Coefficients — S?? TRACK YEAR
  *
- * Only list exams whose coefficient is NOT 1.
- * Key = full exam code from the "Épreuve" column on Auriga.
- * Value = real coefficient.
+ * Only list entries whose coefficient is NOT 1.
+ * Override at any level:
+ *   - Module:  'XXXX_I_INF_TRACK_SXX_MODULE'
+ *   - Subject: 'XXXX_I_INF_TRACK_SXX_MODULE_SUBJECT'
+ *   - Mark:    'XXXX_I_INF_TRACK_SXX_MODULE_SUBJECT_EXAM_TYPE'
  */
 export default {
-    // Subject > Exam name (coeff X)
-    'XXXX_I_INF_TRACK_SXX_MODULE_SUBJECT_EXAM_TYPE': 2,
+    // --- Module-level (weights the whole module in the student average) ---
+    'XXXX_I_INF_TRACK_SXX_AEE': 8,
+
+    // --- Subject-level (weights the subject in the module average) ---
+    // 'XXXX_I_INF_TRACK_SXX_CS_GR': 2,
+
+    // --- Mark-level (weights the mark in the subject average) ---
+    'XXXX_I_INF_TRACK_SXX_CS_GR_WS_EX': 2,
 };
 ```
 

@@ -136,6 +136,7 @@ export function buildGradeTree(gradeLines, nameLookup) {
             }
             modules.set(moduleCode, {
                 id: moduleId,
+                _code: moduleCode,
                 name,
                 credits: 0,
                 average: null,
@@ -150,6 +151,7 @@ export function buildGradeTree(gradeLines, nameLookup) {
             const info = resolveName(subject.code, '_' + subject.id, nameLookup);
             mod.subjects.set(subject.code, {
                 id: subject.id,
+                _code: subject.code,
                 name: info && info.name.length <= 40 ? info.name : subject.id.replace(/_/g, ' '),
                 average: null,
                 classAverage: null,
