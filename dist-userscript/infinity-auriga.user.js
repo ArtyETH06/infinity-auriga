@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Infinity Auriga
 // @namespace    infinity-auriga
-// @version      1.4.0
+// @version      1.4.1
 // @description  Make Auriga Great Again - enhanced grades UI for EPITA
 // @author       KazeTachinuu & contributors
 // @match        https://auriga.epita.fr/*
@@ -805,7 +805,7 @@
 	//#region package.json
 	var version;
 	var init_package = __esmMin((() => {
-		version = "1.4.0";
+		version = "1.4.1";
 	}));
 	//#endregion
 	//#region src/app.js
