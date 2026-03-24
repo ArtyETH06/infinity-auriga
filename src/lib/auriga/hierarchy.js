@@ -1,44 +1,63 @@
 /**
  * Parse an Auriga exam code into its hierarchical components.
  *
- * Codes follow: {year}_{?}_{school}_{track}_{semester}_{...path}_{evalType}
- * The format is consistent across all tracks (FISA, FISE, GISTRE, etc.)
+ * Code anatomy:
+ *   2526_I_INF_FISA_S07_CS_GR_WS_EX
+ *   │    │ │   │    │   └── path segments ──┘ └─ evalType
+ *   [0]  1 2   3    4       5...               last (if in EVAL_TYPES)
+ *
+ *   [0] year       — academic year (25/26)
+ *   [1] constant   — always "I"
+ *   [2] school     — school code (INF for EPITA informatique)
+ *   [3] track      — FISA, FISE, GISTRE, ...
+ *   [4] semester   — S07, S08, ...
+ *   [5+] path      — module / subject / exam segments
+ *   [last] evalType — EX, PRJ, etc. (stripped from path if recognized)
  */
 
+// Recognized evaluation type suffixes.
+// Used as fallback when the API doesn't provide examType in a separate column.
 const EVAL_TYPES = new Set(['EX', 'PRJ', 'EXF', 'EXO', 'FAF', 'PROJ']);
 
-export function parseExamCode(code) {
+/**
+ * @param {string} code - The full exam code
+ * @param {string|null} [apiExamType] - Exam type from the API column (skips guessing when present)
+ */
+export function parseExamCode(code, apiExamType = null) {
     const parts = code.split('_');
     if (parts.length < 5) return null;
 
     const year = parts[0];
+    const school = parts[2];
     const track = parts[3];
     const semester = parts[4];
     const rest = parts.slice(5);
 
-    let evalType = null;
+    let evalType = apiExamType;
     let path = rest;
 
-    if (rest.length > 0 && EVAL_TYPES.has(rest[rest.length - 1])) {
+    // If the API didn't provide examType, detect it from the code suffix
+    if (!evalType && rest.length > 0 && EVAL_TYPES.has(rest[rest.length - 1])) {
         evalType = rest[rest.length - 1];
         path = rest.slice(0, -1);
     }
 
-    return { year, track, semester, path, evalType, fullCode: code };
+    return { year, school, track, semester, path, evalType, fullCode: code };
 }
 
 /**
- * Build a name lookup from synthesis lines (menuEntry 1144).
+ * Build a name lookup from parsed synthesis entries.
+ *
+ * @param {{ examCode: string, name: string, avgPreRatt: *, avgFinal: * }[]} entries
+ * @returns {Map<string, { name: string, avgPreRatt: *, avgFinal: * }>}
  */
-export function buildNameLookup(lines) {
+export function buildNameLookup(entries) {
     const lookup = new Map();
-    for (const line of lines) {
-        const code = line[2];
-        const caption = line[3] || {};
-        lookup.set(code, {
-            name: caption.fr || caption.en || code,
-            avgPreRatt: line[1],
-            avgFinal: line[4],
+    for (const entry of entries) {
+        lookup.set(entry.examCode, {
+            name: entry.name,
+            avgPreRatt: entry.avgPreRatt,
+            avgFinal: entry.avgFinal,
         });
     }
     return lookup;
@@ -83,25 +102,25 @@ function resolveName(code, suffix, nameLookup) {
 }
 
 /**
- * Build the grade tree from API data.
+ * Build the grade tree from parsed grade entries.
  *
  * Module = 1st path segment (CS, AG, PL, PR, etc.)
  * Subject = deepest named ancestor in the hierarchy (auto-detected)
  * Mark = individual grade
+ *
+ * @param {{ mark: number, coefficient: number, examCode: string, examType: string|null }[]} grades
+ * @param {Map} nameLookup - From buildNameLookup()
  */
-export function buildGradeTree(gradeLines, nameLookup) {
+export function buildGradeTree(grades, nameLookup) {
     const modules = new Map();
 
-    for (const line of gradeLines) {
-        const [, markStr, coef, examCode] = line;
-        const parsed = parseExamCode(examCode);
+    for (const grade of grades) {
+        const parsed = parseExamCode(grade.examCode, grade.examType);
         if (!parsed) continue;
 
-        const mark = parseFloat(markStr);
-        if (isNaN(mark)) continue;
-
-        const { semester, path } = parsed;
-        const prefix = `${parsed.year}_I_INF_${parsed.track}_${semester}`;
+        const { semester, path, school } = parsed;
+        // Build prefix dynamically from the code — no hardcoded school
+        const prefix = `${parsed.year}_I_${school}_${parsed.track}_${semester}`;
 
         const moduleId = path[0] || 'TC';
         const moduleCode = `${prefix}_${moduleId}`;
@@ -151,17 +170,17 @@ export function buildGradeTree(gradeLines, nameLookup) {
         const sub = mod.subjects.get(subject.code);
 
         // Deduplicate: skip if same exam code already added
-        if (sub.marks.some(m => m._code === examCode)) continue;
+        if (sub.marks.some(m => m._code === grade.examCode)) continue;
 
-        const examInfo = nameLookup.get(examCode);
+        const examInfo = nameLookup.get(grade.examCode);
         const promoAvg = examInfo?.avgPreRatt ? parseFloat(examInfo.avgPreRatt) : null;
         sub.marks.push({
             id: sub.marks.length,
-            _code: examCode,
+            _code: grade.examCode,
             name: examInfo ? examInfo.name : (parsed.evalType || 'Note'),
-            value: mark,
+            value: grade.mark,
             classAverage: isNaN(promoAvg) ? null : promoAvg,
-            coefficient: coef || 100,
+            coefficient: grade.coefficient,
         });
     }
 

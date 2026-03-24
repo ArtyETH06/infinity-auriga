@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Infinity Auriga
 // @namespace    infinity-auriga
-// @version      1.3.0
+// @version      1.4.0
 // @description  Make Auriga Great Again - enhanced grades UI for EPITA
 // @author       KazeTachinuu & contributors
 // @match        https://auriga.epita.fr/*
@@ -13,7 +13,7 @@
 // @downloadURL  https://raw.githubusercontent.com/KazeTachinuu/infinity-auriga/master/dist-userscript/infinity-auriga.user.js
 // ==/UserScript==
 
-;(function(){if(localStorage.getItem('infinity_auriga_enabled')==='0')return;var s=document.createElement('style');s.setAttribute('data-infinity','1');s.textContent="*,*:before,*:after{box-sizing:border-box}body{margin:0;overflow:hidden}div{display:flex}div,hr{box-sizing:border-box}button{outline:none;border:none;background:none}a{color:inherit;text-decoration:inherit}:root{--bg-dark: #343D55;--bg-darker: #151925;--text-primary: #151925;--text-muted: #868DA0;--text-meta: #909090;--surface: #FFFFFF;--surface-alt: #F3F4F5;--dot-color: #D5D9DC;--accent: #3D69ED;--radius: 6px;--content-px: clamp(25px, 5vw, 75px);--font-header: clamp(20px, 3vw, 32px);--font-body: clamp(13px, 1.5vw, 18px);-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif}#app{height:100dvh}button,a,.clickable{cursor:pointer;user-select:none;transition:opacity .15s}button:not(.opaque):hover,a:not(.opaque):hover,.clickable:not(.opaque):hover{opacity:.8}button:not(.opaque):active,a:not(.opaque):active,.clickable:not(.opaque):active{opacity:.6}.subtext{color:var(--text-muted);font-size:clamp(13px,1.5vw,16px);line-height:22px;text-align:center}.link.colored{color:var(--accent)}.card{border-radius:var(--radius);box-shadow:#00000026 0 2px 8px;transition:all .2s}.card.clickable:hover{box-shadow:#00000040 0 2px 9px;transform:translateY(-1px)}.variable{transition:width .6s cubic-bezier(.65,0,.35,1),margin .6s cubic-bezier(.65,0,.35,1)}.class-average{color:var(--text-meta)}.point{flex-shrink:0;width:8px;height:8px;background-color:var(--dot-color);border-radius:50%}.point.big{width:10px;height:10px}.point.small{width:6px;height:6px}#background{position:relative;z-index:1;flex-grow:1;overflow:hidden;background:linear-gradient(-212deg,var(--bg-dark) 0%,var(--bg-darker) 95%)}.triangle{position:absolute}#top-triangle{top:-175px;left:-175px;width:500px;filter:drop-shadow(3px 3px 15px rgba(0,0,0,.25))}#bottom-triangle{bottom:-75px;right:-100px;width:600px;filter:drop-shadow(-3px -3px 15px rgba(0,0,0,.25))}#content{flex-direction:column;justify-content:space-between;align-items:center;z-index:2;width:575px;padding:35px 0;overflow-y:auto;background-color:var(--surface)}#content.wide{width:1200px}#content.wide #header #logo{width:300px;margin:0}#header{width:100%;padding:20px var(--content-px);justify-content:space-between;align-items:center;flex-shrink:0;overflow:hidden}#header #logo{flex-shrink:0;width:400px;margin-top:25px;margin-left:12.5px}#header #logo svg{width:100%;height:auto}#header #logout{color:#251515;font-size:clamp(16px,2vw,22px);font-weight:500}#footer{flex-direction:column;flex-shrink:0}#footer #links{justify-content:center;margin-bottom:8px;font-weight:500;font-size:clamp(16px,2vw,22px);color:var(--text-primary)}#main{flex-direction:column;flex-grow:1;justify-content:center;width:100%}.loading{flex-direction:column;align-items:center;padding:0 var(--content-px)}.loading-step{margin-top:clamp(20px,4vw,40px);font-size:clamp(16px,2vw,20px);font-weight:600;color:var(--text-primary);text-align:center}.loading-request{margin-top:6px;min-height:1.4em;max-width:100%;font-size:clamp(11px,1.2vw,13px);font-family:SF Mono,Cascadia Code,Fira Code,monospace;color:var(--text-muted);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:0;transition:opacity .15s}.loading-request:not(:empty){opacity:1}.loading-quote{margin-top:clamp(25px,4vw,40px);font-size:clamp(13px,1.4vw,15px);font-style:italic;color:var(--text-muted);text-align:center;opacity:.6}.spinner{width:clamp(60px,8vw,85px);animation:spin .75s linear infinite}.spinner svg{width:100%;height:100%}@keyframes spin{to{transform:rotate(360deg)}}.content{flex-direction:column;flex-grow:1;align-items:flex-start;padding:5px var(--content-px);margin-bottom:25px;overflow-y:auto}.header{flex-direction:column;position:relative;font-weight:700;font-size:var(--font-header)}.header hr{width:100%;border-bottom:0;border-color:var(--surface);position:relative;z-index:-1}.filters{justify-content:space-between;width:100%;margin-bottom:clamp(30px,4vw,50px)}.combo-box{flex-direction:column;position:relative}.combo-box .name{height:20px;margin-bottom:clamp(5px,1vw,8px);margin-left:1px;color:#343434;font-size:clamp(14px,1.5vw,16px)}.combo-box .box{justify-content:space-between;align-items:center;min-width:clamp(200px,30vw,400px);height:clamp(32px,4vw,40px);padding:0 12px;border-radius:var(--radius);background-color:var(--surface-alt);font-size:clamp(12px,1.5vw,16px)}.combo-box .box svg{height:clamp(8px,1vw,10px);margin-top:2px;transition:transform .125s}.combo-box .box.opened svg{transform:rotate(180deg)}.combo-box .choices{flex-direction:column;position:absolute;top:75px;z-index:2;width:100%;background-color:var(--surface);border-radius:var(--radius);font-size:clamp(12px,1.5vw,16px)}.combo-box .choices .choice{padding:8px 12px;transition:background-color .15s}.combo-box .choices .choice:hover{background-color:#0000000d}.combo-box .choices .choice:active{background-color:#0000001a}.combo-box .choices .choice:first-child{border-top-left-radius:var(--radius);border-top-right-radius:var(--radius)}.combo-box .choices .choice:last-child{border-bottom-left-radius:var(--radius);border-bottom-right-radius:var(--radius)}.no-updates{margin-bottom:20px;font-size:var(--font-body)}.updates{flex-direction:column;width:100%;margin-bottom:15px}.updates .update{align-items:center;margin-bottom:10px;padding-left:35px;font-size:clamp(18px,2.5vw,28px)}.updates .update .top{align-items:center}.updates .update .top .id{margin-left:15px;margin-right:10px;font-weight:700}.updates .update .top .dash{margin-right:10px;font-size:clamp(18px,2vw,24px)}.updates .update .top .name{font-size:var(--font-body);margin-right:10px}.updates .update .top .name .target{font-weight:500}.updates .update .mark{align-items:center;margin-bottom:1px;font-weight:500}.updates .update .mark .point{margin-left:2px;margin-right:12px}.updates .update .mark .from{color:#a5a9b5;text-decoration:line-through}.updates .update .mark .update-arrow{margin:0 10px}.updates .update .mark .type-sign{margin-left:12px;margin-bottom:2px}.updates .update .mark .type-sign svg{width:30px}.big-list{flex-direction:column;margin-bottom:20px;padding-top:5px;transition:opacity .15s}.big-list .entry{align-items:center;margin-bottom:12px;padding-left:clamp(15px,3vw,35px);font-size:clamp(14px,2vw,21px)}.big-list .entry .name{margin-left:12px;margin-right:10px}.big-list .entry .mark{margin-left:10px}.big-list .entry .mark .value{font-weight:700}.coeff-info{flex-direction:column;margin-top:8px;padding-left:clamp(15px,3vw,35px);font-size:clamp(14px,1.8vw,18px)}.coeff-main{align-items:center;gap:12px;font-weight:500}.coeff-muted{color:var(--text-muted);font-weight:400}.coeff-links{margin-top:5px;margin-left:20px;font-size:clamp(12px,1.4vw,15px);font-weight:500}hr.separator{width:100%;margin-top:25px;opacity:.3;border-bottom:0;border-color:var(--surface)}.header.module{max-width:100%;margin-top:50px}.header.module .text{align-items:center}.header.module .name,.header.module .average,.header.module .class-average,.header.module .max{white-space:nowrap}.header.module .name{display:inline-block;overflow:hidden;text-overflow:ellipsis;padding-bottom:2px}.header.module .point{margin:2px 10px 0}.header.module .class-average{margin-left:10px;font-weight:400}.subject{width:100%;margin:15px 0}.subject .info{flex-direction:column;align-items:center;flex-shrink:0;width:250px;padding-top:15px;padding-bottom:17px}.subject .info .top,.subject .info .bottom{display:contents}.subject .info .id{font-weight:700;font-size:24px;word-break:break-word}.subject .info .point{display:none}.subject .info .average{margin-top:10px;font-size:24px}.subject .info .average .value{font-weight:700}.subject .info .class-average{font-size:14px}.subject .info .bottom-line{display:none}.subject .marks{flex-direction:column;flex-grow:1;justify-content:center;max-width:calc(100% - 275px);padding:15px 0;font-size:16px}.subject .marks .marks-title{font-weight:600;font-size:15px;margin-bottom:6px;color:#444}.subject .marks .mark{align-items:center;max-width:100%;margin:3px 0}.subject .marks .mark .point{margin-bottom:1px}.subject .marks .mark .line{display:contents}.subject .marks .mark .name,.subject .marks .mark .value,.subject .marks .mark .class-average{white-space:nowrap}.subject .marks .mark .name{display:inline-block;margin-left:15px;overflow:hidden;text-overflow:ellipsis;padding-bottom:2px}.subject .marks .mark .value{justify-content:flex-end;margin-left:1px;font-weight:700}.subject .marks .mark .class-average{margin-left:10px}.coeff-override{margin-left:6px;color:var(--accent);font-weight:600;font-size:.85em}.copy-code{display:inline-block;border-bottom:1px dashed var(--dot-color)}.copy-code:hover{border-bottom-color:var(--text-muted)}.code-tooltip{position:fixed;z-index:9999;padding:5px 12px;border-radius:5px;background:var(--bg-darker);color:#e8eaed;font-size:13px;font-weight:500;letter-spacing:.3px;font-family:SF Mono,Cascadia Code,Fira Code,monospace;white-space:nowrap;pointer-events:none;box-shadow:0 4px 12px #0000004d;opacity:0;transition:opacity .12s}.code-tooltip.copied{background:var(--accent);color:#fff;font-family:inherit}.no-marks{flex-grow:1;justify-content:center;align-items:center;width:100%;font-size:28px}@media (max-width: 850px){.filters{flex-direction:column;gap:15px}.header hr{margin-top:9px}.updates{margin-top:4px;margin-bottom:12px}.updates .update{display:grid;grid-template-columns:17px 100%;margin-bottom:6px;padding-left:15px}.updates .update>.point{width:6px;height:6px}.updates .update .top .id{margin-left:0;margin-right:6px}.updates .update .top .name{display:inline-block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.updates .update .top .name .target{display:none}.updates .update .mark{grid-column:2 / 3;height:23px}.updates .update .mark .point{display:none}.updates .update .mark .update-arrow{width:20px;margin:0 6px 1px}.updates .update .mark .type-sign{width:14px;margin-left:6px;margin-bottom:2px}.header.module{margin-top:20px;margin-bottom:6px}.header.module .text{flex-direction:column;align-items:flex-start;margin-left:-1px}.header.module .text .name{max-width:100%;margin-bottom:2px;font-size:20px}.header.module .text .point{display:none}.header.module .text .bottom{align-items:center;font-size:16px}.header.module .text .bottom .class-average{margin-left:5px;font-size:14px}.header.module .bottom-line{margin-top:7px;margin-bottom:1px;opacity:.6}.subject{flex-direction:column;margin:10px 0;padding:10px 14px}.subject .no-marks{margin:4px 0;font-size:14px}.subject .info{align-items:flex-start;width:100%;padding:0}.subject .info .top,.subject .info .bottom{display:flex;align-items:center;max-width:100%}.subject .info .id{font-size:18px}.subject .info .point{display:block;width:5px;height:5px;margin:0 8px}.subject .info .average{margin:0;font-size:14px}.subject .info .class-average{margin-left:5px;font-size:12px}.subject .info .bottom-line{display:block;width:100%;border-bottom:0;border-color:var(--surface);opacity:.3}.subject .marks{max-width:100%;padding:0}.subject .marks .mark{display:grid;grid-template-columns:12px calc(100% - 5px);padding:0 5px}.subject .marks .mark .point{width:5px;height:5px;margin-top:1px}.subject .marks .mark .line{display:flex;flex-direction:row-reverse;justify-content:flex-end;font-size:13px}.subject .marks .mark .line .name{margin-left:0}.subject .marks .mark .line .value{width:auto;margin-left:0}.subject .marks .mark .class-average{grid-column:2 / 3;margin-left:0;font-size:11px}.subject .marks .mark .class-average .parenthesis{display:none}}@media (max-width: 575px){#header{flex-direction:column;padding:0;justify-content:center;margin-bottom:20px}#header #logo{margin-top:15px;margin-left:0;max-width:80%}#content{padding:15px 0}hr.separator{margin-top:0;margin-bottom:5px}}@media (max-height: 650px){#header #logo{margin-top:0}#header #logo svg{height:115px}}@media (max-height: 550px){#header{margin-bottom:10px}#header #logo svg{height:100px}#header #logout{font-size:16px}}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--dot-color);border-radius:3px}\n";(document.head||document.documentElement).appendChild(s)})();
+;(function(){if(localStorage.getItem('infinity_auriga_enabled')==='0')return;var s=document.createElement('style');s.setAttribute('data-infinity','1');s.textContent="*,*:before,*:after{box-sizing:border-box}body{margin:0;overflow:hidden}div{display:flex}div,hr{box-sizing:border-box}button{outline:none;border:none;background:none}a{color:inherit;text-decoration:inherit}:root{--bg-dark: #343D55;--bg-darker: #151925;--text-primary: #151925;--text-muted: #868DA0;--text-meta: #909090;--surface: #FFFFFF;--surface-alt: #F3F4F5;--dot-color: #D5D9DC;--accent: #3D69ED;--radius: 6px;--content-px: clamp(25px, 5vw, 75px);--font-header: clamp(20px, 3vw, 32px);--font-body: clamp(13px, 1.5vw, 18px);-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif}#app{height:100dvh}button,a,.clickable{cursor:pointer;user-select:none;transition:opacity .15s}button:not(.opaque):hover,a:not(.opaque):hover,.clickable:not(.opaque):hover{opacity:.8}button:not(.opaque):active,a:not(.opaque):active,.clickable:not(.opaque):active{opacity:.6}.subtext{color:var(--text-muted);font-size:clamp(13px,1.5vw,16px);line-height:22px;text-align:center}.link.colored{color:var(--accent)}.card{border-radius:var(--radius);box-shadow:#00000026 0 2px 8px;transition:all .2s}.card.clickable:hover{box-shadow:#00000040 0 2px 9px;transform:translateY(-1px)}.variable{transition:width .6s cubic-bezier(.65,0,.35,1),margin .6s cubic-bezier(.65,0,.35,1)}.class-average{color:var(--text-meta)}.point{flex-shrink:0;width:8px;height:8px;background-color:var(--dot-color);border-radius:50%}.point.big{width:10px;height:10px}.point.small{width:6px;height:6px}#background{position:relative;z-index:1;flex-grow:1;overflow:hidden;background:linear-gradient(-212deg,var(--bg-dark) 0%,var(--bg-darker) 95%)}.triangle{position:absolute}#top-triangle{top:-175px;left:-175px;width:500px;filter:drop-shadow(3px 3px 15px rgba(0,0,0,.25))}#bottom-triangle{bottom:-75px;right:-100px;width:600px;filter:drop-shadow(-3px -3px 15px rgba(0,0,0,.25))}#content{flex-direction:column;justify-content:space-between;align-items:center;z-index:2;width:575px;padding:35px 0;overflow-y:auto;background-color:var(--surface)}#content.wide{width:1200px}#content.wide #header #logo{width:300px;margin:0}#header{width:100%;padding:20px var(--content-px);justify-content:space-between;align-items:center;flex-shrink:0;overflow:hidden}#header #logo{flex-shrink:0;width:400px;margin-top:25px;margin-left:12.5px}#header #logo svg{width:100%;height:auto}#header #logout{color:#251515;font-size:clamp(16px,2vw,22px);font-weight:500}#footer{flex-direction:column;flex-shrink:0}#footer #links{justify-content:center;margin-bottom:8px;font-weight:500;font-size:clamp(16px,2vw,22px);color:var(--text-primary)}#main{flex-direction:column;flex-grow:1;justify-content:center;width:100%}.loading{flex-direction:column;align-items:center;padding:0 var(--content-px)}.loading-step{margin-top:clamp(20px,4vw,40px);font-size:clamp(16px,2vw,20px);font-weight:600;color:var(--text-primary);text-align:center}.loading-request{margin-top:6px;min-height:1.4em;max-width:100%;font-size:clamp(11px,1.2vw,13px);font-family:SF Mono,Cascadia Code,Fira Code,monospace;color:var(--text-muted);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:0;transition:opacity .15s}.loading-request:not(:empty){opacity:1}.loading-quote{margin-top:clamp(25px,4vw,40px);font-size:clamp(13px,1.4vw,15px);font-style:italic;color:var(--text-muted);text-align:center;opacity:.6}.spinner{width:clamp(60px,8vw,85px);animation:spin .75s linear infinite}.spinner svg{width:100%;height:100%}@keyframes spin{to{transform:rotate(360deg)}}.content{flex-direction:column;flex-grow:1;align-items:flex-start;padding:5px var(--content-px);margin-bottom:25px;overflow-y:auto}.header{flex-direction:column;position:relative;font-weight:700;font-size:var(--font-header)}.header hr{width:100%;border-bottom:0;border-color:var(--surface);position:relative;z-index:-1}.filters{justify-content:space-between;width:100%;margin-bottom:clamp(30px,4vw,50px)}.combo-box{flex-direction:column;position:relative}.combo-box .name{height:20px;margin-bottom:clamp(5px,1vw,8px);margin-left:1px;color:#343434;font-size:clamp(14px,1.5vw,16px)}.combo-box .box{justify-content:space-between;align-items:center;min-width:clamp(200px,30vw,400px);height:clamp(32px,4vw,40px);padding:0 12px;border-radius:var(--radius);background-color:var(--surface-alt);font-size:clamp(12px,1.5vw,16px)}.combo-box .box svg{height:clamp(8px,1vw,10px);margin-top:2px;transition:transform .125s}.combo-box .box.opened svg{transform:rotate(180deg)}.combo-box .choices{flex-direction:column;position:absolute;top:75px;z-index:2;width:100%;background-color:var(--surface);border-radius:var(--radius);font-size:clamp(12px,1.5vw,16px)}.combo-box .choices .choice{padding:8px 12px;transition:background-color .15s}.combo-box .choices .choice:hover{background-color:#0000000d}.combo-box .choices .choice:active{background-color:#0000001a}.combo-box .choices .choice:first-child{border-top-left-radius:var(--radius);border-top-right-radius:var(--radius)}.combo-box .choices .choice:last-child{border-bottom-left-radius:var(--radius);border-bottom-right-radius:var(--radius)}.no-updates{margin-bottom:20px;font-size:var(--font-body)}.updates{flex-direction:column;width:100%;margin-bottom:15px}.updates .update{align-items:center;margin-bottom:10px;padding-left:35px;font-size:clamp(18px,2.5vw,28px)}.updates .update .top{align-items:center}.updates .update .top .id{margin-left:15px;margin-right:10px;font-weight:700}.updates .update .top .dash{margin-right:10px;font-size:clamp(18px,2vw,24px)}.updates .update .top .name{font-size:var(--font-body);margin-right:10px}.updates .update .top .name .target{font-weight:500}.updates .update .mark{align-items:center;margin-bottom:1px;font-weight:500}.updates .update .mark .point{margin-left:2px;margin-right:12px}.updates .update .mark .from{color:#a5a9b5;text-decoration:line-through}.updates .update .mark .update-arrow{margin:0 10px}.updates .update .mark .type-sign{margin-left:12px;margin-bottom:2px}.updates .update .mark .type-sign svg{width:30px}.big-list{flex-direction:column;margin-bottom:20px;padding-top:5px;transition:opacity .15s}.big-list .entry{align-items:center;margin-bottom:12px;padding-left:clamp(15px,3vw,35px);font-size:clamp(18px,2.8vw,26px)}.big-list .entry .name{margin-left:12px;margin-right:10px}.big-list .entry .mark{margin-left:10px}.big-list .entry .mark .value{font-weight:700}.coeff-info{flex-direction:column;margin-top:8px;padding-left:clamp(15px,3vw,35px);font-size:clamp(14px,1.8vw,18px)}.coeff-main{align-items:center;gap:12px;font-weight:500}.coeff-muted{color:var(--text-muted);font-weight:400}.coeff-links{margin-top:5px;margin-left:20px;font-size:clamp(12px,1.4vw,15px);font-weight:500}hr.separator{width:100%;margin-top:25px;opacity:.3;border-bottom:0;border-color:var(--surface)}.header.module{max-width:100%;margin-top:50px}.header.module .text{align-items:center}.header.module .name,.header.module .average,.header.module .class-average,.header.module .max{white-space:nowrap}.header.module .name{display:inline-block;overflow:hidden;text-overflow:ellipsis;padding-bottom:2px}.header.module .point{margin:2px 10px 0}.header.module .class-average{margin-left:10px;font-weight:400}.subject{width:100%;margin:15px 0}.subject .info{flex-direction:column;align-items:center;flex-shrink:0;width:250px;padding-top:15px;padding-bottom:17px}.subject .info .top,.subject .info .bottom{display:contents}.subject .info .id{font-weight:700;font-size:24px;word-break:break-word}.subject .info .point{display:none}.subject .info .average{margin-top:10px;font-size:24px}.subject .info .average .value{font-weight:700}.subject .info .class-average{font-size:14px}.subject .info .bottom-line{display:none}.subject .marks{flex-direction:column;flex-grow:1;justify-content:center;max-width:calc(100% - 275px);padding:15px 0;font-size:16px}.subject .marks .marks-title{font-weight:600;font-size:15px;margin-bottom:6px;color:#444}.subject .marks .mark{align-items:center;max-width:100%;margin:3px 0}.subject .marks .mark .point{margin-bottom:1px}.subject .marks .mark .line{display:contents}.subject .marks .mark .name,.subject .marks .mark .value,.subject .marks .mark .class-average{white-space:nowrap}.subject .marks .mark .name{display:inline-block;margin-left:15px;overflow:hidden;text-overflow:ellipsis;padding-bottom:2px}.subject .marks .mark .value{justify-content:flex-end;margin-left:1px;font-weight:700}.subject .marks .mark .class-average{margin-left:10px}.coeff-override{margin-left:6px;color:var(--accent);font-weight:600;font-size:.85em}.copy-code{display:inline-block;border-bottom:1px dashed var(--dot-color)}.copy-code:hover{border-bottom-color:var(--text-muted)}.code-tooltip{position:fixed;z-index:9999;padding:5px 12px;border-radius:5px;background:var(--bg-darker);color:#e8eaed;font-size:13px;font-weight:500;letter-spacing:.3px;font-family:SF Mono,Cascadia Code,Fira Code,monospace;white-space:nowrap;pointer-events:none;box-shadow:0 4px 12px #0000004d;opacity:0;transition:opacity .12s}.code-tooltip.copied{background:var(--accent);color:#fff;font-family:inherit}.no-marks{flex-grow:1;justify-content:center;align-items:center;width:100%;font-size:28px}@media (max-width: 850px){.filters{flex-direction:column;gap:15px}.header hr{margin-top:9px}.updates{margin-top:4px;margin-bottom:12px}.updates .update{display:grid;grid-template-columns:17px 100%;margin-bottom:6px;padding-left:15px}.updates .update>.point{width:6px;height:6px}.updates .update .top .id{margin-left:0;margin-right:6px}.updates .update .top .name{display:inline-block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.updates .update .top .name .target{display:none}.updates .update .mark{grid-column:2 / 3;height:23px}.updates .update .mark .point{display:none}.updates .update .mark .update-arrow{width:20px;margin:0 6px 1px}.updates .update .mark .type-sign{width:14px;margin-left:6px;margin-bottom:2px}.header.module{margin-top:20px;margin-bottom:6px}.header.module .text{flex-direction:column;align-items:flex-start;margin-left:-1px}.header.module .text .name{max-width:100%;margin-bottom:2px;font-size:20px}.header.module .text .point{display:none}.header.module .text .bottom{align-items:center;font-size:16px}.header.module .text .bottom .class-average{margin-left:5px;font-size:14px}.header.module .bottom-line{margin-top:7px;margin-bottom:1px;opacity:.6}.subject{flex-direction:column;margin:10px 0;padding:10px 14px}.subject .no-marks{margin:4px 0;font-size:14px}.subject .info{align-items:flex-start;width:100%;padding:0}.subject .info .top,.subject .info .bottom{display:flex;align-items:center;max-width:100%}.subject .info .id{font-size:18px}.subject .info .point{display:block;width:5px;height:5px;margin:0 8px}.subject .info .average{margin:0;font-size:14px}.subject .info .class-average{margin-left:5px;font-size:12px}.subject .info .bottom-line{display:block;width:100%;border-bottom:0;border-color:var(--surface);opacity:.3}.subject .marks{max-width:100%;padding:0}.subject .marks .mark{display:grid;grid-template-columns:12px calc(100% - 5px);padding:0 5px}.subject .marks .mark .point{width:5px;height:5px;margin-top:1px}.subject .marks .mark .line{display:flex;flex-direction:row-reverse;justify-content:flex-end;font-size:13px}.subject .marks .mark .line .name{margin-left:0}.subject .marks .mark .line .value{width:auto;margin-left:0}.subject .marks .mark .class-average{grid-column:2 / 3;margin-left:0;font-size:11px}.subject .marks .mark .class-average .parenthesis{display:none}}@media (max-width: 575px){#header{flex-direction:column;padding:0;justify-content:center;margin-bottom:20px}#header #logo{margin-top:15px;margin-left:0;max-width:80%}#content{padding:15px 0}hr.separator{margin-top:0;margin-bottom:5px}}@media (max-height: 650px){#header #logo{margin-top:0}#header #logo svg{height:115px}}@media (max-height: 550px){#header{margin-bottom:10px}#header #logo svg{height:100px}#header #logout{font-size:16px}}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--dot-color);border-radius:3px}\n";(document.head||document.documentElement).appendChild(s)})();
 (function() {
 	//#region \0rolldown/runtime.js
 	var __create = Object.create;
@@ -176,12 +176,65 @@
 		return (await getUserInfo()).fullName;
 	}
 	//#endregion
+	//#region src/lib/toggle.js
+	var PREF_KEY = "infinity_auriga_enabled";
+	function isInfinityEnabled() {
+		return localStorage.getItem(PREF_KEY) !== "0";
+	}
+	/**
+	* Create the view switcher. Switching modes reloads the page.
+	*/
+	function setupToggle(active) {
+		const style = document.createElement("style");
+		style.textContent = `
+        #view-switcher { display:flex; position:fixed; bottom:28px; left:28px; z-index:9999; padding:4px; border-radius:14px; background:#fff; box-shadow:0 4px 20px rgba(0,0,0,.18),0 0 0 1px rgba(0,0,0,.06); font-family:system-ui,-apple-system,sans-serif; }
+        #view-switcher .switcher-pill { position:absolute; top:4px; left:4px; width:calc(50% - 4px); height:calc(100% - 8px); border-radius:11px; background:#151925; transition:transform .3s cubic-bezier(.4,0,.2,1); pointer-events:none; }
+        #view-switcher .switcher-option { position:relative; z-index:1; padding:10px 24px; border-radius:11px; background:none; border:none; outline:none; color:#868DA0; font-size:14px; font-weight:600; font-family:inherit; letter-spacing:.3px; cursor:pointer; user-select:none; white-space:nowrap; transition:color .25s; }
+        #view-switcher .switcher-option:hover { color:#151925; }
+        #view-switcher .switcher-option.active { color:#fff; }
+    `;
+		document.head.appendChild(style);
+		const switcher = document.createElement("div");
+		switcher.id = "view-switcher";
+		const pill = document.createElement("div");
+		pill.className = "switcher-pill";
+		const btnInfinity = document.createElement("button");
+		btnInfinity.className = "switcher-option" + (active === "infinity" ? " active" : "");
+		btnInfinity.textContent = "Infinity";
+		const btnClassic = document.createElement("button");
+		btnClassic.className = "switcher-option" + (active === "classic" ? " active" : "");
+		btnClassic.textContent = "Classique";
+		pill.style.transform = active === "infinity" ? "translateX(0)" : "translateX(100%)";
+		switcher.append(pill, btnInfinity, btnClassic);
+		document.body.appendChild(switcher);
+		btnInfinity.addEventListener("click", () => {
+			if (active === "infinity") return;
+			localStorage.setItem(PREF_KEY, "1");
+			window.location.reload();
+		});
+		btnClassic.addEventListener("click", () => {
+			if (active === "classic") return;
+			localStorage.setItem(PREF_KEY, "0");
+			window.location.reload();
+		});
+	}
+	//#endregion
 	//#region src/lib/auriga/hierarchy.js
 	/**
 	* Parse an Auriga exam code into its hierarchical components.
 	*
-	* Codes follow: {year}_{?}_{school}_{track}_{semester}_{...path}_{evalType}
-	* The format is consistent across all tracks (FISA, FISE, GISTRE, etc.)
+	* Code anatomy:
+	*   2526_I_INF_FISA_S07_CS_GR_WS_EX
+	*   │    │ │   │    │   └── path segments ──┘ └─ evalType
+	*   [0]  1 2   3    4       5...               last (if in EVAL_TYPES)
+	*
+	*   [0] year       — academic year (25/26)
+	*   [1] constant   — always "I"
+	*   [2] school     — school code (INF for EPITA informatique)
+	*   [3] track      — FISA, FISE, GISTRE, ...
+	*   [4] semester   — S07, S08, ...
+	*   [5+] path      — module / subject / exam segments
+	*   [last] evalType — EX, PRJ, etc. (stripped from path if recognized)
 	*/
 	var EVAL_TYPES = new Set([
 		"EX",
@@ -191,21 +244,27 @@
 		"FAF",
 		"PROJ"
 	]);
-	function parseExamCode(code) {
+	/**
+	* @param {string} code - The full exam code
+	* @param {string|null} [apiExamType] - Exam type from the API column (skips guessing when present)
+	*/
+	function parseExamCode(code, apiExamType = null) {
 		const parts = code.split("_");
 		if (parts.length < 5) return null;
 		const year = parts[0];
+		const school = parts[2];
 		const track = parts[3];
 		const semester = parts[4];
 		const rest = parts.slice(5);
-		let evalType = null;
+		let evalType = apiExamType;
 		let path = rest;
-		if (rest.length > 0 && EVAL_TYPES.has(rest[rest.length - 1])) {
+		if (!evalType && rest.length > 0 && EVAL_TYPES.has(rest[rest.length - 1])) {
 			evalType = rest[rest.length - 1];
 			path = rest.slice(0, -1);
 		}
 		return {
 			year,
+			school,
 			track,
 			semester,
 			path,
@@ -214,19 +273,18 @@
 		};
 	}
 	/**
-	* Build a name lookup from synthesis lines (menuEntry 1144).
+	* Build a name lookup from parsed synthesis entries.
+	*
+	* @param {{ examCode: string, name: string, avgPreRatt: *, avgFinal: * }[]} entries
+	* @returns {Map<string, { name: string, avgPreRatt: *, avgFinal: * }>}
 	*/
-	function buildNameLookup(lines) {
+	function buildNameLookup(entries) {
 		const lookup = /* @__PURE__ */ new Map();
-		for (const line of lines) {
-			const code = line[2];
-			const caption = line[3] || {};
-			lookup.set(code, {
-				name: caption.fr || caption.en || code,
-				avgPreRatt: line[1],
-				avgFinal: line[4]
-			});
-		}
+		for (const entry of entries) lookup.set(entry.examCode, {
+			name: entry.name,
+			avgPreRatt: entry.avgPreRatt,
+			avgFinal: entry.avgFinal
+		});
 		return lookup;
 	}
 	/**
@@ -269,22 +327,22 @@
 		return bestPartial;
 	}
 	/**
-	* Build the grade tree from API data.
+	* Build the grade tree from parsed grade entries.
 	*
 	* Module = 1st path segment (CS, AG, PL, PR, etc.)
 	* Subject = deepest named ancestor in the hierarchy (auto-detected)
 	* Mark = individual grade
+	*
+	* @param {{ mark: number, coefficient: number, examCode: string, examType: string|null }[]} grades
+	* @param {Map} nameLookup - From buildNameLookup()
 	*/
-	function buildGradeTree(gradeLines, nameLookup) {
+	function buildGradeTree(grades, nameLookup) {
 		const modules = /* @__PURE__ */ new Map();
-		for (const line of gradeLines) {
-			const [, markStr, coef, examCode] = line;
-			const parsed = parseExamCode(examCode);
+		for (const grade of grades) {
+			const parsed = parseExamCode(grade.examCode, grade.examType);
 			if (!parsed) continue;
-			const mark = parseFloat(markStr);
-			if (isNaN(mark)) continue;
-			const { semester, path } = parsed;
-			const prefix = `${parsed.year}_I_INF_${parsed.track}_${semester}`;
+			const { semester, path, school } = parsed;
+			const prefix = `${parsed.year}_I_${school}_${parsed.track}_${semester}`;
 			const moduleId = path[0] || "TC";
 			const moduleCode = `${prefix}_${moduleId}`;
 			const subject = findSubjectLevel(prefix, path);
@@ -320,16 +378,16 @@
 				});
 			}
 			const sub = mod.subjects.get(subject.code);
-			if (sub.marks.some((m) => m._code === examCode)) continue;
-			const examInfo = nameLookup.get(examCode);
+			if (sub.marks.some((m) => m._code === grade.examCode)) continue;
+			const examInfo = nameLookup.get(grade.examCode);
 			const promoAvg = examInfo?.avgPreRatt ? parseFloat(examInfo.avgPreRatt) : null;
 			sub.marks.push({
 				id: sub.marks.length,
-				_code: examCode,
+				_code: grade.examCode,
 				name: examInfo ? examInfo.name : parsed.evalType || "Note",
-				value: mark,
+				value: grade.mark,
 				classAverage: isNaN(promoAvg) ? null : promoAvg,
-				coefficient: coef || 100
+				coefficient: grade.coefficient
 			});
 		}
 		const result = [];
@@ -338,6 +396,85 @@
 			result.push(mod);
 		}
 		return result;
+	}
+	//#endregion
+	//#region src/lib/auriga/schema.js
+	/**
+	* Auriga API response schema — column mappings and line parsers.
+	*
+	* ┌─────────────────────────────────────────────────────────────────┐
+	* │  THIS IS THE SINGLE FILE TO UPDATE IF AURIGA CHANGES FORMAT.   │
+	* └─────────────────────────────────────────────────────────────────┘
+	*
+	* Auriga search endpoints return { content: { columns: [...], lines: [...] } }.
+	* Each line is an array of values whose positions are defined below.
+	*
+	* GRADES endpoint (APP_040_010_MES_NOTES, e.g. menuEntry 1036):
+	*   [0] internalId   [1] mark (string)  [2] coefficient  [3] examCode  [4] examType
+	*
+	* SYNTHESIS endpoint (APP_040_010_MES_NOTES_SYNT, e.g. menuEntry 1144):
+	*   [0] personId     [1] avgPreRatt     [2] examCode      [3] caption {fr,en}  [4] avgFinal
+	*
+	* Last verified: 2026-03-24 against capture auriga-capture-1774299604740.json
+	*/
+	var MENU_CODES = {
+		grades: "APP_040_010_MES_NOTES",
+		synthesis: "APP_040_010_MES_NOTES_SYNT"
+	};
+	var GRADES = {
+		internalId: 0,
+		mark: 1,
+		coefficient: 2,
+		examCode: 3,
+		examType: 4
+	};
+	var SYNTHESIS = {
+		personId: 0,
+		avgPreRatt: 1,
+		examCode: 2,
+		caption: 3,
+		avgFinal: 4
+	};
+	/**
+	* Parse a raw grade line into a named object.
+	*
+	* @param {Array} line - Raw array from Auriga searchResult
+	* @returns {{ mark: number, coefficient: number, examCode: string, examType: string|null } | null}
+	*/
+	function parseGradeLine(line) {
+		const examCode = line[GRADES.examCode];
+		if (!examCode || typeof examCode !== "string") {
+			console.warn("[Infinity] Unexpected grade line — examCode missing at index", GRADES.examCode, line);
+			return null;
+		}
+		const mark = parseFloat(line[GRADES.mark]);
+		if (isNaN(mark)) return null;
+		return {
+			mark,
+			coefficient: line[GRADES.coefficient] || 100,
+			examCode,
+			examType: line[GRADES.examType] || null
+		};
+	}
+	/**
+	* Parse a raw synthesis line into a named object.
+	*
+	* @param {Array} line - Raw array from Auriga searchResult
+	* @returns {{ examCode: string, name: string, avgPreRatt: *, avgFinal: * } | null}
+	*/
+	function parseSynthesisLine(line) {
+		const examCode = line[SYNTHESIS.examCode];
+		if (!examCode || typeof examCode !== "string") {
+			console.warn("[Infinity] Unexpected synthesis line — examCode missing at index", SYNTHESIS.examCode, line);
+			return null;
+		}
+		const caption = line[SYNTHESIS.caption] || {};
+		return {
+			examCode,
+			name: caption.fr || caption.en || examCode,
+			avgPreRatt: line[SYNTHESIS.avgPreRatt],
+			avgFinal: line[SYNTHESIS.avgFinal]
+		};
 	}
 	//#endregion
 	//#region src/lib/auriga/marks.js
@@ -352,19 +489,20 @@
 			formId: obj.formId
 		};
 		_menuConfig = {
-			grades: entries["APP_040_010_MES_NOTES"],
-			synthesis: entries["APP_040_010_MES_NOTES_SYNT"]
+			grades: entries[MENU_CODES.grades],
+			synthesis: entries[MENU_CODES.synthesis]
 		};
+		if (!_menuConfig.grades || !_menuConfig.synthesis) console.warn("[Infinity] Menu entries not found. Expected:", MENU_CODES, "Got:", Object.keys(entries).join(", "));
 		return _menuConfig;
 	}
-	var _cachedSynthesisLines = null;
+	var _cachedSynthesisEntries = null;
 	async function getMarksFilters() {
 		const synth = (await getMenuConfig()).synthesis;
-		const lines = await fetchAllSearchResults(synth.menuEntryId, synth.queryId);
+		const entries = (await fetchAllSearchResults(synth.menuEntryId, synth.queryId)).map(parseSynthesisLine).filter(Boolean);
+		_cachedSynthesisEntries = entries;
 		const semesters = /* @__PURE__ */ new Map();
-		for (const line of lines) {
-			const code = line[2];
-			const parsed = parseExamCode(code);
+		for (const entry of entries) {
+			const parsed = parseExamCode(entry.examCode);
 			if (!parsed) continue;
 			const key = `${parsed.semester}_${parsed.year}`;
 			if (!semesters.has(key)) {
@@ -377,7 +515,6 @@
 				});
 			}
 		}
-		_cachedSynthesisLines = lines;
 		return [{
 			id: "semester",
 			name: "Semestre",
@@ -388,25 +525,20 @@
 		const semFilter = filters.semester;
 		if (!semFilter) throw new Error("No semester selected");
 		const [semester, year] = semFilter.split("_");
-		const semesterPrefix = `${year}_I_INF_`;
 		const config = await getMenuConfig();
-		const grades = config.grades;
-		const filteredGrades = (await fetchAllSearchResults(grades.menuEntryId, grades.queryId)).filter((line) => {
-			const code = line[3];
-			return code && code.startsWith(semesterPrefix) && code.includes(`_${semester}_`);
+		const filteredGrades = (await fetchAllSearchResults(config.grades.menuEntryId, config.grades.queryId)).map(parseGradeLine).filter(Boolean).filter((g) => {
+			const parsed = parseExamCode(g.examCode);
+			return parsed && parsed.year === year && parsed.semester === semester;
 		});
-		let synthesisLines = _cachedSynthesisLines;
-		if (!synthesisLines) {
-			const synth = config.synthesis;
-			synthesisLines = await fetchAllSearchResults(synth.menuEntryId, synth.queryId);
-		}
-		const filteredSynthesis = synthesisLines.filter((line) => {
-			const code = line[2];
-			return code && code.startsWith(semesterPrefix) && code.includes(`_${semester}_`);
+		let synthesisEntries = _cachedSynthesisEntries;
+		if (!synthesisEntries) synthesisEntries = (await fetchAllSearchResults(config.synthesis.menuEntryId, config.synthesis.queryId)).map(parseSynthesisLine).filter(Boolean);
+		const filteredSynthesis = synthesisEntries.filter((e) => {
+			const parsed = parseExamCode(e.examCode);
+			return parsed && parsed.year === year && parsed.semester === semester;
 		});
-		const marks = buildGradeTree(filteredGrades, buildNameLookup(synthesisLines));
+		const marks = buildGradeTree(filteredGrades, buildNameLookup(synthesisEntries));
 		let classAverage = null;
-		const promoValues = filteredSynthesis.filter((l) => l[1] != null).map((l) => parseFloat(l[1])).filter((v) => !isNaN(v) && v > 0);
+		const promoValues = filteredSynthesis.filter((e) => e.avgPreRatt != null).map((e) => parseFloat(e.avgPreRatt)).filter((v) => !isNaN(v) && v > 0);
 		if (promoValues.length > 0) classAverage = promoValues.reduce((s, v) => s + v, 0) / promoValues.length;
 		return {
 			classAverage,
@@ -642,57 +774,19 @@
 		return filtersValues;
 	}
 	//#endregion
-	//#region src/lib/toggle.js
-	var PREF_KEY = "infinity_auriga_enabled";
-	function isInfinityEnabled() {
-		return localStorage.getItem(PREF_KEY) !== "0";
-	}
-	/**
-	* Create the view switcher. Switching modes reloads the page.
-	*/
-	function setupToggle(active) {
-		const style = document.createElement("style");
-		style.textContent = `
-        #view-switcher { display:flex; position:fixed; bottom:28px; left:28px; z-index:9999; padding:4px; border-radius:14px; background:#fff; box-shadow:0 4px 20px rgba(0,0,0,.18),0 0 0 1px rgba(0,0,0,.06); font-family:system-ui,-apple-system,sans-serif; }
-        #view-switcher .switcher-pill { position:absolute; top:4px; left:4px; width:calc(50% - 4px); height:calc(100% - 8px); border-radius:11px; background:#151925; transition:transform .3s cubic-bezier(.4,0,.2,1); pointer-events:none; }
-        #view-switcher .switcher-option { position:relative; z-index:1; padding:10px 24px; border-radius:11px; background:none; border:none; outline:none; color:#868DA0; font-size:14px; font-weight:600; font-family:inherit; letter-spacing:.3px; cursor:pointer; user-select:none; white-space:nowrap; transition:color .25s; }
-        #view-switcher .switcher-option:hover { color:#151925; }
-        #view-switcher .switcher-option.active { color:#fff; }
-    `;
-		document.head.appendChild(style);
-		const switcher = document.createElement("div");
-		switcher.id = "view-switcher";
-		const pill = document.createElement("div");
-		pill.className = "switcher-pill";
-		const btnInfinity = document.createElement("button");
-		btnInfinity.className = "switcher-option" + (active === "infinity" ? " active" : "");
-		btnInfinity.textContent = "Infinity";
-		const btnClassic = document.createElement("button");
-		btnClassic.className = "switcher-option" + (active === "classic" ? " active" : "");
-		btnClassic.textContent = "Classique";
-		pill.style.transform = active === "infinity" ? "translateX(0)" : "translateX(100%)";
-		switcher.append(pill, btnInfinity, btnClassic);
-		document.body.appendChild(switcher);
-		btnInfinity.addEventListener("click", () => {
-			if (active === "infinity") return;
-			localStorage.setItem(PREF_KEY, "1");
-			window.location.reload();
-		});
-		btnClassic.addEventListener("click", () => {
-			if (active === "classic") return;
-			localStorage.setItem(PREF_KEY, "0");
-			window.location.reload();
-		});
-	}
-	//#endregion
-	//#region src/style.css
-	var require_style = /* @__PURE__ */ __commonJSMin((() => {}));
+	//#region package.json
+	var version;
+	var init_package = __esmMin((() => {
+		version = "1.4.0";
+	}));
 	//#endregion
 	//#region src/app.js
 	var app;
-	var init_app = __esmMin((() => {
+	var init_app$1 = __esmMin((() => {
+		init_package();
 		app = {
 			name: "Infinity Auriga",
+			version,
 			repository: "https://github.com/KazeTachinuu/infinity-auriga"
 		};
 	}));
@@ -757,11 +851,7 @@
 		minus_default = "<svg width=\"29\" height=\"4\" viewBox=\"0 0 29 4\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" stroke=\"#D52121\" stroke-width=\"3\" stroke-linecap=\"round\"><line x1=\"2\" y1=\"2\" x2=\"27\" y2=\"2\"/></svg>\n";
 	}));
 	//#endregion
-	//#region src/render.js
-	var render_exports = /* @__PURE__ */ __exportAll({
-		renderApp: () => renderApp,
-		renderLoadingScreen: () => renderLoadingScreen
-	});
+	//#region src/render/dom.js
 	function h(tag, attrs = {}, ...children) {
 		const el = document.createElement(tag);
 		for (const [k, v] of Object.entries(attrs)) if (k === "class") el.className = v;
@@ -774,9 +864,13 @@
 		}
 		return el;
 	}
-	function html(tag, attrs, rawHtml) {
+	/**
+	* Create an element and set its innerHTML to a trusted build-time SVG string.
+	* Only use with Vite ?raw imports — never with user-supplied content.
+	*/
+	function html(tag, attrs, trustedSvg) {
 		const el = h(tag, attrs);
-		el.innerHTML = rawHtml;
+		el.innerHTML = trustedSvg;
 		return el;
 	}
 	function gradeColor(value) {
@@ -825,6 +919,20 @@
 	function hasEqualCoefficients(subject) {
 		return subject.marks.every((m) => m.coefficient === subject.marks[0].coefficient);
 	}
+	var init_dom = __esmMin((() => {
+		init_top_triangle();
+		init_bottom_triangle();
+		init_logo();
+		init_spinner();
+		init_combo_box_arrow();
+		init_update_arrow();
+		init_increase_arrow();
+		init_decrease_arrow();
+		init_plus();
+		init_minus();
+	}));
+	//#endregion
+	//#region src/render/tooltip.js
 	function showTooltip(anchor, text, type) {
 		if (!_tooltip) {
 			_tooltip = h("div", { class: "code-tooltip" });
@@ -865,6 +973,13 @@
 		}, label);
 		return el;
 	}
+	var _tooltip;
+	var init_tooltip = __esmMin((() => {
+		init_dom();
+		_tooltip = null;
+	}));
+	//#endregion
+	//#region src/render/components.js
 	function renderComboBox(name, values, currentValue, onUpdate) {
 		const wrapper = h("div", { class: "combo-box" });
 		const selected = (values.find((v) => v.value === currentValue) || { name: "..." }).name;
@@ -904,37 +1019,6 @@
 		wrapper.append(h("span", { class: "name" }, name), box);
 		return wrapper;
 	}
-	function renderLoadingScreen(container, message) {
-		container.replaceChildren();
-		container.appendChild(h("div", { id: "background" }, html("div", {
-			id: "top-triangle",
-			class: "triangle"
-		}, top_triangle_default), html("div", {
-			id: "bottom-triangle",
-			class: "triangle"
-		}, bottom_triangle_default)));
-		const quote = LOADING_QUOTES[Math.floor(Math.random() * LOADING_QUOTES.length)];
-		const stepLabel = h("div", { class: "loading-step" }, message || "Chargement...");
-		const requestLabel = h("div", { class: "loading-request" });
-		const quoteLabel = h("div", { class: "loading-quote" }, quote);
-		const loading = h("div", { class: "loading" }, html("div", { class: "spinner" }, spinner_default), stepLabel, requestLabel, quoteLabel);
-		container.appendChild(h("div", {
-			id: "content",
-			class: "variable"
-		}, h("div", { id: "header" }, html("div", {
-			id: "logo",
-			class: "variable"
-		}, logo_default)), h("div", { id: "main" }, loading), renderFooter()));
-		return {
-			step(text) {
-				stepLabel.textContent = text;
-				requestLabel.textContent = "";
-			},
-			request(url) {
-				requestLabel.textContent = url;
-			}
-		};
-	}
 	function renderUpdate(upd) {
 		const hasValue = upd.value === 0 || upd.value;
 		const hasOld = upd.old === 0 || upd.old;
@@ -956,7 +1040,7 @@
 		const marksContent = subject.marks.map((mark) => {
 			const meta = [];
 			if (mark.classAverage != null) meta.push(`moyenne: ${formatGrade(mark.classAverage)}`);
-			if (!hasEqualCoefficients(subject)) meta.push(`${Math.round(mark.coefficient * 100)}%`);
+			if (!hasEqualCoefficients(subject) && !mark._overridden) meta.push(`${Math.round(mark.coefficient * 100)}%`);
 			const overriddenEl = mark._overridden && mark._rawCoefficient != null ? h("span", { class: "coeff-override" }, `\u00d7${mark._rawCoefficient}`) : null;
 			let markName = mark.name;
 			if (fullName) {
@@ -989,8 +1073,19 @@
 		}, "Coefficients"), "\xA0·\xA0", h("a", {
 			href: app.repository,
 			target: "_blank"
-		}, "Sources"), "\xA0·\xA0", resetLink), html("p", { class: "subtext" }, `${app.name} &copy; 2019-2026<br/>Licensed under <a class="link colored" href="${app.repository}/blob/master/LICENSE" target="_blank">MIT License</a>`));
+		}, "Sources"), "\xA0·\xA0", resetLink), h("p", { class: "subtext" }, h("span", {}, `${app.name} \u00a9 2019-2026`), h("br"), h("span", {}, "Licensed under "), h("a", {
+			class: "link colored",
+			href: `${app.repository}/blob/master/LICENSE`,
+			target: "_blank"
+		}, "MIT License")));
 	}
+	var init_components = __esmMin((() => {
+		init_app$1();
+		init_dom();
+		init_tooltip();
+	}));
+	//#endregion
+	//#region src/render/app.js
 	function renderApp(container, { name, marks, averages, filters, filtersValues, updates, coeffSource, onSemesterChange }) {
 		container.replaceChildren();
 		container.appendChild(h("div", { id: "background" }, html("div", {
@@ -1053,20 +1148,49 @@
 			class: "link colored"
 		}, "Contribuer les vrais coefficients")])), h("hr", { class: "separator" }), ...moduleEls)), renderFooter()));
 	}
-	var _tooltip, LOADING_QUOTES;
-	var init_render = __esmMin((() => {
-		init_app();
-		init_top_triangle();
-		init_bottom_triangle();
-		init_logo();
-		init_spinner();
-		init_combo_box_arrow();
-		init_update_arrow();
-		init_increase_arrow();
-		init_decrease_arrow();
-		init_plus();
-		init_minus();
-		_tooltip = null;
+	var init_app = __esmMin((() => {
+		init_app$1();
+		init_dom();
+		init_tooltip();
+		init_components();
+	}));
+	//#endregion
+	//#region src/render/loading.js
+	function renderLoadingScreen(container, message) {
+		container.replaceChildren();
+		container.appendChild(h("div", { id: "background" }, html("div", {
+			id: "top-triangle",
+			class: "triangle"
+		}, top_triangle_default), html("div", {
+			id: "bottom-triangle",
+			class: "triangle"
+		}, bottom_triangle_default)));
+		const quote = LOADING_QUOTES[Math.floor(Math.random() * LOADING_QUOTES.length)];
+		const stepLabel = h("div", { class: "loading-step" }, message || "Chargement...");
+		const requestLabel = h("div", { class: "loading-request" });
+		const quoteLabel = h("div", { class: "loading-quote" }, quote);
+		const loading = h("div", { class: "loading" }, html("div", { class: "spinner" }, spinner_default), stepLabel, requestLabel, quoteLabel);
+		container.appendChild(h("div", {
+			id: "content",
+			class: "variable"
+		}, h("div", { id: "header" }, html("div", {
+			id: "logo",
+			class: "variable"
+		}, logo_default)), h("div", { id: "main" }, loading), renderFooter()));
+		return {
+			step(text) {
+				stepLabel.textContent = text;
+				requestLabel.textContent = "";
+			},
+			request(url) {
+				requestLabel.textContent = url;
+			}
+		};
+	}
+	var LOADING_QUOTES;
+	var init_loading = __esmMin((() => {
+		init_dom();
+		init_components();
 		LOADING_QUOTES = [
 			"Auriga va moins vite que votre grand-mère...",
 			"On négocie avec le serveur...",
@@ -1081,22 +1205,28 @@
 		];
 	}));
 	//#endregion
-	//#region src/userscript-entry.js
-	installTokenInterceptor();
-	async function main() {
-		if (document.readyState === "loading") await new Promise((resolve) => document.addEventListener("DOMContentLoaded", resolve));
-		if (!isInfinityEnabled()) {
-			setupToggle("classic");
-			return;
-		}
-		await waitForToken();
-		Promise.resolve().then(() => /* @__PURE__ */ __toESM(require_style(), 1));
-		document.title = "Infinity Auriga";
-		while (document.body.firstChild) document.body.removeChild(document.body.firstChild);
-		for (const el of document.querySelectorAll("link[rel=\"stylesheet\"], style:not([data-infinity])")) el.remove();
-		const container = document.createElement("div");
-		container.id = "app";
-		document.body.appendChild(container);
+	//#region src/render/index.js
+	var render_exports = /* @__PURE__ */ __exportAll({
+		renderApp: () => renderApp,
+		renderLoadingScreen: () => renderLoadingScreen
+	});
+	var init_render = __esmMin((() => {
+		init_app();
+		init_loading();
+	}));
+	//#endregion
+	//#region src/boot.js
+	/**
+	* Shared boot sequence for both dev (main.js) and prod (userscript-entry.js).
+	*
+	* Both entry points handle their own environment setup (mock tokens, DOM takeover,
+	* token interception, etc.) then call this function with a ready container.
+	*
+	* Flow: setupToggle → loadSession → refresh loop (fetch marks → render)
+	*
+	* @param {HTMLElement} container - The #app element, already in the DOM
+	*/
+	async function boot(container) {
 		setupToggle("infinity");
 		const { renderLoadingScreen, renderApp } = await Promise.resolve().then(() => (init_render(), render_exports));
 		const status = renderLoadingScreen(container, "Chargement...");
@@ -1120,6 +1250,28 @@
 			});
 		}
 		await refresh();
+	}
+	//#endregion
+	//#region src/style.css
+	var require_style = /* @__PURE__ */ __commonJSMin((() => {}));
+	//#endregion
+	//#region src/userscript-entry.js
+	installTokenInterceptor();
+	async function main() {
+		if (document.readyState === "loading") await new Promise((resolve) => document.addEventListener("DOMContentLoaded", resolve));
+		if (!isInfinityEnabled()) {
+			setupToggle("classic");
+			return;
+		}
+		await waitForToken();
+		Promise.resolve().then(() => /* @__PURE__ */ __toESM(require_style(), 1));
+		document.title = "Infinity Auriga";
+		while (document.body.firstChild) document.body.removeChild(document.body.firstChild);
+		for (const el of document.querySelectorAll("link[rel=\"stylesheet\"], style:not([data-infinity])")) el.remove();
+		const container = document.createElement("div");
+		container.id = "app";
+		document.body.appendChild(container);
+		await boot(container);
 	}
 	main().catch((err) => console.error("[Infinity Auriga]", err));
 	//#endregion

@@ -1,6 +1,7 @@
-import { setAccessToken, setApiRequestHook } from './lib/auriga/api.js';
+import { setAccessToken } from './lib/auriga/api.js';
 import { isLogged } from './lib/auriga/auth.js';
 import { isInfinityEnabled, setupToggle } from './lib/toggle.js';
+import { boot } from './boot.js';
 
 if (window.location.hostname === 'localhost') {
     setAccessToken('dev-mock-token');
@@ -25,38 +26,10 @@ async function main() {
         return;
     }
 
-    // Load Infinity
     await import('./style.css');
-    const { renderApp, renderLoadingScreen } = await import('./render.js');
-    const { loadSession, fetchMarksAndUpdates, saveSemesterFilter } = await import('./lib/session.js');
-
-    const container = document.getElementById('app');
-    let state = { name: null, marks: [], averages: {}, filters: [], filtersValues: {}, updates: [] };
-
-    setupToggle('infinity');
-
-    async function refresh() {
-        const status = renderLoadingScreen(container);
-        setApiRequestHook((url) => status.request(url));
-        const data = await fetchMarksAndUpdates(state.filtersValues, status);
-        Object.assign(state, data);
-        renderApp(container, { ...state, onSemesterChange: changeSemester });
-    }
-
-    function changeSemester(value) {
-        state.filtersValues = saveSemesterFilter(value);
-        refresh();
-    }
 
     if (!isLogged()) return;
-
-    const status = renderLoadingScreen(container);
-    setApiRequestHook((url) => status.request(url));
-    const session = await loadSession(status);
-    Object.assign(state, session);
-    await refresh();
+    await boot(document.getElementById('app'));
 }
 
-main().catch(err => {
-    console.error('[Infinity Auriga]', err);
-});
+main().catch(err => console.error('[Infinity Auriga]', err));

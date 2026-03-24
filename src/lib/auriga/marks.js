@@ -1,5 +1,6 @@
 import { apiFetch, fetchAllSearchResults } from './api.js';
 import { buildNameLookup, buildGradeTree, parseExamCode } from './hierarchy.js';
+import { parseGradeLine, parseSynthesisLine, MENU_CODES } from './schema.js';
 
 let _menuConfig = null;
 
@@ -20,23 +21,32 @@ async function getMenuConfig() {
     }
 
     _menuConfig = {
-        grades: entries['APP_040_010_MES_NOTES'],
-        synthesis: entries['APP_040_010_MES_NOTES_SYNT'],
+        grades:    entries[MENU_CODES.grades],
+        synthesis: entries[MENU_CODES.synthesis],
     };
+
+    if (!_menuConfig.grades || !_menuConfig.synthesis) {
+        console.warn('[Infinity] Menu entries not found. Expected:', MENU_CODES,
+            'Got:', Object.keys(entries).join(', '));
+    }
 
     return _menuConfig;
 }
 
-let _cachedSynthesisLines = null;
+let _cachedSynthesisEntries = null;
 
 export async function getMarksFilters() {
     const config = await getMenuConfig();
     const synth = config.synthesis;
-    const lines = await fetchAllSearchResults(synth.menuEntryId, synth.queryId);
+    const rawLines = await fetchAllSearchResults(synth.menuEntryId, synth.queryId);
+
+    // Parse raw lines into typed objects at the boundary
+    const entries = rawLines.map(parseSynthesisLine).filter(Boolean);
+    _cachedSynthesisEntries = entries;
+
     const semesters = new Map();
-    for (const line of lines) {
-        const code = line[2];
-        const parsed = parseExamCode(code);
+    for (const entry of entries) {
+        const parsed = parseExamCode(entry.examCode);
         if (!parsed) continue;
 
         const key = `${parsed.semester}_${parsed.year}`;
@@ -51,8 +61,6 @@ export async function getMarksFilters() {
         }
     }
 
-    _cachedSynthesisLines = lines;
-
     return [{
         id: 'semester',
         name: 'Semestre',
@@ -65,44 +73,44 @@ export async function getMarks(filters) {
     if (!semFilter) throw new Error('No semester selected');
 
     const [semester, year] = semFilter.split('_');
-    const semesterPrefix = `${year}_I_INF_`;
 
     const config = await getMenuConfig();
-    const grades = config.grades;
-    const gradeLines = await fetchAllSearchResults(grades.menuEntryId, grades.queryId);
 
-    const filteredGrades = gradeLines.filter(line => {
-        const code = line[3];
-        return code && code.startsWith(semesterPrefix) && code.includes(`_${semester}_`);
+    // Fetch + parse grades at the boundary
+    const rawGrades = await fetchAllSearchResults(config.grades.menuEntryId, config.grades.queryId);
+    const gradeEntries = rawGrades.map(parseGradeLine).filter(Boolean);
+
+    const filteredGrades = gradeEntries.filter(g => {
+        const parsed = parseExamCode(g.examCode);
+        return parsed && parsed.year === year && parsed.semester === semester;
     });
-    let synthesisLines = _cachedSynthesisLines;
-    if (!synthesisLines) {
-        const synth = config.synthesis;
-        synthesisLines = await fetchAllSearchResults(synth.menuEntryId, synth.queryId);
+
+    // Fetch + parse synthesis (use cache if available)
+    let synthesisEntries = _cachedSynthesisEntries;
+    if (!synthesisEntries) {
+        const rawSynth = await fetchAllSearchResults(config.synthesis.menuEntryId, config.synthesis.queryId);
+        synthesisEntries = rawSynth.map(parseSynthesisLine).filter(Boolean);
     }
 
-    const filteredSynthesis = synthesisLines.filter(line => {
-        const code = line[2];
-        return code && code.startsWith(semesterPrefix) && code.includes(`_${semester}_`);
+    const filteredSynthesis = synthesisEntries.filter(e => {
+        const parsed = parseExamCode(e.examCode);
+        return parsed && parsed.year === year && parsed.semester === semester;
     });
 
-    // Use ALL synthesis lines for name resolution (cross-semester names like CS_CN → "Concevoir")
+    // Use ALL synthesis entries for name resolution (cross-semester names)
     // but filtered synthesis for averages
-    const nameLookup = buildNameLookup(synthesisLines);
+    const nameLookup = buildNameLookup(synthesisEntries);
     const marks = buildGradeTree(filteredGrades, nameLookup);
 
-    // Extract promo average from synthesis data (avgPreRatt field)
+    // Extract promo average from synthesis data
     let classAverage = null;
     const promoValues = filteredSynthesis
-        .filter(l => l[1] != null)
-        .map(l => parseFloat(l[1]))
+        .filter(e => e.avgPreRatt != null)
+        .map(e => parseFloat(e.avgPreRatt))
         .filter(v => !isNaN(v) && v > 0);
     if (promoValues.length > 0) {
         classAverage = promoValues.reduce((s, v) => s + v, 0) / promoValues.length;
     }
 
-    return {
-        classAverage,
-        marks,
-    };
+    return { classAverage, marks };
 }

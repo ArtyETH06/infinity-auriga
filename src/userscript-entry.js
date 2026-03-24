@@ -1,7 +1,6 @@
 import { installTokenInterceptor, waitForToken } from './lib/auriga/auth.js';
-import { setApiRequestHook } from './lib/auriga/api.js';
-import { loadSession, fetchMarksAndUpdates, saveSemesterFilter } from './lib/session.js';
 import { isInfinityEnabled, setupToggle } from './lib/toggle.js';
+import { boot } from './boot.js';
 
 installTokenInterceptor();
 
@@ -33,32 +32,7 @@ async function main() {
     container.id = 'app';
     document.body.appendChild(container);
 
-    setupToggle('infinity');
-
-    const { renderLoadingScreen, renderApp } = await import('./render.js');
-
-    const status = renderLoadingScreen(container, 'Chargement...');
-    setApiRequestHook((url) => status.request(url));
-
-    const session = await loadSession(status);
-    let { filtersValues } = session;
-    const { name, filters } = session;
-
-    async function refresh() {
-        const s = renderLoadingScreen(container);
-        setApiRequestHook((url) => s.request(url));
-        const data = await fetchMarksAndUpdates(filtersValues, s);
-        renderApp(container, {
-            name, filters, filtersValues,
-            ...data,
-            onSemesterChange(value) {
-                filtersValues = saveSemesterFilter(value);
-                refresh();
-            },
-        });
-    }
-
-    await refresh();
+    await boot(container);
 }
 
 main().catch(err => console.error('[Infinity Auriga]', err));

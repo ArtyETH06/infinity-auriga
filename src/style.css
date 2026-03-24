@@ -152,7 +152,7 @@ button:not(.opaque):active, a:not(.opaque):active, .clickable:not(.opaque):activ
 
 /* ===== AVERAGES ===== */
 .big-list { flex-direction: column; margin-bottom: 20px; padding-top: 5px; transition: opacity .15s; }
-.big-list .entry { align-items: center; margin-bottom: 12px; padding-left: clamp(15px, 3vw, 35px); font-size: clamp(14px, 2vw, 21px); }
+.big-list .entry { align-items: center; margin-bottom: 12px; padding-left: clamp(15px, 3vw, 35px); font-size: clamp(18px, 2.8vw, 26px); }
 .big-list .entry .name { margin-left: 12px; margin-right: 10px; }
 .big-list .entry .mark { margin-left: 10px; }
 .big-list .entry .mark .value { font-weight: bold; }
