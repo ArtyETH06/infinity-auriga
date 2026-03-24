@@ -6,17 +6,17 @@ Auriga treats all exams as equally weighted. This directory contains the **real*
 
 ### 1. Find your exam codes
 
-Go to **Mes notes (éval)** on [auriga.epita.fr](https://auriga.epita.fr). You need the **Épreuve** column — it contains the exam codes you'll use as keys:
+Go to **Mes notes (éval)** on [auriga.epita.fr](https://auriga.epita.fr):
 
-![The exam codes in the Épreuve column — notice Coef is 100 for everything](../../../docs/img/step1-navigate.png)
+![Step 1 — Navigate to Mes notes (éval)](../../../docs/img/step1-show-columns.png)
 
-If you don't see the **Épreuve** column, click the **eye icon** and enable it:
+The exam codes are in the **Épreuve** column. Notice how **Coef** is `100,00` for everything — that's the problem we fix:
 
-![Click the eye icon to show/hide columns](../../../docs/img/step2-show-codes.png)
+![Step 2 — Exam codes in the Épreuve column](../../../docs/img/step2-exam-codes.png)
 
-> **Don't see the same page?** Make sure you're on **Mes notes (éval)**, not the synthesis view:
+> **Don't see the Épreuve column?** Click the **eye icon** and enable it:
 >
-> ![Navigate to Mes notes (éval)](../../../docs/img/step3-troubleshoot.png)
+> ![Click the eye icon to show the Épreuve column](../../../docs/img/step3-troubleshoot.png)
 
 ### Exam code anatomy
 
