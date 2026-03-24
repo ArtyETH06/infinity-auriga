@@ -420,7 +420,7 @@ hr.separator {
 }
 .subject .info .id {
     font-weight: bold;
-    font-size: 32px;
+    font-size: 18px;
 }
 .subject .info .point {
     display: none;
@@ -431,8 +431,8 @@ hr.separator {
     text-align: center;
 }
 .subject .info .average {
-    margin-top: 10px;
-    font-size: 32px;
+    margin-top: 8px;
+    font-size: 20px;
 }
 .subject .info .average .value {
     font-weight: bold;
