@@ -77,8 +77,13 @@
 			await new Promise((r) => setTimeout(r, 2e3));
 			return apiFetch(path, options, true);
 		}
-		if (!response.ok) throw new Error(`Auriga API error: ${response.status} ${response.statusText}`);
-		return response.json();
+		if (!response.ok) throw new Error(`Auriga API error: ${response.status} ${response.statusText} (${url})`);
+		const text = await response.text();
+		try {
+			return JSON.parse(text);
+		} catch {
+			throw new Error(`Auriga API returned invalid JSON for ${url} (got ${text.substring(0, 100)}...)`);
+		}
 	}
 	/**
 	* Fetch all pages of a search result endpoint.
@@ -436,6 +441,19 @@
 		avgFinal: 4
 	};
 	/**
+	* Check parsed results for signs that the API format has changed.
+	* Call after parsing a batch of lines — throws if most lines failed to parse.
+	*
+	* @param {string} endpoint - Human-readable name ("grades" or "synthesis")
+	* @param {Array} rawLines - Original raw lines from the API
+	* @param {Array} parsed - Successfully parsed entries (nulls filtered out)
+	*/
+	function validateParseResults(endpoint, rawLines, parsed) {
+		if (rawLines.length === 0) return;
+		const failRate = 1 - parsed.length / rawLines.length;
+		if (failRate > .5) throw new Error(`API format changed: ${Math.round(failRate * 100)}% of ${endpoint} lines failed to parse (${parsed.length}/${rawLines.length} succeeded). Check schema.js column indices against a fresh capture.`);
+	}
+	/**
 	* Parse a raw grade line into a named object.
 	*
 	* @param {Array} line - Raw array from Auriga searchResult
@@ -492,13 +510,16 @@
 			grades: entries[MENU_CODES.grades],
 			synthesis: entries[MENU_CODES.synthesis]
 		};
-		if (!_menuConfig.grades || !_menuConfig.synthesis) console.warn("[Infinity] Menu entries not found. Expected:", MENU_CODES, "Got:", Object.keys(entries).join(", "));
+		if (!_menuConfig.grades) throw new Error(`Menu entries not found: grades (${MENU_CODES.grades}). Available: ${Object.keys(entries).join(", ")}. Auriga may have renamed its menu structure.`);
+		if (!_menuConfig.synthesis) throw new Error(`Menu entries not found: synthesis (${MENU_CODES.synthesis}). Available: ${Object.keys(entries).join(", ")}. Auriga may have renamed its menu structure.`);
 		return _menuConfig;
 	}
 	var _cachedSynthesisEntries = null;
 	async function getMarksFilters() {
 		const synth = (await getMenuConfig()).synthesis;
-		const entries = (await fetchAllSearchResults(synth.menuEntryId, synth.queryId)).map(parseSynthesisLine).filter(Boolean);
+		const rawLines = await fetchAllSearchResults(synth.menuEntryId, synth.queryId);
+		const entries = rawLines.map(parseSynthesisLine).filter(Boolean);
+		validateParseResults("synthesis", rawLines, entries);
 		_cachedSynthesisEntries = entries;
 		const semesters = /* @__PURE__ */ new Map();
 		for (const entry of entries) {
@@ -526,12 +547,19 @@
 		if (!semFilter) throw new Error("No semester selected");
 		const [semester, year] = semFilter.split("_");
 		const config = await getMenuConfig();
-		const filteredGrades = (await fetchAllSearchResults(config.grades.menuEntryId, config.grades.queryId)).map(parseGradeLine).filter(Boolean).filter((g) => {
+		const rawGrades = await fetchAllSearchResults(config.grades.menuEntryId, config.grades.queryId);
+		const gradeEntries = rawGrades.map(parseGradeLine).filter(Boolean);
+		validateParseResults("grades", rawGrades, gradeEntries);
+		const filteredGrades = gradeEntries.filter((g) => {
 			const parsed = parseExamCode(g.examCode);
 			return parsed && parsed.year === year && parsed.semester === semester;
 		});
 		let synthesisEntries = _cachedSynthesisEntries;
-		if (!synthesisEntries) synthesisEntries = (await fetchAllSearchResults(config.synthesis.menuEntryId, config.synthesis.queryId)).map(parseSynthesisLine).filter(Boolean);
+		if (!synthesisEntries) {
+			const rawSynth = await fetchAllSearchResults(config.synthesis.menuEntryId, config.synthesis.queryId);
+			synthesisEntries = rawSynth.map(parseSynthesisLine).filter(Boolean);
+			validateParseResults("synthesis", rawSynth, synthesisEntries);
+		}
 		const filteredSynthesis = synthesisEntries.filter((e) => {
 			const parsed = parseExamCode(e.examCode);
 			return parsed && parsed.year === year && parsed.semester === semester;
@@ -1216,6 +1244,7 @@
 	}));
 	//#endregion
 	//#region src/boot.js
+	init_app$1();
 	/**
 	* Shared boot sequence for both dev (main.js) and prod (userscript-entry.js).
 	*
@@ -1229,27 +1258,82 @@
 	async function boot(container) {
 		setupToggle("infinity");
 		const { renderLoadingScreen, renderApp } = await Promise.resolve().then(() => (init_render(), render_exports));
-		const status = renderLoadingScreen(container, "Chargement...");
-		setApiRequestHook((url) => status.request(url));
-		const session = await loadSession(status);
-		let { filtersValues } = session;
-		const { name, filters } = session;
-		async function refresh() {
-			const s = renderLoadingScreen(container);
-			setApiRequestHook((url) => s.request(url));
-			const data = await fetchMarksAndUpdates(filtersValues, s);
-			renderApp(container, {
-				name,
-				filters,
-				filtersValues,
-				...data,
-				onSemesterChange(value) {
-					filtersValues = saveSemesterFilter(value);
-					refresh();
+		try {
+			const status = renderLoadingScreen(container, "Chargement...");
+			setApiRequestHook((url) => status.request(url));
+			const session = await loadSession(status);
+			let { filtersValues } = session;
+			const { name, filters } = session;
+			async function refresh() {
+				try {
+					const s = renderLoadingScreen(container);
+					setApiRequestHook((url) => s.request(url));
+					const data = await fetchMarksAndUpdates(filtersValues, s);
+					renderApp(container, {
+						name,
+						filters,
+						filtersValues,
+						...data,
+						onSemesterChange(value) {
+							filtersValues = saveSemesterFilter(value);
+							refresh();
+						}
+					});
+				} catch (err) {
+					console.error("[Infinity Auriga]", err);
+					renderError(container, err);
 				}
-			});
+			}
+			await refresh();
+		} catch (err) {
+			console.error("[Infinity Auriga]", err);
+			renderError(container, err);
 		}
-		await refresh();
+	}
+	/**
+	* Show a user-facing error screen with context about what went wrong.
+	* Provides actionable next steps instead of a blank page.
+	*/
+	function renderError(container, err) {
+		const message = err?.message || String(err);
+		let hint = "";
+		if (message.includes("Menu entries not found") || message.includes("menu")) hint = "Le format du menu Auriga a peut-être changé. ";
+		else if (message.includes("API error") || message.includes("fetch")) hint = "Le serveur Auriga ne répond pas correctement. ";
+		else if (message.includes("access token") || message.includes("401")) hint = "Votre session a expiré. ";
+		else if (message.includes("API format changed") || message.includes("parse")) hint = "Le format des données Auriga a changé. ";
+		container.replaceChildren();
+		const panel = document.createElement("div");
+		panel.style.cssText = "display:flex;flex-direction:column;align-items:center;justify-content:center;height:100dvh;font-family:system-ui;background:#151925;color:#fff;padding:20px;text-align:center;";
+		const title = document.createElement("div");
+		title.style.cssText = "font-size:24px;font-weight:700;margin-bottom:16px;color:#e34e4e;";
+		title.textContent = "Oups, quelque chose a cassé";
+		const desc = document.createElement("div");
+		desc.style.cssText = "font-size:15px;color:#aaa;max-width:500px;line-height:1.6;margin-bottom:24px;";
+		desc.textContent = hint + "Essayez de recharger la page. Si le problème persiste, signalez-le.";
+		const errorBox = document.createElement("pre");
+		errorBox.style.cssText = "background:#1e2233;color:#ff6b6b;padding:16px 24px;border-radius:10px;font-size:12px;max-width:600px;overflow-x:auto;margin-bottom:24px;text-align:left;white-space:pre-wrap;word-break:break-word;";
+		errorBox.textContent = message;
+		const actions = document.createElement("div");
+		actions.style.cssText = "display:flex;gap:12px;";
+		const reload = document.createElement("button");
+		reload.style.cssText = "padding:10px 24px;border:none;border-radius:10px;background:#fff;color:#151925;font-weight:600;font-size:14px;cursor:pointer;";
+		reload.textContent = "Recharger";
+		reload.addEventListener("click", () => window.location.reload());
+		const report = document.createElement("a");
+		report.href = `${app.repository}/issues/new?title=${encodeURIComponent("Erreur: " + message.substring(0, 80))}&body=${encodeURIComponent("## Erreur\n```\n" + message + "\n```\n\n## Contexte\n- Navigateur: " + navigator.userAgent + "\n- Date: " + (/* @__PURE__ */ new Date()).toISOString())}`;
+		report.target = "_blank";
+		report.style.cssText = "padding:10px 24px;border:1px solid #444;border-radius:10px;color:#aaa;font-weight:600;font-size:14px;text-decoration:none;cursor:pointer;";
+		report.textContent = "Signaler";
+		const resetBtn = document.createElement("button");
+		resetBtn.style.cssText = "padding:10px 24px;border:1px solid #444;border-radius:10px;background:none;color:#888;font-size:14px;cursor:pointer;";
+		resetBtn.textContent = "Reset cache";
+		resetBtn.addEventListener("click", () => {
+			localStorage.clear();
+			window.location.reload();
+		});
+		actions.append(reload, report, resetBtn);
+		panel.append(title, desc, errorBox, actions);
+		container.appendChild(panel);
 	}
 	//#endregion
 	//#region src/style.css

@@ -29,6 +29,29 @@ export const MENU_CODES = {
 const GRADES = { internalId: 0, mark: 1, coefficient: 2, examCode: 3, examType: 4 };
 const SYNTHESIS = { personId: 0, avgPreRatt: 1, examCode: 2, caption: 3, avgFinal: 4 };
 
+// --- Validation -----------------------------------------------------------------
+
+/**
+ * Check parsed results for signs that the API format has changed.
+ * Call after parsing a batch of lines — throws if most lines failed to parse.
+ *
+ * @param {string} endpoint - Human-readable name ("grades" or "synthesis")
+ * @param {Array} rawLines - Original raw lines from the API
+ * @param {Array} parsed - Successfully parsed entries (nulls filtered out)
+ */
+export function validateParseResults(endpoint, rawLines, parsed) {
+    if (rawLines.length === 0) return; // No data is not an error (empty semester)
+
+    const failRate = 1 - (parsed.length / rawLines.length);
+    if (failRate > 0.5) {
+        throw new Error(
+            `API format changed: ${Math.round(failRate * 100)}% of ${endpoint} lines failed to parse `
+            + `(${parsed.length}/${rawLines.length} succeeded). `
+            + `Check schema.js column indices against a fresh capture.`
+        );
+    }
+}
+
 // --- Line parsers ---------------------------------------------------------------
 
 /**

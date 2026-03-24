@@ -1,6 +1,6 @@
 import { apiFetch, fetchAllSearchResults } from './api.js';
 import { buildNameLookup, buildGradeTree, parseExamCode } from './hierarchy.js';
-import { parseGradeLine, parseSynthesisLine, MENU_CODES } from './schema.js';
+import { parseGradeLine, parseSynthesisLine, validateParseResults, MENU_CODES } from './schema.js';
 
 let _menuConfig = null;
 
@@ -25,9 +25,15 @@ async function getMenuConfig() {
         synthesis: entries[MENU_CODES.synthesis],
     };
 
-    if (!_menuConfig.grades || !_menuConfig.synthesis) {
-        console.warn('[Infinity] Menu entries not found. Expected:', MENU_CODES,
-            'Got:', Object.keys(entries).join(', '));
+    if (!_menuConfig.grades) {
+        throw new Error(`Menu entries not found: grades (${MENU_CODES.grades}). `
+            + `Available: ${Object.keys(entries).join(', ')}. `
+            + `Auriga may have renamed its menu structure.`);
+    }
+    if (!_menuConfig.synthesis) {
+        throw new Error(`Menu entries not found: synthesis (${MENU_CODES.synthesis}). `
+            + `Available: ${Object.keys(entries).join(', ')}. `
+            + `Auriga may have renamed its menu structure.`);
     }
 
     return _menuConfig;
@@ -42,6 +48,7 @@ export async function getMarksFilters() {
 
     // Parse raw lines into typed objects at the boundary
     const entries = rawLines.map(parseSynthesisLine).filter(Boolean);
+    validateParseResults('synthesis', rawLines, entries);
     _cachedSynthesisEntries = entries;
 
     const semesters = new Map();
@@ -79,6 +86,7 @@ export async function getMarks(filters) {
     // Fetch + parse grades at the boundary
     const rawGrades = await fetchAllSearchResults(config.grades.menuEntryId, config.grades.queryId);
     const gradeEntries = rawGrades.map(parseGradeLine).filter(Boolean);
+    validateParseResults('grades', rawGrades, gradeEntries);
 
     const filteredGrades = gradeEntries.filter(g => {
         const parsed = parseExamCode(g.examCode);
@@ -90,6 +98,7 @@ export async function getMarks(filters) {
     if (!synthesisEntries) {
         const rawSynth = await fetchAllSearchResults(config.synthesis.menuEntryId, config.synthesis.queryId);
         synthesisEntries = rawSynth.map(parseSynthesisLine).filter(Boolean);
+        validateParseResults('synthesis', rawSynth, synthesisEntries);
     }
 
     const filteredSynthesis = synthesisEntries.filter(e => {

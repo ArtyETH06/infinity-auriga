@@ -38,10 +38,15 @@ export async function apiFetch(path, options = {}, _retried = false) {
     }
 
     if (!response.ok) {
-        throw new Error(`Auriga API error: ${response.status} ${response.statusText}`);
+        throw new Error(`Auriga API error: ${response.status} ${response.statusText} (${url})`);
     }
 
-    return response.json();
+    const text = await response.text();
+    try {
+        return JSON.parse(text);
+    } catch {
+        throw new Error(`Auriga API returned invalid JSON for ${url} (got ${text.substring(0, 100)}...)`);
+    }
 }
 
 /**
