@@ -157,6 +157,9 @@ button:not(.opaque):active, a:not(.opaque):active, .clickable:not(.opaque):activ
 .big-list .entry .mark { margin-left: 10px; }
 .big-list .entry .mark .value { font-weight: bold; }
 
+/* ===== COEFFICIENT NOTICE ===== */
+.coeff-notice { margin-top: 10px; font-size: clamp(11px, 1.3vw, 13px); color: var(--text-muted); }
+
 /* ===== SEPARATOR ===== */
 hr.separator { width: 100%; margin-top: 25px; opacity: .3; border-bottom: 0; border-color: var(--surface); }
 

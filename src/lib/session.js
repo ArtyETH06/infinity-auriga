@@ -36,8 +36,8 @@ export async function fetchMarksAndUpdates(filtersValues, status) {
 
     // Load & apply coefficient overrides (falls back to API values)
     status?.step('Application des coefficients...');
-    const overrides = track ? await loadCoefficients(filtersValues.semester, track) : null;
-    const { average } = applyCoefficients(marks, overrides);
+    const coeffData = track ? await loadCoefficients(filtersValues.semester, track) : null;
+    const { average } = applyCoefficients(marks, coeffData?.overrides ?? null);
 
     status?.step('Calcul des changements...');
     const updates = await getUpdates(filtersValues, marks);
@@ -46,6 +46,7 @@ export async function fetchMarksAndUpdates(filtersValues, status) {
         marks,
         averages: { student: average, promo: result.classAverage },
         updates,
+        coeffSource: coeffData?.file ?? null,
     };
 }
 

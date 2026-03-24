@@ -262,7 +262,7 @@ function renderFooter() {
     );
 }
 
-export function renderApp(container, { name, marks, averages, filters, filtersValues, updates, onSemesterChange }) {
+export function renderApp(container, { name, marks, averages, filters, filtersValues, updates, coeffSource, onSemesterChange }) {
     container.replaceChildren();
 
     // Background (pure CSS gradient, no WebGL)
@@ -323,6 +323,18 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
                         )
                     )
                 )),
+                ...(coeffSource
+                    ? [h('div', { class: 'coeff-notice' },
+                        'Coefficients corrigés via ',
+                        h('a', { href: `${app.repository}/blob/master/src/lib/coefficients/${coeffSource}`, target: '_blank', class: 'link colored' }, coeffSource),
+                        ' \u00b7 ',
+                        h('a', { href: `${app.repository}/blob/master/src/lib/coefficients`, target: '_blank', class: 'link colored' }, 'Contribuer')
+                    )]
+                    : [h('div', { class: 'coeff-notice' },
+                        'Coefficients par défaut (Auriga) \u00b7 ',
+                        h('a', { href: `${app.repository}/tree/master/src/lib/coefficients`, target: '_blank', class: 'link colored' }, 'Contribuer')
+                    )]
+                ),
                 h('hr', { class: 'separator' }),
                 ...moduleEls
             )

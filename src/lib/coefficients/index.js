@@ -10,18 +10,18 @@
  */
 
 const registry = {
-    'S07_2526_FISA': () => import('./s7_fisa_2526.js'),
+    'S07_2526_FISA': { loader: () => import('./s7_fisa_2526.js'), file: 's7_fisa_2526.js' },
 };
 
 /**
  * Load coefficient overrides for a semester/track combo.
- * Returns a Map<examCode, coefficient> or null if no file exists.
+ * Returns { overrides: Map<examCode, coefficient>, file: string } or null.
  */
 export async function loadCoefficients(semesterKey, track) {
-    const loader = registry[`${semesterKey}_${track}`];
-    if (!loader) return null;
-    const mod = await loader();
-    return new Map(Object.entries(mod.default));
+    const entry = registry[`${semesterKey}_${track}`];
+    if (!entry) return null;
+    const mod = await entry.loader();
+    return { overrides: new Map(Object.entries(mod.default)), file: entry.file };
 }
 
 /**
