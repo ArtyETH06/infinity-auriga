@@ -362,8 +362,8 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
 
         // Subjects
         for (const subject of module.subjects) {
-            const subjectCard = h('div', { class: 'subject card' });
             const isSingle = subject.marks.length === 1;
+            const subjectCard = h('div', { class: 'subject card' + (isSingle ? ' single' : '') });
 
             // Info panel (left side)
             const info = h('div', { class: 'info' });
