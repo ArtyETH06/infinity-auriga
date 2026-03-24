@@ -118,13 +118,18 @@ export function buildGradeTree(gradeLines, nameLookup) {
 
         if (!mod.subjects.has(subject.code)) {
             let info = nameLookup.get(subject.code);
-            // If no exact match, find any code ending with the same suffix (cross-semester)
+            // Cross-semester name resolution: try exact suffix, then partial
             if (!info) {
                 const suffix = '_' + subject.id;
                 for (const [code, val] of nameLookup) {
+                    // Exact match: code ends with _AG_ANGLA
                     if (code.endsWith(suffix) && val.name.length <= 40) {
                         info = val;
                         break;
+                    }
+                    // Partial match: code contains _AG_ANGLA_ (has extra depth like _3, _4)
+                    if (!info && code.includes(suffix + '_') && val.name.length <= 40) {
+                        info = val;
                     }
                 }
             }
