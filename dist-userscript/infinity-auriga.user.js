@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Infinity Auriga
 // @namespace    infinity-auriga
-// @version      1.1.0
+// @version      1.1.1
 // @description  Make Auriga Great Again - enhanced grades UI for EPITA
 // @author       KazeTachinuu & contributors
 // @match        https://auriga.epita.fr/*
@@ -974,8 +974,7 @@
 			href: "#",
 			onclick: (e) => {
 				e.preventDefault();
-				localStorage.clear();
-				window.location.href = "https://auriga.epita.fr";
+				window.location.href = "https://ionisepita-auth.np-auriga.nfrance.net/auth/realms/npionisepita/protocol/openid-connect/logout?post_logout_redirect_uri=" + encodeURIComponent("https://auriga.epita.fr");
 			}
 		}, "Se deconnecter")] : []), h("div", { id: "main" }, h("div", { class: "content" }, h("div", { class: "filters" }, ...filters.map((f) => renderComboBox(f.name, f.values, filtersValues[f.id], (choice) => {
 			if (f.id === "semester") onSemesterChange(choice.value);

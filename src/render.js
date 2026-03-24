@@ -301,7 +301,11 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
     container.appendChild(h('div', { id: 'content', class: 'variable wide' },
         h('div', { id: 'header' },
             html('div', { id: 'logo', class: 'variable' }, LogoSvg),
-            ...(name ? [h('a', { id: 'logout', href: '#', onclick: (e) => { e.preventDefault(); localStorage.clear(); window.location.href = 'https://auriga.epita.fr'; } }, 'Se deconnecter')] : [])
+            ...(name ? [h('a', { id: 'logout', href: '#', onclick: (e) => {
+                e.preventDefault();
+                // Redirect to Keycloak logout — ends the SSO session and redirects back to Auriga
+                window.location.href = 'https://ionisepita-auth.np-auriga.nfrance.net/auth/realms/npionisepita/protocol/openid-connect/logout?post_logout_redirect_uri=' + encodeURIComponent('https://auriga.epita.fr');
+            } }, 'Se deconnecter')] : [])
         ),
         h('div', { id: 'main' },
             h('div', { class: 'content' },
