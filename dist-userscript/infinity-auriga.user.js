@@ -1320,7 +1320,7 @@
 		reload.textContent = "Recharger";
 		reload.addEventListener("click", () => window.location.reload());
 		const report = document.createElement("a");
-		report.href = `${app.repository}/issues/new?title=${encodeURIComponent("Erreur: " + message.substring(0, 80))}&body=${encodeURIComponent("## Erreur\n```\n" + message + "\n```\n\n## Contexte\n- Navigateur: " + navigator.userAgent + "\n- Date: " + (/* @__PURE__ */ new Date()).toISOString())}`;
+		report.href = `${app.repository}/issues/new?title=${encodeURIComponent("Erreur: " + message.substring(0, 80))}&body=${encodeURIComponent("## Erreur\n```\n" + message + "\n```\n\n## Contexte\n- Version: " + app.version + "\n- Navigateur: " + navigator.userAgent + "\n- URL: " + window.location.href + "\n- Date: " + (/* @__PURE__ */ new Date()).toISOString())}`;
 		report.target = "_blank";
 		report.style.cssText = "padding:10px 24px;border:1px solid #444;border-radius:10px;color:#aaa;font-weight:600;font-size:14px;text-decoration:none;cursor:pointer;";
 		report.textContent = "Signaler";
