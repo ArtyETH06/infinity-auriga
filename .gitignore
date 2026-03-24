@@ -3,7 +3,9 @@
 /.vscode/
 /node_modules/
 /dist/
+/dist-userscript/
 xcuserdata/
 .DS_Store
 *.zip
 /.worktrees/
+tools/

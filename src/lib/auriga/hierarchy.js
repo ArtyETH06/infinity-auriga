@@ -1,0 +1,190 @@
+/**
+ * Parse an Auriga exam code into its hierarchical components.
+ *
+ * Codes follow: {year}_{?}_{school}_{track}_{semester}_{...path}_{evalType}
+ * The format is consistent across all tracks (FISA, FISE, GISTRE, etc.)
+ */
+
+const EVAL_TYPES = new Set(['EX', 'PRJ', 'EXF', 'EXO', 'FAF', 'PROJ']);
+
+export function parseExamCode(code) {
+    const parts = code.split('_');
+    if (parts.length < 5) return null;
+
+    const year = parts[0];
+    const track = parts[3];
+    const semester = parts[4];
+    const rest = parts.slice(5);
+
+    let evalType = null;
+    let path = rest;
+
+    if (rest.length > 0 && EVAL_TYPES.has(rest[rest.length - 1])) {
+        evalType = rest[rest.length - 1];
+        path = rest.slice(0, -1);
+    }
+
+    return { year, track, semester, path, evalType, fullCode: code };
+}
+
+/**
+ * Build a name lookup from synthesis lines (menuEntry 1144).
+ */
+export function buildNameLookup(lines) {
+    const lookup = new Map();
+    for (const line of lines) {
+        const code = line[2];
+        const caption = line[3] || {};
+        lookup.set(code, {
+            name: caption.fr || caption.en || code,
+            avgPreRatt: line[1],
+            avgFinal: line[4],
+        });
+    }
+    return lookup;
+}
+
+/**
+ * Find the best subject grouping level for a grade path.
+ *
+ * Walks the path upward from one level above the leaf, looking for the
+ * deepest code that has a name in the lookup. This groups related grades:
+ *   CS_FR_MSE       -> subject = CS_FR ("Formaliser")
+ *   CS_SAE_INT_PEN  -> subject = CS_SAE_INT ("Tests d'intrusions")
+ *   CS_SAE_INT_MAS  -> subject = CS_SAE_INT ("Tests d'intrusions")  <- grouped!
+ *   CS_CN_AI4SEC    -> subject = CS_CN (fallback, groups with COCO)
+ */
+function findSubjectLevel(prefix, path, nameLookup) {
+    // Start one level up from leaf to ensure grouping
+    for (let depth = path.length - 1; depth >= 2; depth--) {
+        const candidateId = path.slice(0, depth).join('_');
+        const candidateCode = `${prefix}_${candidateId}`;
+        if (nameLookup.has(candidateCode)) {
+            return { id: candidateId, code: candidateCode };
+        }
+    }
+
+    // Fallback: use first 2 segments if available
+    if (path.length >= 2) {
+        const id = path.slice(0, 2).join('_');
+        return { id, code: `${prefix}_${id}` };
+    }
+
+    // Single segment: subject = module
+    return { id: path[0] || 'TC', code: `${prefix}_${path[0] || 'TC'}` };
+}
+
+/**
+ * Build the grade tree from API data.
+ *
+ * Module = 1st path segment (CS, AG, PL, PR, etc.)
+ * Subject = deepest named ancestor in the hierarchy (auto-detected)
+ * Mark = individual grade
+ */
+export function buildGradeTree(gradeLines, nameLookup) {
+    const modules = new Map();
+
+    for (const line of gradeLines) {
+        const [, markStr, coef, examCode] = line;
+        const parsed = parseExamCode(examCode);
+        if (!parsed) continue;
+
+        const mark = parseFloat(markStr);
+        if (isNaN(mark)) continue;
+
+        const { semester, path } = parsed;
+        const prefix = `${parsed.year}_I_INF_${parsed.track}_${semester}`;
+
+        const moduleId = path[0] || 'TC';
+        const moduleCode = `${prefix}_${moduleId}`;
+
+        const subject = findSubjectLevel(prefix, path, nameLookup);
+
+        if (!modules.has(moduleCode)) {
+            const info = nameLookup.get(moduleCode);
+            // Use short code when API name is a long obligation title
+            const name = info && info.name.length <= 40 ? info.name : moduleId;
+            modules.set(moduleCode, {
+                id: moduleId,
+                name,
+                credits: 0,
+                average: null,
+                classAverage: null,
+                subjects: new Map(),
+            });
+        }
+
+        const mod = modules.get(moduleCode);
+
+        if (!mod.subjects.has(subject.code)) {
+            let info = nameLookup.get(subject.code);
+            // If no exact match, find any code ending with the same suffix (cross-semester)
+            if (!info) {
+                const suffix = '_' + subject.id;
+                for (const [code, val] of nameLookup) {
+                    if (code.endsWith(suffix) && val.name.length <= 40) {
+                        info = val;
+                        break;
+                    }
+                }
+            }
+            mod.subjects.set(subject.code, {
+                id: subject.id,
+                name: info ? info.name : subject.id.replace(/_/g, ' '),
+                average: null,
+                classAverage: null,
+                coefficient: 1,
+                marks: [],
+            });
+        }
+
+        const sub = mod.subjects.get(subject.code);
+
+        // Deduplicate: skip if same exam code already added
+        if (sub.marks.some(m => m._code === examCode)) continue;
+
+        const examInfo = nameLookup.get(examCode);
+        const promoAvg = examInfo?.avgPreRatt ? parseFloat(examInfo.avgPreRatt) : null;
+        sub.marks.push({
+            id: sub.marks.length,
+            _code: examCode,
+            name: examInfo ? examInfo.name : (parsed.evalType || 'Note'),
+            value: mark,
+            classAverage: isNaN(promoAvg) ? null : promoAvg,
+            coefficient: coef || 100,
+        });
+    }
+
+    // Convert Maps to arrays and compute averages
+    const result = [];
+    for (const [, mod] of modules) {
+        const subjects = [];
+        for (const [, sub] of mod.subjects) {
+            const validMarks = sub.marks.filter(m => m.value != null && m.value > 0.01);
+            if (validMarks.length > 0) {
+                const totalWeight = validMarks.reduce((s, m) => s + m.coefficient, 0);
+                sub.average = validMarks.reduce((s, m) => s + m.value * m.coefficient, 0) / totalWeight;
+            }
+
+            const coeffSum = sub.marks.reduce((s, m) => s + m.coefficient, 0);
+            if (coeffSum > 0) {
+                for (const m of sub.marks) {
+                    m.coefficient = m.coefficient / coeffSum;
+                }
+            }
+
+            subjects.push(sub);
+        }
+
+        const validSubjects = subjects.filter(s => s.average != null);
+        if (validSubjects.length > 0) {
+            const totalCoeff = validSubjects.reduce((s, sub) => s + sub.coefficient, 0);
+            mod.average = validSubjects.reduce((s, sub) => s + sub.average * sub.coefficient, 0) / totalCoeff;
+        }
+
+        mod.subjects = subjects;
+        result.push(mod);
+    }
+
+    return result;
+}

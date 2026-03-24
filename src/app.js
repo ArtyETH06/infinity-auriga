@@ -1,11 +1,5 @@
 export const app = {
-    name: 'Infinity Pegasus',
-    version: '1.0.1',
-    repository: 'https://github.com/Litarvan/infinity-pegasus'
+    name: 'Infinity Auriga',
+    version: '0.1.0',
+    repository: 'https://github.com/KazeTachinuu/infinity-auriga'
 };
-
-export function title(page) {
-    return `${app.name} — ${page}`;
-}
-
-// TODO: Vite fait improve le design (mettre en grand si ya qu'une note ?) (tout réduire ?)
