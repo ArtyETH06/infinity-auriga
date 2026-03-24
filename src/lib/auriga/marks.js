@@ -86,7 +86,9 @@ export async function getMarks(filters) {
         return code && code.startsWith(semesterPrefix) && code.includes(`_${semester}`);
     });
 
-    const nameLookup = buildNameLookup(filteredSynthesis);
+    // Use ALL synthesis lines for name resolution (cross-semester names like CS_CN → "Concevoir")
+    // but filtered synthesis for averages
+    const nameLookup = buildNameLookup(synthesisLines);
     const marks = buildGradeTree(filteredGrades, nameLookup);
     const validModules = marks.filter(m => m.average != null);
     let average = null;

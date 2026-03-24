@@ -75,6 +75,26 @@ function findSubjectLevel(prefix, path, nameLookup) {
 }
 
 /**
+ * Resolve a name from the lookup, falling back to cross-semester suffix matching.
+ */
+function resolveName(code, suffix, nameLookup) {
+    let info = nameLookup.get(code);
+    if (info) return info;
+
+    let bestPartial = null;
+    let bestPartialLen = Infinity;
+    for (const [key, val] of nameLookup) {
+        if (key.endsWith(suffix)) return val;
+        const idx = key.indexOf(suffix + '_');
+        if (idx !== -1 && key.length < bestPartialLen) {
+            bestPartial = val;
+            bestPartialLen = key.length;
+        }
+    }
+    return bestPartial;
+}
+
+/**
  * Build the grade tree from API data.
  *
  * Module = 1st path segment (CS, AG, PL, PR, etc.)
@@ -101,9 +121,19 @@ export function buildGradeTree(gradeLines, nameLookup) {
         const subject = findSubjectLevel(prefix, path, nameLookup);
 
         if (!modules.has(moduleCode)) {
-            const info = nameLookup.get(moduleCode);
-            // Use short code when API name is a long obligation title
-            const name = info && info.name.length <= 40 ? info.name : moduleId;
+            const info = resolveName(moduleCode, '_' + moduleId, nameLookup);
+            // API names for top-level modules are often long obligation titles like
+            // "Ingénieur en informatique ... en cybersécurité semestre 07 (Promo 2027)"
+            // Extract the specialty keyword (last word before "semestre") as a short name
+            let name = moduleId;
+            if (info) {
+                if (info.name.length <= 40) {
+                    name = info.name;
+                } else {
+                    const m = info.name.match(/en\s+(\S+)\s+semestre/i);
+                    if (m) name = m[1].charAt(0).toUpperCase() + m[1].slice(1);
+                }
+            }
             modules.set(moduleCode, {
                 id: moduleId,
                 name,
@@ -117,28 +147,10 @@ export function buildGradeTree(gradeLines, nameLookup) {
         const mod = modules.get(moduleCode);
 
         if (!mod.subjects.has(subject.code)) {
-            let info = nameLookup.get(subject.code);
-            // Cross-semester name resolution
-            if (!info) {
-                const suffix = '_' + subject.id;
-                let bestPartial = null;
-                let bestPartialLen = Infinity;
-                for (const [code, val] of nameLookup) {
-                    if (val.name.length > 40) continue;
-                    // Exact suffix: code ends with _CS_CN (best)
-                    if (code.endsWith(suffix)) { info = val; break; }
-                    // Partial: code has _CS_CN_ somewhere - prefer shortest code (closest level)
-                    const idx = code.indexOf(suffix + '_');
-                    if (idx !== -1 && code.length < bestPartialLen) {
-                        bestPartial = val;
-                        bestPartialLen = code.length;
-                    }
-                }
-                if (!info && bestPartial) info = bestPartial;
-            }
+            const info = resolveName(subject.code, '_' + subject.id, nameLookup);
             mod.subjects.set(subject.code, {
                 id: subject.id,
-                name: info ? info.name : subject.id.replace(/_/g, ' '),
+                name: info && info.name.length <= 40 ? info.name : subject.id.replace(/_/g, ' '),
                 average: null,
                 classAverage: null,
                 coefficient: 1,
