@@ -351,7 +351,9 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
         const bottomDiv = h('div', { class: 'bottom' });
         bottomDiv.appendChild(h('span', { class: 'average', style: { color: gc(module.average) } }, fmt(module.average)));
         bottomDiv.appendChild(h('span', { class: 'max' }, '\u00a0/ 20'));
-        bottomDiv.appendChild(h('span', { class: 'class-average' }, `(promo: ${fmt(module.classAverage)})`));
+        if (module.classAverage != null) {
+            bottomDiv.appendChild(h('span', { class: 'class-average' }, `(promo: ${fmt(module.classAverage)})`));
+        }
         textDiv.appendChild(bottomDiv);
 
         moduleHeader.appendChild(textDiv);
@@ -366,9 +368,7 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
             const info = h('div', { class: 'info' });
 
             const infoTop = h('div', { class: 'top' });
-            infoTop.appendChild(h('div', { class: 'id' }, subject.id));
-            infoTop.appendChild(h('div', { class: 'point' }));
-            infoTop.appendChild(h('div', { class: 'name' }, subject.name));
+            infoTop.appendChild(h('div', { class: 'id' }, subject.name));
             info.appendChild(infoTop);
 
             const infoBottom = h('div', { class: 'bottom' });
@@ -377,12 +377,12 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
             avgDiv.appendChild(document.createTextNode('\u00a0/ 20'));
             infoBottom.appendChild(avgDiv);
 
-            let classAvgText = `(promo: ${fmt(subject.classAverage)}`;
-            if (subject.coefficient !== 1) {
-                classAvgText += `, coeff. ${fmt(subject.coefficient)}`;
+            const metaParts = [];
+            if (subject.classAverage != null) metaParts.push(`promo: ${fmt(subject.classAverage)}`);
+            if (subject.coefficient != null && subject.coefficient !== 1) metaParts.push(`coeff. ${fmt(subject.coefficient)}`);
+            if (metaParts.length > 0) {
+                infoBottom.appendChild(h('div', { class: 'class-average' }, `(${metaParts.join(', ')})`));
             }
-            classAvgText += ')';
-            infoBottom.appendChild(h('div', { class: 'class-average' }, classAvgText));
             info.appendChild(infoBottom);
 
             info.appendChild(h('hr', { class: 'bottom-line' }));
@@ -409,16 +409,17 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
 
                     markEl.appendChild(lineDiv);
 
-                    // Class average and coefficient
-                    const classAvg = h('div', { class: 'class-average' });
-                    classAvg.appendChild(h('span', { class: 'parenthesis' }, '('));
-                    let caText = `moyenne: ${fmt(mark.classAverage)}`;
-                    if (!hasEqualCoefficients(subject)) {
-                        caText += `, pourcentage ${Math.round(mark.coefficient * 100)}%`;
+                    // Class average and coefficient (only show when there's data)
+                    const markMeta = [];
+                    if (mark.classAverage != null) markMeta.push(`moyenne: ${fmt(mark.classAverage)}`);
+                    if (!hasEqualCoefficients(subject)) markMeta.push(`${Math.round(mark.coefficient * 100)}%`);
+                    if (markMeta.length > 0) {
+                        const classAvg = h('div', { class: 'class-average' });
+                        classAvg.appendChild(h('span', { class: 'parenthesis' }, '('));
+                        classAvg.appendChild(document.createTextNode(markMeta.join(', ')));
+                        classAvg.appendChild(h('span', { class: 'parenthesis' }, ')'));
+                        markEl.appendChild(classAvg);
                     }
-                    classAvg.appendChild(document.createTextNode(caText));
-                    classAvg.appendChild(h('span', { class: 'parenthesis' }, ')'));
-                    markEl.appendChild(classAvg);
 
                     marksDiv.appendChild(markEl);
                 }
