@@ -103,9 +103,10 @@
 	//#endregion
 	//#region src/lib/auriga/auth.js
 	var _userInfo = null;
+	var _tokenListeners = [];
 	/**
 	* Intercept XHR calls to the Keycloak token endpoint to capture fresh tokens.
-	* The Angular app refreshes the token every ~60s - we piggyback on that.
+	* The Angular app refreshes the token on load and every ~60s — we piggyback on that.
 	*/
 	function installTokenInterceptor() {
 		const origOpen = XMLHttpRequest.prototype.open;
@@ -118,33 +119,30 @@
 			if (this._aurigaUrl && this._aurigaUrl.includes("openid-connect/token")) this.addEventListener("load", function() {
 				try {
 					const data = JSON.parse(this.responseText);
-					if (data.access_token) setAccessToken(data.access_token);
+					if (data.access_token) {
+						setAccessToken(data.access_token);
+						_tokenListeners.forEach((fn) => fn());
+						_tokenListeners = [];
+					}
 				} catch (e) {}
 			});
 			return origSend.call(this, body);
 		};
 	}
 	/**
-	* Wait for the Angular app to have completed at least one token refresh.
-	* Returns true once we have a valid token, or false after timeout.
+	* Wait for the token interceptor to capture a valid token.
+	*
+	* Resolves immediately if a token is already available.
+	* Otherwise, waits for the next token capture event.
+	*
+	* No artificial timeout — if the user isn't logged in, Angular will
+	* redirect to Keycloak (different domain) and this promise simply
+	* never resolves, which is fine since our script dies with the navigation.
 	*/
-	function waitForToken(timeoutMs = 15e3) {
+	function waitForToken() {
+		if (getAccessToken()) return Promise.resolve();
 		return new Promise((resolve) => {
-			if (getAccessToken()) {
-				resolve(true);
-				return;
-			}
-			const interval = setInterval(() => {
-				if (getAccessToken()) {
-					clearInterval(interval);
-					clearTimeout(timeout);
-					resolve(true);
-				}
-			}, 200);
-			const timeout = setTimeout(() => {
-				clearInterval(interval);
-				resolve(false);
-			}, timeoutMs);
+			_tokenListeners.push(resolve);
 		});
 	}
 	/**
@@ -1025,6 +1023,7 @@
 			setupToggle("classic");
 			return;
 		}
+		await waitForToken();
 		Promise.resolve().then(() => /* @__PURE__ */ __toESM(require_style(), 1));
 		document.title = "Infinity Auriga";
 		while (document.body.firstChild) document.body.removeChild(document.body.firstChild);
@@ -1034,12 +1033,8 @@
 		document.body.appendChild(container);
 		setupToggle("infinity");
 		const { renderLoadingScreen, renderApp } = await Promise.resolve().then(() => (init_render(), render_exports));
-		const status = renderLoadingScreen(container, "Attente du token d'authentification...");
+		const status = renderLoadingScreen(container, "Chargement...");
 		setApiRequestHook((url) => status.request(url));
-		if (!await waitForToken(6e4)) {
-			status.step("Impossible de récupérer le token. Rechargez la page.");
-			return;
-		}
 		const session = await loadSession(status);
 		let { filtersValues } = session;
 		const { name, filters } = session;

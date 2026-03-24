@@ -16,7 +16,13 @@ async function main() {
         return;
     }
 
-    // Take over the page
+    // Wait for auth before touching the page.
+    // If logged in: Angular refreshes the Keycloak token → interceptor fires → we proceed.
+    // If not logged in: Angular redirects to Keycloak (different domain) → page navigates
+    //   away and this promise never resolves, which is fine — our script dies with the navigation.
+    await waitForToken();
+
+    // Auth confirmed — take over the page
     import('./style.css');
 
     document.title = 'Infinity Auriga';
@@ -31,14 +37,8 @@ async function main() {
 
     const { renderLoadingScreen, renderApp } = await import('./render.js');
 
-    const status = renderLoadingScreen(container, 'Attente du token d\'authentification...');
+    const status = renderLoadingScreen(container, 'Chargement...');
     setApiRequestHook((url) => status.request(url));
-
-    const hasToken = await waitForToken(60000);
-    if (!hasToken) {
-        status.step('Impossible de récupérer le token. Rechargez la page.');
-        return;
-    }
 
     const session = await loadSession(status);
     let { filtersValues } = session;

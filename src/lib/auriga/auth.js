@@ -1,10 +1,11 @@
 import { setAccessToken, apiFetch, getAccessToken } from './api.js';
 
 let _userInfo = null;
+let _tokenListeners = [];
 
 /**
  * Intercept XHR calls to the Keycloak token endpoint to capture fresh tokens.
- * The Angular app refreshes the token every ~60s - we piggyback on that.
+ * The Angular app refreshes the token on load and every ~60s — we piggyback on that.
  */
 export function installTokenInterceptor() {
     const origOpen = XMLHttpRequest.prototype.open;
@@ -22,6 +23,8 @@ export function installTokenInterceptor() {
                     const data = JSON.parse(this.responseText);
                     if (data.access_token) {
                         setAccessToken(data.access_token);
+                        _tokenListeners.forEach(fn => fn());
+                        _tokenListeners = [];
                     }
                 } catch (e) {
                     // ignore parse errors
@@ -33,28 +36,19 @@ export function installTokenInterceptor() {
 }
 
 /**
- * Wait for the Angular app to have completed at least one token refresh.
- * Returns true once we have a valid token, or false after timeout.
+ * Wait for the token interceptor to capture a valid token.
+ *
+ * Resolves immediately if a token is already available.
+ * Otherwise, waits for the next token capture event.
+ *
+ * No artificial timeout — if the user isn't logged in, Angular will
+ * redirect to Keycloak (different domain) and this promise simply
+ * never resolves, which is fine since our script dies with the navigation.
  */
-export function waitForToken(timeoutMs = 15000) {
+export function waitForToken() {
+    if (getAccessToken()) return Promise.resolve();
     return new Promise((resolve) => {
-        if (getAccessToken()) {
-            resolve(true);
-            return;
-        }
-
-        const interval = setInterval(() => {
-            if (getAccessToken()) {
-                clearInterval(interval);
-                clearTimeout(timeout);
-                resolve(true);
-            }
-        }, 200);
-
-        const timeout = setTimeout(() => {
-            clearInterval(interval);
-            resolve(false);
-        }, timeoutMs);
+        _tokenListeners.push(resolve);
     });
 }
 
