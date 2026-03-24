@@ -323,17 +323,27 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
                         )
                     )
                 )),
-                ...(coeffSource
-                    ? [h('div', { class: 'coeff-notice' },
-                        'Coefficients corrigés via ',
-                        h('a', { href: `${app.repository}/blob/master/src/lib/coefficients/${coeffSource}`, target: '_blank', class: 'link colored' }, coeffSource),
-                        ' \u00b7 ',
-                        h('a', { href: `${app.repository}/blob/master/src/lib/coefficients`, target: '_blank', class: 'link colored' }, 'Contribuer')
-                    )]
-                    : [h('div', { class: 'coeff-notice' },
-                        'Coefficients par défaut (Auriga) \u00b7 ',
-                        h('a', { href: `${app.repository}/tree/master/src/lib/coefficients`, target: '_blank', class: 'link colored' }, 'Contribuer')
-                    )]
+                h('div', { class: 'coeff-info' },
+                    h('div', { class: 'coeff-main' },
+                        h('div', { class: 'point' }),
+                        h('div', { class: 'coeff-content' },
+                            coeffSource
+                                ? h('span', {}, 'Coefficients corrigés par la communauté')
+                                : h('span', {}, 'Coefficients non corrigés ', h('span', { class: 'coeff-muted' }, '(Auriga les considère tous égaux)'))
+                        )
+                    ),
+                    h('div', { class: 'coeff-links' },
+                        ...(coeffSource
+                            ? [
+                                h('a', { href: `${app.repository}/blob/master/src/lib/coefficients/${coeffSource}`, target: '_blank', class: 'link colored' }, 'Voir la source'),
+                                '\u00a0\u00b7\u00a0',
+                                h('a', { href: `${app.repository}/tree/master/src/lib/coefficients`, target: '_blank', class: 'link colored' }, 'Modifier'),
+                            ]
+                            : [
+                                h('a', { href: `${app.repository}/tree/master/src/lib/coefficients`, target: '_blank', class: 'link colored' }, 'Contribuer les vrais coefficients'),
+                            ]
+                        )
+                    )
                 ),
                 h('hr', { class: 'separator' }),
                 ...moduleEls

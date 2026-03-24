@@ -3,25 +3,32 @@
  *
  * Auriga returns all coefficients as 100 (equal weight).
  * This module provides the real coefficients per exam code.
- * Contributors add/update coefficient files per semester via PR.
  *
- * Each file exports an object mapping exam codes to their coefficient.
+ * To add coefficients for a new semester:
+ *   1. Create src/lib/coefficients/{semester}_{year}_{track}.js  (e.g. s07_2526_fisa.js)
+ *   2. Export a default object mapping exam codes to their coefficient.
+ *   3. Open a PR. That's it — no registry to update.
+ *
+ * Filename convention: s{semester}_{year}_{track}.js (all lowercase)
+ *   → looked up as S{SEMESTER}_{YEAR}_{TRACK}
+ *
  * Only exams with non-default coefficients need to be listed (default is 1).
  */
 
-const registry = {
-    'S07_2526_FISA': { loader: () => import('./s7_fisa_2526.js'), file: 's7_fisa_2526.js' },
-};
+// Auto-discover all coefficient files at build time (Vite glob import)
+const modules = import.meta.glob('./*.js', { import: 'default' });
 
 /**
  * Load coefficient overrides for a semester/track combo.
- * Returns { overrides: Map<examCode, coefficient>, file: string } or null.
+ * Returns { overrides: Map, file: string } or null.
  */
 export async function loadCoefficients(semesterKey, track) {
-    const entry = registry[`${semesterKey}_${track}`];
-    if (!entry) return null;
-    const mod = await entry.loader();
-    return { overrides: new Map(Object.entries(mod.default)), file: entry.file };
+    // semesterKey = "S07_2526", track = "FISA" → filename = "s07_2526_fisa.js"
+    const file = `${semesterKey}_${track}`.toLowerCase() + '.js';
+    const loader = modules[`./${file}`];
+    if (!loader) return null;
+    const data = await loader();
+    return { overrides: new Map(Object.entries(data)), file };
 }
 
 /**

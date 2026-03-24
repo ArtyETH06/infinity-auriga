@@ -157,8 +157,11 @@ button:not(.opaque):active, a:not(.opaque):active, .clickable:not(.opaque):activ
 .big-list .entry .mark { margin-left: 10px; }
 .big-list .entry .mark .value { font-weight: bold; }
 
-/* ===== COEFFICIENT NOTICE ===== */
-.coeff-notice { margin-top: 10px; font-size: clamp(11px, 1.3vw, 13px); color: var(--text-muted); }
+/* ===== COEFFICIENT INFO ===== */
+.coeff-info { flex-direction: column; margin-top: 8px; padding-left: clamp(15px, 3vw, 35px); font-size: clamp(14px, 1.8vw, 18px); }
+.coeff-main { align-items: center; gap: 12px; font-weight: 500; }
+.coeff-muted { color: var(--text-muted); font-weight: 400; }
+.coeff-links { margin-top: 5px; margin-left: 20px; font-size: clamp(12px, 1.4vw, 15px); font-weight: 500; }
 
 /* ===== SEPARATOR ===== */
 hr.separator { width: 100%; margin-top: 25px; opacity: .3; border-bottom: 0; border-color: var(--surface); }

@@ -1,70 +1,44 @@
 # Infinity Auriga
 
-Enhanced grades UI for [Auriga](https://auriga.epita.fr) (EPITA). Replaces the default interface with a cleaner, faster grade viewer with weighted averages and change tracking.
+Enhanced grades UI for [Auriga](https://auriga.epita.fr) (EPITA).
 
 Fork of [infinity-pegasus](https://github.com/Litarvan/infinity-pegasus) by the GOATed [Litarvan](https://github.com/Litarvan).
 
 ## Install
 
-1. Install [Tampermonkey](https://www.tampermonkey.net/)
-2. Download `infinity-auriga.user.js` from [Releases](https://github.com/KazeTachinuu/infinity-auriga/releases)
-3. Tampermonkey prompts to install — click **Install**
-4. Go to [auriga.epita.fr](https://auriga.epita.fr) and log in
+1. Install [Tampermonkey](https://www.tampermonkey.net/) (Chrome / Firefox / Edge)
+2. **[Click here to install Infinity Auriga](https://raw.githubusercontent.com/KazeTachinuu/infinity-auriga/master/dist-userscript/infinity-auriga.user.js)**
+3. Go to [auriga.epita.fr](https://auriga.epita.fr)
 
-The toggle in the bottom-left switches between Infinity and classic Auriga.
+Auto-updates via Tampermonkey. Toggle between Infinity and classic Auriga with the switcher in the bottom-left.
 
 ## Features
 
 - Clean grade display with module/subject hierarchy
-- Weighted averages with community-contributed coefficient overrides
-- Change tracking — new/updated grades highlighted since last visit
-- Live loading screen with API request status
-- One-click toggle between Infinity and classic Auriga
+- Weighted averages with community-contributed coefficients
+- Change tracking — new/updated grades since your last visit
+- Live loading screen
+- One-click toggle to classic Auriga
 
 ## Coefficients
 
-Auriga returns all coefficients as equal. Infinity overrides them with real weights so your averages are accurate.
+Auriga treats all exams as equally weighted. Infinity fixes this with community-contributed coefficient files.
 
-The UI shows which coefficient file is active (or "Coefficients par défaut" if none exists for your semester).
+The app shows whether corrected coefficients are active for your semester. If not, you can contribute them — see [`src/lib/coefficients/README.md`](src/lib/coefficients/README.md) for the full guide.
 
-### Contributing coefficients
+**Quick version:**
 
-Coefficient files live in [`src/lib/coefficients/`](src/lib/coefficients/).
-
-**1. Create a file** — `src/lib/coefficients/s{semester}_{track}_{year}.js`:
-
-```js
-// Coefficients for S07 FISA 2025/2026
-// Only non-default coefficients (default = 1)
-export default {
-    '2526_I_INF_FISA_S07_CS_GR_WS_EX': 2,
-    '2526_I_INF_FISA_S07_CS_SAE_DEVSEC_PROJ_EX': 3,
-};
-```
-
-**2. Register it** in `src/lib/coefficients/index.js`:
-
-```js
-const registry = {
-    'S07_2526_FISA': { loader: () => import('./s7_fisa_2526.js'), file: 's7_fisa_2526.js' },
-};
-```
-
-The key format is `{semester}_{year}_{track}`.
-
-**3. Open a PR.**
-
-To find exam codes, check network requests to `/api/menuEntries/*/searchResult` in the browser devtools on Auriga.
+1. Create `src/lib/coefficients/s{semester}_{year}_{track}.js`
+2. Export exam codes with their real coefficients
+3. Open a PR — that's it, no other file to edit
 
 ## Development
 
 ```bash
 bun install
-bun run dev                # Dev server with mock API
-bun run build:userscript   # Build Tampermonkey userscript
+bun run dev                # Dev server with mock API (localhost:5173)
+bun run build:userscript   # Build Tampermonkey script → dist-userscript/
 ```
-
-Mock API uses `tools/auriga-capture.json` with simulated latency.
 
 ## License
 
