@@ -363,43 +363,58 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
         // Subjects
         for (const subject of module.subjects) {
             const subjectCard = h('div', { class: 'subject card' });
+            const isSingle = subject.marks.length === 1;
+            const mark0 = subject.marks[0];
 
-            // Info panel (left side)
-            const info = h('div', { class: 'info' });
+            if (isSingle && mark0) {
+                // Single-grade subject: compact display - just name + grade
+                const info = h('div', { class: 'info' });
+                const infoTop = h('div', { class: 'top' });
+                infoTop.appendChild(h('div', { class: 'id' }, mark0.name));
+                info.appendChild(infoTop);
 
-            const infoTop = h('div', { class: 'top' });
-            // Show short code as the bold ID, resolved name below (if different)
-            const displayId = subject.id.replace(/_/g, ' ');
-            const displayName = subject.name !== subject.id.replace(/_/g, ' ') ? subject.name : '';
-            infoTop.appendChild(h('div', { class: 'id' }, displayId));
-            if (displayName) {
-                infoTop.appendChild(h('div', { class: 'name' }, displayName.length > 30 ? displayName.slice(0, 28) + '...' : displayName));
-            }
-            info.appendChild(infoTop);
+                const infoBottom = h('div', { class: 'bottom' });
+                const avgDiv = h('div', { class: 'average' });
+                avgDiv.appendChild(h('span', { class: 'value', style: { color: gc(mark0.value) } }, fmt(mark0.value)));
+                avgDiv.appendChild(document.createTextNode('\u00a0/ 20'));
+                infoBottom.appendChild(avgDiv);
 
-            const infoBottom = h('div', { class: 'bottom' });
-            const avgDiv = h('div', { class: 'average' });
-            avgDiv.appendChild(h('span', { class: 'value', style: { color: gc(subject.average) } }, fmt(subject.average)));
-            avgDiv.appendChild(document.createTextNode('\u00a0/ 20'));
-            infoBottom.appendChild(avgDiv);
-
-            const metaParts = [];
-            if (subject.classAverage != null) metaParts.push(`promo: ${fmt(subject.classAverage)}`);
-            if (subject.coefficient != null && subject.coefficient !== 1) metaParts.push(`coeff. ${fmt(subject.coefficient)}`);
-            if (metaParts.length > 0) {
-                infoBottom.appendChild(h('div', { class: 'class-average' }, `(${metaParts.join(', ')})`));
-            }
-            info.appendChild(infoBottom);
-
-            info.appendChild(h('hr', { class: 'bottom-line' }));
-            subjectCard.appendChild(info);
-
-            // Marks list (right side)
-            if (subject.marks.length === 0) {
-                subjectCard.appendChild(h('div', { class: 'no-marks' }, 'Aucune note'));
+                const metaParts = [];
+                if (mark0.classAverage != null) metaParts.push(`promo: ${fmt(mark0.classAverage)}`);
+                if (metaParts.length > 0) {
+                    infoBottom.appendChild(h('div', { class: 'class-average' }, `(${metaParts.join(', ')})`));
+                }
+                info.appendChild(infoBottom);
+                info.appendChild(h('hr', { class: 'bottom-line' }));
+                subjectCard.appendChild(info);
             } else {
-                const marksDiv = h('div', { class: 'marks' });
+                // Multi-grade subject: full display with info panel + marks list
+                const info = h('div', { class: 'info' });
 
+                const infoTop = h('div', { class: 'top' });
+                const displayId = subject.id.replace(/_/g, ' ');
+                const displayName = subject.name !== subject.id.replace(/_/g, ' ') ? subject.name : '';
+                infoTop.appendChild(h('div', { class: 'id' }, displayName || displayId));
+                info.appendChild(infoTop);
+
+                const infoBottom = h('div', { class: 'bottom' });
+                const avgDiv = h('div', { class: 'average' });
+                avgDiv.appendChild(h('span', { class: 'value', style: { color: gc(subject.average) } }, fmt(subject.average)));
+                avgDiv.appendChild(document.createTextNode('\u00a0/ 20'));
+                infoBottom.appendChild(avgDiv);
+
+                const metaParts = [];
+                if (subject.classAverage != null) metaParts.push(`promo: ${fmt(subject.classAverage)}`);
+                if (subject.coefficient != null && subject.coefficient !== 1) metaParts.push(`coeff. ${fmt(subject.coefficient)}`);
+                if (metaParts.length > 0) {
+                    infoBottom.appendChild(h('div', { class: 'class-average' }, `(${metaParts.join(', ')})`));
+                }
+                info.appendChild(infoBottom);
+                info.appendChild(h('hr', { class: 'bottom-line' }));
+                subjectCard.appendChild(info);
+
+                // Marks list
+                const marksDiv = h('div', { class: 'marks' });
                 for (const mark of subject.marks) {
                     const markEl = h('div', { class: 'mark' });
                     markEl.appendChild(h('div', { class: 'point' }));
@@ -412,10 +427,8 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
                     valueDiv.appendChild(h('span', { class: 'itself', style: { color: gc(mark.value) } }, fmt(mark.value)));
                     valueDiv.appendChild(document.createTextNode('\u00a0/ 20'));
                     lineDiv.appendChild(valueDiv);
-
                     markEl.appendChild(lineDiv);
 
-                    // Class average and coefficient (only show when there's data)
                     const markMeta = [];
                     if (mark.classAverage != null) markMeta.push(`moyenne: ${fmt(mark.classAverage)}`);
                     if (!hasEqualCoefficients(subject)) markMeta.push(`${Math.round(mark.coefficient * 100)}%`);
@@ -426,10 +439,8 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
                         classAvg.appendChild(h('span', { class: 'parenthesis' }, ')'));
                         markEl.appendChild(classAvg);
                     }
-
                     marksDiv.appendChild(markEl);
                 }
-
                 subjectCard.appendChild(marksDiv);
             }
 
