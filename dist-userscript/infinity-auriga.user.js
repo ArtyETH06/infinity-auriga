@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Infinity Auriga
 // @namespace    infinity-auriga
-// @version      1.6.0
+// @version      1.6.1
 // @description  Make Auriga Great Again - enhanced grades UI for EPITA
 // @author       KazeTachinuu & contributors
 // @match        https://auriga.epita.fr/*
@@ -13,7 +13,7 @@
 // @downloadURL  https://raw.githubusercontent.com/KazeTachinuu/infinity-auriga/master/dist-userscript/infinity-auriga.user.js
 // ==/UserScript==
 
-;(function(){if(localStorage.getItem('infinity_auriga_enabled')==='0')return;var s=document.createElement('style');s.setAttribute('data-infinity','1');s.textContent="*,*:before,*:after{box-sizing:border-box}body{margin:0;overflow:hidden}div{display:flex}div,hr{box-sizing:border-box}button{outline:none;border:none;background:none}a{color:inherit;text-decoration:inherit}:root{--bg-dark: #343D55;--bg-darker: #151925;--text-primary: #151925;--text-muted: #868DA0;--text-meta: #909090;--surface: #FFFFFF;--surface-alt: #F3F4F5;--dot-color: #D5D9DC;--accent: #3D69ED;--radius: 6px;--content-px: clamp(25px, 5vw, 75px);--font-header: clamp(20px, 3vw, 32px);--font-body: clamp(13px, 1.5vw, 18px);-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif}#app{height:100dvh}button,a,.clickable{cursor:pointer;user-select:none;transition:opacity .15s}button:not(.opaque):hover,a:not(.opaque):hover,.clickable:not(.opaque):hover{opacity:.8}button:not(.opaque):active,a:not(.opaque):active,.clickable:not(.opaque):active{opacity:.6}.subtext{color:var(--text-muted);font-size:clamp(13px,1.5vw,16px);line-height:22px;text-align:center}.link.colored{color:var(--accent)}.card{border-radius:var(--radius);box-shadow:#00000026 0 2px 8px;transition:all .2s}.card.clickable:hover{box-shadow:#00000040 0 2px 9px;transform:translateY(-1px)}.variable{transition:width .6s cubic-bezier(.65,0,.35,1),margin .6s cubic-bezier(.65,0,.35,1)}.class-average{color:var(--text-meta)}.point{flex-shrink:0;width:8px;height:8px;background-color:var(--dot-color);border-radius:50%}.point.big{width:10px;height:10px}.point.small{width:6px;height:6px}#background{position:relative;z-index:1;flex-grow:1;overflow:hidden;background:linear-gradient(-212deg,var(--bg-dark) 0%,var(--bg-darker) 95%)}.triangle{position:absolute}#top-triangle{top:-175px;left:-175px;width:500px;filter:drop-shadow(3px 3px 15px rgba(0,0,0,.25))}#bottom-triangle{bottom:-75px;right:-100px;width:600px;filter:drop-shadow(-3px -3px 15px rgba(0,0,0,.25))}#content{flex-direction:column;justify-content:space-between;align-items:center;z-index:2;width:575px;padding:35px 0;overflow-y:auto;background-color:var(--surface)}#content.wide{width:1200px}#content.wide #header #logo{width:300px;margin:0}#header{width:100%;padding:20px var(--content-px);justify-content:space-between;align-items:center;flex-shrink:0;overflow:hidden}#header #logo{flex-shrink:0;width:400px;margin-top:25px;margin-left:12.5px}#header #logo svg{width:100%;height:auto}#header #logout{color:#251515;font-size:clamp(16px,2vw,22px);font-weight:500}#footer{flex-direction:column;flex-shrink:0}#footer #links{justify-content:center;margin-bottom:8px;font-weight:500;font-size:clamp(16px,2vw,22px);color:var(--text-primary)}#main{flex-direction:column;flex-grow:1;justify-content:center;width:100%}.loading{flex-direction:column;align-items:center;padding:0 var(--content-px)}.loading-step{margin-top:clamp(20px,4vw,40px);font-size:clamp(16px,2vw,20px);font-weight:600;color:var(--text-primary);text-align:center}.loading-request{margin-top:6px;min-height:1.4em;max-width:100%;font-size:clamp(11px,1.2vw,13px);font-family:SF Mono,Cascadia Code,Fira Code,monospace;color:var(--text-muted);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:0;transition:opacity .15s}.loading-request:not(:empty){opacity:1}.loading-quote{margin-top:clamp(25px,4vw,40px);font-size:clamp(13px,1.4vw,15px);font-style:italic;color:var(--text-muted);text-align:center;opacity:.6}.spinner{width:clamp(60px,8vw,85px);animation:spin .75s linear infinite}.spinner svg{width:100%;height:100%}@keyframes spin{to{transform:rotate(360deg)}}.content{flex-direction:column;flex-grow:1;align-items:flex-start;padding:5px var(--content-px);margin-bottom:25px;overflow-y:auto}.header{flex-direction:column;position:relative;font-weight:700;font-size:var(--font-header)}.header hr{width:100%;border-bottom:0;border-color:var(--surface);position:relative;z-index:-1}.filters{justify-content:space-between;width:100%;margin-bottom:clamp(30px,4vw,50px)}.combo-box{flex-direction:column;position:relative}.combo-box .name{height:20px;margin-bottom:clamp(5px,1vw,8px);margin-left:1px;color:#343434;font-size:clamp(14px,1.5vw,16px)}.combo-box .box{justify-content:space-between;align-items:center;min-width:clamp(200px,30vw,400px);height:clamp(32px,4vw,40px);padding:0 12px;border-radius:var(--radius);background-color:var(--surface-alt);font-size:clamp(12px,1.5vw,16px)}.combo-box .box svg{height:clamp(8px,1vw,10px);margin-top:2px;transition:transform .125s}.combo-box .box.opened svg{transform:rotate(180deg)}.combo-box .choices{flex-direction:column;position:absolute;top:75px;z-index:2;width:100%;background-color:var(--surface);border-radius:var(--radius);font-size:clamp(12px,1.5vw,16px)}.combo-box .choices .choice{padding:8px 12px;transition:background-color .15s}.combo-box .choices .choice:hover{background-color:#0000000d}.combo-box .choices .choice:active{background-color:#0000001a}.combo-box .choices .choice:first-child{border-top-left-radius:var(--radius);border-top-right-radius:var(--radius)}.combo-box .choices .choice:last-child{border-bottom-left-radius:var(--radius);border-bottom-right-radius:var(--radius)}.no-updates{margin-bottom:20px;font-size:var(--font-body)}.updates{flex-direction:column;width:100%;margin-bottom:15px}.updates .update{align-items:center;margin-bottom:10px;padding-left:35px;font-size:clamp(18px,2.5vw,28px)}.updates .update .top{align-items:center}.updates .update .top .id{margin-left:15px;margin-right:10px;font-weight:700}.updates .update .top .dash{margin-right:10px;font-size:clamp(18px,2vw,24px)}.updates .update .top .name{font-size:var(--font-body);margin-right:10px}.updates .update .top .name .target{font-weight:500}.updates .update .mark{align-items:center;margin-bottom:1px;font-weight:500}.updates .update .mark .point{margin-left:2px;margin-right:12px}.updates .update .mark .from{color:#a5a9b5;text-decoration:line-through}.updates .update .mark .update-arrow{margin:0 10px}.updates .update .mark .type-sign{margin-left:12px;margin-bottom:2px}.updates .update .mark .type-sign svg{width:30px}.big-list{flex-direction:column;margin-bottom:20px;padding-top:5px;transition:opacity .15s}.big-list .entry{align-items:center;margin-bottom:12px;padding-left:clamp(15px,3vw,35px);font-size:clamp(18px,2.8vw,26px)}.big-list .entry .name{margin-left:12px;margin-right:10px}.big-list .entry .mark{margin-left:10px}.big-list .entry .mark .value{font-weight:700}.coeff-info{flex-direction:column;margin-top:8px;padding-left:clamp(15px,3vw,35px);font-size:clamp(14px,1.8vw,18px)}.coeff-main{align-items:center;gap:12px;font-weight:500}.coeff-muted{color:var(--text-muted);font-weight:400}.coeff-links{margin-top:5px;margin-left:20px;font-size:clamp(12px,1.4vw,15px);font-weight:500}.coeff-copied{color:#44b732!important}.api-banner{width:100%;padding:10px 14px;margin-bottom:20px;background:#fff3e0;border:1px solid #ffe0b2;border-radius:var(--radius);align-items:center;justify-content:space-between;gap:12px;font-size:clamp(12px,1.4vw,14px);color:#6d4c00}.api-banner-title{font-weight:600}.api-banner-actions{align-items:center;gap:10px;flex-shrink:0}.api-banner-btn{padding:4px 12px;border-radius:4px;background:#ff9800;color:#fff;font-weight:600;font-size:12px;white-space:nowrap}.api-banner-btn:hover{opacity:.85}.api-banner-dismiss{color:#6d4c00;font-size:16px;line-height:1}hr.separator{width:100%;margin-top:25px;opacity:.3;border-bottom:0;border-color:var(--surface)}.header.module{max-width:100%;margin-top:50px}.header.module .text{align-items:center}.header.module .name,.header.module .average,.header.module .class-average,.header.module .max{white-space:nowrap}.header.module .name{display:inline-block;overflow:hidden;text-overflow:ellipsis;padding-bottom:2px}.header.module .point{margin:2px 10px 0}.header.module .class-average{margin-left:10px;font-weight:400}.subject{width:100%;margin:15px 0}.subject .info{flex-direction:column;align-items:center;flex-shrink:0;width:250px;padding-top:15px;padding-bottom:17px}.subject .info .top,.subject .info .bottom{display:contents}.subject .info .id{font-weight:700;font-size:24px;word-break:break-word}.subject .info .point{display:none}.subject .info .average{margin-top:10px;font-size:24px}.subject .info .average .value{font-weight:700}.subject .info .class-average{font-size:14px}.subject .info .bottom-line{display:none}.subject .marks{flex-direction:column;flex-grow:1;justify-content:center;max-width:calc(100% - 275px);padding:15px 0;font-size:16px}.subject .marks .marks-title{font-weight:600;font-size:15px;margin-bottom:6px;color:#444}.subject .marks .mark{align-items:center;max-width:100%;margin:3px 0}.subject .marks .mark .point{margin-bottom:1px}.subject .marks .mark .line{display:contents}.subject .marks .mark .name,.subject .marks .mark .value,.subject .marks .mark .class-average{white-space:nowrap}.subject .marks .mark .name{display:inline-block;margin-left:15px;overflow:hidden;text-overflow:ellipsis;padding-bottom:2px}.subject .marks .mark .value{justify-content:flex-end;margin-left:1px;font-weight:700}.subject .marks .mark .class-average{margin-left:10px}.coeff-override{margin-left:6px;color:var(--accent);font-weight:600;font-size:.85em}.copy-code{display:inline-block;border-bottom:1px dashed var(--dot-color)}.copy-code:hover{border-bottom-color:var(--text-muted)}.code-tooltip{position:fixed;z-index:9999;padding:5px 12px;border-radius:5px;background:var(--bg-darker);color:#e8eaed;font-size:13px;font-weight:500;letter-spacing:.3px;font-family:SF Mono,Cascadia Code,Fira Code,monospace;white-space:nowrap;pointer-events:none;box-shadow:0 4px 12px #0000004d;opacity:0;transition:opacity .12s}.code-tooltip.copied{background:var(--accent);color:#fff;font-family:inherit}.no-marks{flex-grow:1;justify-content:center;align-items:center;width:100%;font-size:28px}@media (max-width: 850px){.filters{flex-direction:column;gap:15px}.header hr{margin-top:9px}.updates{margin-top:4px;margin-bottom:12px}.updates .update{display:grid;grid-template-columns:17px 100%;margin-bottom:6px;padding-left:15px}.updates .update>.point{width:6px;height:6px}.updates .update .top .id{margin-left:0;margin-right:6px}.updates .update .top .name{display:inline-block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.updates .update .top .name .target{display:none}.updates .update .mark{grid-column:2 / 3;height:23px}.updates .update .mark .point{display:none}.updates .update .mark .update-arrow{width:20px;margin:0 6px 1px}.updates .update .mark .type-sign{width:14px;margin-left:6px;margin-bottom:2px}.header.module{margin-top:20px;margin-bottom:6px}.header.module .text{flex-direction:column;align-items:flex-start;margin-left:-1px}.header.module .text .name{max-width:100%;margin-bottom:2px;font-size:20px}.header.module .text .point{display:none}.header.module .text .bottom{align-items:center;font-size:16px}.header.module .text .bottom .class-average{margin-left:5px;font-size:14px}.header.module .bottom-line{margin-top:7px;margin-bottom:1px;opacity:.6}.subject{flex-direction:column;margin:10px 0;padding:10px 14px}.subject .no-marks{margin:4px 0;font-size:14px}.subject .info{align-items:flex-start;width:100%;padding:0}.subject .info .top,.subject .info .bottom{display:flex;align-items:center;max-width:100%}.subject .info .id{font-size:18px}.subject .info .point{display:block;width:5px;height:5px;margin:0 8px}.subject .info .average{margin:0;font-size:14px}.subject .info .class-average{margin-left:5px;font-size:12px}.subject .info .bottom-line{display:block;width:100%;border-bottom:0;border-color:var(--surface);opacity:.3}.subject .marks{max-width:100%;padding:0}.subject .marks .mark{display:grid;grid-template-columns:12px calc(100% - 5px);padding:0 5px}.subject .marks .mark .point{width:5px;height:5px;margin-top:1px}.subject .marks .mark .line{display:flex;flex-direction:row-reverse;justify-content:flex-end;font-size:13px}.subject .marks .mark .line .name{margin-left:0}.subject .marks .mark .line .value{width:auto;margin-left:0}.subject .marks .mark .class-average{grid-column:2 / 3;margin-left:0;font-size:11px}.subject .marks .mark .class-average .parenthesis{display:none}}@media (max-width: 575px){#header{flex-direction:column;padding:0;justify-content:center;margin-bottom:20px}#header #logo{margin-top:15px;margin-left:0;max-width:80%}#content{padding:15px 0}hr.separator{margin-top:0;margin-bottom:5px}}@media (max-height: 650px){#header #logo{margin-top:0}#header #logo svg{height:115px}}@media (max-height: 550px){#header{margin-bottom:10px}#header #logo svg{height:100px}#header #logout{font-size:16px}}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--dot-color);border-radius:3px}\n";(document.head||document.documentElement).appendChild(s)})();
+;(function(){if(localStorage.getItem('infinity_auriga_enabled')==='0')return;var s=document.createElement('style');s.setAttribute('data-infinity','1');s.textContent="*,*:before,*:after{box-sizing:border-box}body{margin:0;overflow:hidden}div{display:flex}div,hr{box-sizing:border-box}button{outline:none;border:none;background:none}a{color:inherit;text-decoration:inherit}:root{--bg-dark: #343D55;--bg-darker: #151925;--text-primary: #151925;--text-muted: #868DA0;--text-meta: #909090;--surface: #FFFFFF;--surface-alt: #F3F4F5;--dot-color: #D5D9DC;--accent: #3D69ED;--radius: 6px;--content-px: clamp(25px, 5vw, 75px);--font-header: clamp(20px, 3vw, 32px);--font-body: clamp(13px, 1.5vw, 18px);-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif}#app{height:100dvh}button,a,.clickable{cursor:pointer;user-select:none;transition:opacity .15s}button:not(.opaque):hover,a:not(.opaque):hover,.clickable:not(.opaque):hover{opacity:.8}button:not(.opaque):active,a:not(.opaque):active,.clickable:not(.opaque):active{opacity:.6}.subtext{color:var(--text-muted);font-size:clamp(13px,1.5vw,16px);line-height:22px;text-align:center}.link.colored{color:var(--accent)}.card{border-radius:var(--radius);box-shadow:#00000026 0 2px 8px;transition:all .2s}.card.clickable:hover{box-shadow:#00000040 0 2px 9px;transform:translateY(-1px)}.variable{transition:width .6s cubic-bezier(.65,0,.35,1),margin .6s cubic-bezier(.65,0,.35,1)}.class-average{color:var(--text-meta)}.point{flex-shrink:0;width:8px;height:8px;background-color:var(--dot-color);border-radius:50%}.point.big{width:10px;height:10px}.point.small{width:6px;height:6px}#background{position:relative;z-index:1;flex-grow:1;overflow:hidden;background:linear-gradient(-212deg,var(--bg-dark) 0%,var(--bg-darker) 95%)}.triangle{position:absolute}#top-triangle{top:-175px;left:-175px;width:500px;filter:drop-shadow(3px 3px 15px rgba(0,0,0,.25))}#bottom-triangle{bottom:-75px;right:-100px;width:600px;filter:drop-shadow(-3px -3px 15px rgba(0,0,0,.25))}#content{flex-direction:column;justify-content:space-between;align-items:center;z-index:2;width:575px;padding:35px 0;overflow-y:auto;background-color:var(--surface)}#content.wide{width:1200px}#content.wide #header #logo{width:300px;margin:0}#header{width:100%;padding:20px var(--content-px);justify-content:space-between;align-items:center;flex-shrink:0;overflow:hidden}#header #logo{flex-shrink:0;width:400px;margin-top:25px;margin-left:12.5px}#header #logo svg{width:100%;height:auto}#header #logout{color:#251515;font-size:clamp(16px,2vw,22px);font-weight:500}#footer{flex-direction:column;flex-shrink:0}#footer #links{justify-content:center;margin-bottom:8px;font-weight:500;font-size:clamp(16px,2vw,22px);color:var(--text-primary)}#main{flex-direction:column;flex-grow:1;justify-content:center;width:100%}.loading{flex-direction:column;align-items:center;padding:0 var(--content-px)}.loading-step{margin-top:clamp(20px,4vw,40px);font-size:clamp(16px,2vw,20px);font-weight:600;color:var(--text-primary);text-align:center}.loading-request{margin-top:6px;min-height:1.4em;max-width:100%;font-size:clamp(11px,1.2vw,13px);font-family:SF Mono,Cascadia Code,Fira Code,monospace;color:var(--text-muted);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:0;transition:opacity .15s}.loading-request:not(:empty){opacity:1}.loading-quote{margin-top:clamp(25px,4vw,40px);font-size:clamp(13px,1.4vw,15px);font-style:italic;color:var(--text-muted);text-align:center;opacity:.6}.spinner{width:clamp(60px,8vw,85px);animation:spin .75s linear infinite}.spinner svg{width:100%;height:100%}@keyframes spin{to{transform:rotate(360deg)}}.content{flex-direction:column;flex-grow:1;align-items:flex-start;padding:5px var(--content-px);margin-bottom:25px;overflow-y:auto}.header{flex-direction:column;position:relative;font-weight:700;font-size:var(--font-header)}.header hr{width:100%;border-bottom:0;border-color:var(--surface);position:relative;z-index:-1}.filters{justify-content:space-between;width:100%;margin-bottom:clamp(30px,4vw,50px)}.combo-box{flex-direction:column;position:relative}.combo-box .name{height:20px;margin-bottom:clamp(5px,1vw,8px);margin-left:1px;color:#343434;font-size:clamp(14px,1.5vw,16px)}.combo-box .box{justify-content:space-between;align-items:center;min-width:clamp(200px,30vw,400px);height:clamp(32px,4vw,40px);padding:0 12px;border-radius:var(--radius);background-color:var(--surface-alt);font-size:clamp(12px,1.5vw,16px)}.combo-box .box svg{height:clamp(8px,1vw,10px);margin-top:2px;transition:transform .125s}.combo-box .box.opened svg{transform:rotate(180deg)}.combo-box .choices{flex-direction:column;position:absolute;top:75px;z-index:2;width:100%;background-color:var(--surface);border-radius:var(--radius);font-size:clamp(12px,1.5vw,16px)}.combo-box .choices .choice{padding:8px 12px;transition:background-color .15s}.combo-box .choices .choice:hover{background-color:#0000000d}.combo-box .choices .choice:active{background-color:#0000001a}.combo-box .choices .choice:first-child{border-top-left-radius:var(--radius);border-top-right-radius:var(--radius)}.combo-box .choices .choice:last-child{border-bottom-left-radius:var(--radius);border-bottom-right-radius:var(--radius)}.no-updates{margin-bottom:20px;font-size:var(--font-body)}.updates{flex-direction:column;width:100%;margin-bottom:15px}.updates .update{align-items:center;margin-bottom:10px;padding-left:35px;font-size:clamp(18px,2.5vw,28px)}.updates .update .top{align-items:center}.updates .update .top .id{margin-left:15px;margin-right:10px;font-weight:700}.updates .update .top .dash{margin-right:10px;font-size:clamp(18px,2vw,24px)}.updates .update .top .name{font-size:var(--font-body);margin-right:10px}.updates .update .top .name .target{font-weight:500}.updates .update .mark{align-items:center;margin-bottom:1px;font-weight:500}.updates .update .mark .point{margin-left:2px;margin-right:12px}.updates .update .mark .from{color:#a5a9b5;text-decoration:line-through}.updates .update .mark .update-arrow{margin:0 10px}.updates .update .mark .type-sign{margin-left:12px;margin-bottom:2px}.updates .update .mark .type-sign svg{width:30px}.big-list{flex-direction:column;margin-bottom:20px;padding-top:5px;transition:opacity .15s}.big-list .entry{align-items:center;margin-bottom:12px;padding-left:clamp(15px,3vw,35px);font-size:clamp(18px,2.8vw,26px)}.big-list .entry .name{margin-left:12px;margin-right:10px}.big-list .entry .mark{margin-left:10px}.big-list .entry .mark .value{font-weight:700}.coeff-info{flex-direction:column;margin-top:8px;padding-left:clamp(15px,3vw,35px);font-size:clamp(14px,1.8vw,18px)}.coeff-main{align-items:center;gap:12px;font-weight:500}.coeff-muted{color:var(--text-muted);font-weight:400}.coeff-links{margin-top:5px;margin-left:20px;font-size:clamp(12px,1.4vw,15px);font-weight:500}.coeff-copied{color:#44b732!important}.api-error-panel{flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;padding:40px 30px;gap:16px;z-index:2}.api-error-title{font-size:22px;font-weight:700;color:#e34e4e}.api-error-desc{font-size:14px;color:#aaa;line-height:1.6;max-width:400px}.api-error-box{background:#1e2233;color:#ff6b6b;padding:12px 18px;border-radius:10px;font-size:11px;max-width:100%;overflow-x:auto;text-align:left;white-space:pre-wrap;word-break:break-word}.api-error-actions{gap:10px;flex-wrap:wrap;justify-content:center}.api-error-btn{padding:8px 20px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;border:1px solid #444;background:none;color:#aaa;text-decoration:none}.api-error-btn.primary{background:#fff;color:#151925;border-color:#fff}.api-error-btn.muted{color:#666;border-color:#444;font-weight:400}.api-error-btn:hover{opacity:.85}.empty-state{flex-direction:column;align-items:center;justify-content:center;width:100%;flex-grow:1;padding:60px 20px;text-align:center;gap:8px}.empty-state-text{font-size:18px;font-weight:600;color:var(--text-primary)}.empty-state-hint{font-size:14px;color:var(--text-muted)}hr.separator{width:100%;margin-top:25px;opacity:.3;border-bottom:0;border-color:var(--surface)}.header.module{max-width:100%;margin-top:50px}.header.module .text{align-items:center}.header.module .name,.header.module .average,.header.module .class-average,.header.module .max{white-space:nowrap}.header.module .name{display:inline-block;overflow:hidden;text-overflow:ellipsis;padding-bottom:2px}.header.module .point{margin:2px 10px 0}.header.module .class-average{margin-left:10px;font-weight:400}.subject{width:100%;margin:15px 0}.subject .info{flex-direction:column;align-items:center;flex-shrink:0;width:250px;padding-top:15px;padding-bottom:17px}.subject .info .top,.subject .info .bottom{display:contents}.subject .info .id{font-weight:700;font-size:24px;word-break:break-word}.subject .info .point{display:none}.subject .info .average{margin-top:10px;font-size:24px}.subject .info .average .value{font-weight:700}.subject .info .class-average{font-size:14px}.subject .info .bottom-line{display:none}.subject .marks{flex-direction:column;flex-grow:1;justify-content:center;max-width:calc(100% - 275px);padding:15px 0;font-size:16px}.subject .marks .marks-title{font-weight:600;font-size:15px;margin-bottom:6px;color:#444}.subject .marks .mark{align-items:center;max-width:100%;margin:3px 0}.subject .marks .mark .point{margin-bottom:1px}.subject .marks .mark .line{display:contents}.subject .marks .mark .name,.subject .marks .mark .value,.subject .marks .mark .class-average{white-space:nowrap}.subject .marks .mark .name{display:inline-block;margin-left:15px;overflow:hidden;text-overflow:ellipsis;padding-bottom:2px}.subject .marks .mark .value{justify-content:flex-end;margin-left:1px;font-weight:700}.subject .marks .mark .class-average{margin-left:10px}.coeff-override{margin-left:8px;color:var(--text-muted);font-weight:400;font-size:.75em;opacity:.7}.copy-code{display:inline-block;border-bottom:1px dashed var(--dot-color)}.copy-code:hover{border-bottom-color:var(--text-muted)}.code-tooltip{position:fixed;z-index:9999;padding:5px 12px;border-radius:5px;background:var(--bg-darker);color:#e8eaed;font-size:13px;font-weight:500;letter-spacing:.3px;font-family:SF Mono,Cascadia Code,Fira Code,monospace;white-space:nowrap;pointer-events:none;box-shadow:0 4px 12px #0000004d;opacity:0;transition:opacity .12s}.code-tooltip.copied{background:var(--accent);color:#fff;font-family:inherit}.no-marks{flex-grow:1;justify-content:center;align-items:center;width:100%;font-size:28px}@media (max-width: 850px){.filters{flex-direction:column;gap:15px}.header hr{margin-top:9px}.updates{margin-top:4px;margin-bottom:12px}.updates .update{display:grid;grid-template-columns:17px 100%;margin-bottom:6px;padding-left:15px}.updates .update>.point{width:6px;height:6px}.updates .update .top .id{margin-left:0;margin-right:6px}.updates .update .top .name{display:inline-block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.updates .update .top .name .target{display:none}.updates .update .mark{grid-column:2 / 3;height:23px}.updates .update .mark .point{display:none}.updates .update .mark .update-arrow{width:20px;margin:0 6px 1px}.updates .update .mark .type-sign{width:14px;margin-left:6px;margin-bottom:2px}.header.module{margin-top:20px;margin-bottom:6px}.header.module .text{flex-direction:column;align-items:flex-start;margin-left:-1px}.header.module .text .name{max-width:100%;margin-bottom:2px;font-size:20px}.header.module .text .point{display:none}.header.module .text .bottom{align-items:center;font-size:16px}.header.module .text .bottom .class-average{margin-left:5px;font-size:14px}.header.module .bottom-line{margin-top:7px;margin-bottom:1px;opacity:.6}.subject{flex-direction:column;margin:10px 0;padding:10px 14px}.subject .no-marks{margin:4px 0;font-size:14px}.subject .info{align-items:flex-start;width:100%;padding:0}.subject .info .top,.subject .info .bottom{display:flex;align-items:center;max-width:100%}.subject .info .id{font-size:18px}.subject .info .point{display:block;width:5px;height:5px;margin:0 8px}.subject .info .average{margin:0;font-size:14px}.subject .info .class-average{margin-left:5px;font-size:12px}.subject .info .bottom-line{display:block;width:100%;border-bottom:0;border-color:var(--surface);opacity:.3}.subject .marks{max-width:100%;padding:0}.subject .marks .mark{display:grid;grid-template-columns:12px calc(100% - 5px);padding:0 5px}.subject .marks .mark .point{width:5px;height:5px;margin-top:1px}.subject .marks .mark .line{display:flex;flex-direction:row-reverse;justify-content:flex-end;font-size:13px}.subject .marks .mark .line .name{margin-left:0}.subject .marks .mark .line .value{width:auto;margin-left:0}.subject .marks .mark .class-average{grid-column:2 / 3;margin-left:0;font-size:11px}.subject .marks .mark .class-average .parenthesis{display:none}}@media (max-width: 575px){#header{flex-direction:column;padding:0;justify-content:center;margin-bottom:20px}#header #logo{margin-top:15px;margin-left:0;max-width:80%}#content{padding:15px 0}hr.separator{margin-top:0;margin-bottom:5px}}@media (max-height: 650px){#header #logo{margin-top:0}#header #logo svg{height:115px}}@media (max-height: 550px){#header{margin-bottom:10px}#header #logo svg{height:100px}#header #logout{font-size:16px}}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--dot-color);border-radius:3px}\n";(document.head||document.documentElement).appendChild(s)})();
 (function() {
 	//#region \0rolldown/runtime.js
 	var __create = Object.create;
@@ -249,6 +249,14 @@
 		"FAF",
 		"PROJ"
 	]);
+	var EVAL_LABELS = {
+		EX: "Examen",
+		EXF: "Examen final",
+		EXO: "Examen oral",
+		PRJ: "Projet",
+		PROJ: "Projet",
+		FAF: "Contrôle continu"
+	};
 	/**
 	* @param {string} code - The full exam code
 	* @param {string|null} [apiExamType] - Exam type from the API column (skips guessing when present)
@@ -279,9 +287,6 @@
 	}
 	/**
 	* Build a name lookup from parsed synthesis entries.
-	*
-	* @param {{ examCode: string, name: string, avgPreRatt: *, avgFinal: * }[]} entries
-	* @returns {Map<string, { name: string, avgPreRatt: *, avgFinal: * }>}
 	*/
 	function buildNameLookup(entries) {
 		const lookup = /* @__PURE__ */ new Map();
@@ -293,15 +298,119 @@
 		return lookup;
 	}
 	/**
-	* Find the subject grouping level for a grade path.
+	* Detect transparent path prefixes — codes that are containers (semester wrappers,
+	* phantom groupings like SAE) rather than real UEs.
 	*
-	* Subject is always the first 2 path segments (Module > Subject):
-	*   CS_FR_MSE       -> subject = CS_FR
-	*   CS_SAE_INT_PEN  -> subject = CS_SAE
-	*   CS_SAE_INT_MAS  -> subject = CS_SAE  <- grouped!
-	*   CS_CN_AI4SEC    -> subject = CS_CN
+	* A prefix is transparent if:
+	*   1. Pedagogical API marks it as "Semester" type, OR
+	*   2. Its synthesis name contains "semestre", OR
+	*   3. It has no synthesis name AND has multiple distinct children
+	*      (phantom grouping — e.g. SAE groups DEVSEC + INT but isn't a real UE)
+	*
+	* Detection is applied recursively: if CS is transparent and SAE (under CS) is also
+	* transparent, both are stripped. CS_SAE_INT_PEN → [INT, PEN].
 	*/
-	function findSubjectLevel(prefix, path) {
+	function detectTransparentPrefixes(grades, nameLookup, componentTypes) {
+		const children = /* @__PURE__ */ new Map();
+		for (const grade of grades) {
+			const parsed = parseExamCode(grade.examCode, grade.examType);
+			if (!parsed || parsed.path.length < 2) continue;
+			const id0 = parsed.path[0];
+			if (!children.has(id0)) children.set(id0, /* @__PURE__ */ new Set());
+			children.get(id0).add(parsed.path[1]);
+			if (parsed.path.length >= 3) {
+				const key = id0 + ">" + parsed.path[1];
+				if (!children.has(key)) children.set(key, /* @__PURE__ */ new Set());
+				children.get(key).add(parsed.path[2]);
+			}
+		}
+		const transparent = /* @__PURE__ */ new Set();
+		function isTransparent(pathId, fullCode, key) {
+			if (componentTypes) {
+				const type = componentTypes.get(fullCode);
+				if (type && /semester/i.test(type)) return true;
+			}
+			const info = resolveName(fullCode, "_" + pathId, nameLookup);
+			if (info && /semestre/i.test(info.name)) return true;
+			if (!info && (children.get(key)?.size ?? 0) > 1) return true;
+			return false;
+		}
+		const checked = /* @__PURE__ */ new Set();
+		for (const grade of grades) {
+			const parsed = parseExamCode(grade.examCode, grade.examType);
+			if (!parsed || parsed.path.length < 2) continue;
+			const prefix = `${parsed.year}_I_${parsed.school}_${parsed.track}_${parsed.semester}`;
+			const id0 = parsed.path[0];
+			if (!checked.has(id0)) {
+				checked.add(id0);
+				if (isTransparent(id0, `${prefix}_${id0}`, id0)) transparent.add(id0);
+			}
+			if (transparent.has(id0) && parsed.path.length >= 3) {
+				const id1 = parsed.path[1];
+				const key = id0 + ">" + id1;
+				if (!checked.has(key)) {
+					checked.add(key);
+					if (isTransparent(id1, `${prefix}_${id0}_${id1}`, key)) transparent.add(key);
+				}
+			}
+		}
+		return transparent;
+	}
+	/**
+	* Get the effective path for a grade, skipping transparent prefixes.
+	* CS_SAE_INT_PEN → [INT, PEN] (CS and SAE both skipped)
+	* CS_CN_COCO     → [CN, COCO] (CS skipped)
+	* CN_COLIN       → [CN, COLIN] (no skip)
+	*/
+	function effectivePath(path, transparentPrefixes) {
+		let p = path;
+		if (p.length >= 2 && transparentPrefixes.has(p[0])) {
+			const key = p[0] + ">" + p[1];
+			if (p.length >= 3 && transparentPrefixes.has(key)) p = p.slice(2);
+			else p = p.slice(1);
+		}
+		return p;
+	}
+	/**
+	* Pre-scan to detect which depth-2 path prefixes need depth-3 subject grouping.
+	* Only promotes when depth-3 entries have children (path length >= 4),
+	* meaning they're sub-subject groupings, not leaf exams.
+	*/
+	function detectSubjectDepths(grades, transparentPrefixes) {
+		const info = /* @__PURE__ */ new Map();
+		for (const grade of grades) {
+			const parsed = parseExamCode(grade.examCode, grade.examType);
+			if (!parsed) continue;
+			const path = effectivePath(parsed.path, transparentPrefixes);
+			if (path.length < 3) continue;
+			const key = path.slice(0, 2).join("_");
+			if (!info.has(key)) info.set(key, {
+				subGroups: /* @__PURE__ */ new Set(),
+				maxDepth: 0
+			});
+			const entry = info.get(key);
+			entry.subGroups.add(path[2]);
+			entry.maxDepth = Math.max(entry.maxDepth, path.length);
+		}
+		const deep = /* @__PURE__ */ new Set();
+		for (const [key, { subGroups, maxDepth }] of info) if (subGroups.size > 1 && maxDepth >= 4) deep.add(key);
+		return deep;
+	}
+	/**
+	* Find the subject grouping level for a path.
+	* Default depth 2, promoted to depth 3 when detected as deep.
+	*/
+	function findSubjectLevel(prefix, path, deepPrefixes) {
+		if (path.length >= 3) {
+			const d2 = path.slice(0, 2).join("_");
+			if (deepPrefixes.has(d2)) {
+				const id = path.slice(0, 3).join("_");
+				return {
+					id,
+					code: `${prefix}_${id}`
+				};
+			}
+		}
 		if (path.length >= 2) {
 			const id = path.slice(0, 2).join("_");
 			return {
@@ -318,65 +427,57 @@
 	* Resolve a name from the lookup, falling back to cross-semester suffix matching.
 	*/
 	function resolveName(code, suffix, nameLookup) {
-		let info = nameLookup.get(code);
+		const info = nameLookup.get(code);
 		if (info) return info;
-		let bestPartial = null;
-		let bestPartialLen = Infinity;
-		for (const [key, val] of nameLookup) {
-			if (key.endsWith(suffix)) return val;
-			if (key.indexOf(suffix + "_") !== -1 && key.length < bestPartialLen) {
-				bestPartial = val;
-				bestPartialLen = key.length;
-			}
-		}
-		return bestPartial;
+		for (const [key, val] of nameLookup) if (key.endsWith(suffix)) return val;
+		return null;
 	}
 	/**
 	* Build the grade tree from parsed grade entries.
 	*
-	* Module = 1st path segment (CS, AG, PL, PR, etc.)
-	* Subject = deepest named ancestor in the hierarchy (auto-detected)
-	* Mark = individual grade
+	* Hierarchy: Module (UE) → Subject (ECUE) → Mark (individual grade)
 	*
-	* @param {{ mark: number, coefficient: number, examCode: string, examType: string|null }[]} grades
-	* @param {Map} nameLookup - From buildNameLookup()
+	* Semester containers (e.g. CS) are detected and made transparent —
+	* their children are promoted to top-level modules. This merges
+	* entries like CS_CN_* and CN_* into the same module.
 	*/
-	function buildGradeTree(grades, nameLookup) {
+	function buildGradeTree(grades, nameLookup, componentTypes = null) {
+		const transparentPrefixes = detectTransparentPrefixes(grades, nameLookup, componentTypes);
+		const deepPrefixes = detectSubjectDepths(grades, transparentPrefixes);
 		const modules = /* @__PURE__ */ new Map();
 		for (const grade of grades) {
 			const parsed = parseExamCode(grade.examCode, grade.examType);
 			if (!parsed) continue;
-			const { semester, path, school } = parsed;
+			const { semester, school } = parsed;
 			const prefix = `${parsed.year}_I_${school}_${parsed.track}_${semester}`;
+			const path = effectivePath(parsed.path, transparentPrefixes);
 			const moduleId = path[0] || "TC";
 			const moduleCode = `${prefix}_${moduleId}`;
-			const subject = findSubjectLevel(prefix, path);
+			const subject = findSubjectLevel(prefix, path, deepPrefixes);
 			if (!modules.has(moduleCode)) {
 				const info = resolveName(moduleCode, "_" + moduleId, nameLookup);
 				let name = moduleId;
-				if (info) if (info.name.length <= 40) name = info.name;
-				else {
-					const m = info.name.match(/en\s+(\S+)\s+semestre/i);
-					if (m) name = m[1].charAt(0).toUpperCase() + m[1].slice(1);
-				}
+				if (info) name = info.name.length <= 40 ? info.name : moduleId;
+				const modPromo = info?.avgPreRatt ? parseFloat(info.avgPreRatt) : NaN;
 				modules.set(moduleCode, {
 					id: moduleId,
 					_code: moduleCode,
 					name,
 					average: null,
-					classAverage: null,
+					classAverage: isNaN(modPromo) ? null : modPromo,
 					subjects: /* @__PURE__ */ new Map()
 				});
 			}
 			const mod = modules.get(moduleCode);
 			if (!mod.subjects.has(subject.code)) {
 				const info = resolveName(subject.code, "_" + subject.id, nameLookup);
+				const subPromo = info?.avgPreRatt ? parseFloat(info.avgPreRatt) : NaN;
 				mod.subjects.set(subject.code, {
 					id: subject.id,
 					_code: subject.code,
-					name: info && info.name.length <= 40 ? info.name : subject.id.replace(/_/g, " "),
+					name: info ? info.name : subject.id.replace(/_/g, " "),
 					average: null,
-					classAverage: null,
+					classAverage: isNaN(subPromo) ? null : subPromo,
 					coefficient: 1,
 					marks: []
 				});
@@ -397,6 +498,27 @@
 		const result = [];
 		for (const [, mod] of modules) {
 			mod.subjects = [...mod.subjects.values()];
+			for (const sub of mod.subjects) {
+				if (sub.marks.length < 2) continue;
+				const baseName = (name) => {
+					const i = name.lastIndexOf(" - ");
+					return i > 0 ? name.slice(0, i) : name;
+				};
+				const baseCounts = /* @__PURE__ */ new Map();
+				for (const mark of sub.marks) {
+					const base = baseName(mark.name);
+					baseCounts.set(base, (baseCounts.get(base) || 0) + 1);
+				}
+				for (const mark of sub.marks) {
+					const base = baseName(mark.name);
+					if (baseCounts.get(base) < 2) continue;
+					mark._group = base;
+					if (mark.name === base) {
+						const parsed = parseExamCode(mark._code);
+						mark.name = parsed?.evalType ? EVAL_LABELS[parsed.evalType] || parsed.evalType : base;
+					}
+				}
+			}
 			result.push(mod);
 		}
 		return result;
@@ -419,11 +541,17 @@
 	* SYNTHESIS endpoint (APP_040_010_MES_NOTES_SYNT, e.g. menuEntry 1144):
 	*   [0] personId     [1] avgPreRatt     [2] examCode      [3] caption {fr,en}  [4] avgFinal
 	*
-	* Last verified: 2026-03-24 against capture auriga-capture-1774299604740.json
+	* PEDAGOGICAL REGISTRATION endpoint (APP_000_014_INSC_PEDA, e.g. menuEntry 1034):
+	*   [0] internalId   [1] examCode       [2] obligationType {en,fr}   [3] registrationStatus {en,fr}
+	*   Component types (en): "Semester", "EU Resource", "EU Authentic Assessment Situation",
+	*                         "Educational unit (ECUE)"
+	*
+	* Last verified: 2026-03-26 against capture auriga-capture-1774299604740.json
 	*/
 	var MENU_CODES = {
 		grades: "APP_040_010_MES_NOTES",
-		synthesis: "APP_040_010_MES_NOTES_SYNT"
+		synthesis: "APP_040_010_MES_NOTES_SYNT",
+		pedagogical: "APP_000_014_INSC_PEDA"
 	};
 	var GRADES = {
 		internalId: 0,
@@ -438,6 +566,12 @@
 		examCode: 2,
 		caption: 3,
 		avgFinal: 4
+	};
+	var PEDAGOGICAL = {
+		internalId: 0,
+		examCode: 1,
+		obligationType: 2,
+		registrationStatus: 3
 	};
 	/**
 	* Check parsed results for signs that the API format has changed.
@@ -493,6 +627,22 @@
 			avgFinal: line[SYNTHESIS.avgFinal]
 		};
 	}
+	/**
+	* Parse a pedagogical registration line into a named object.
+	* Returns the component type (en) which tells us the hierarchy level.
+	*
+	* @param {Array} line - Raw array from Auriga searchResult
+	* @returns {{ examCode: string, componentType: string } | null}
+	*/
+	function parsePedagogicalLine(line) {
+		const examCode = line[PEDAGOGICAL.examCode];
+		if (!examCode || typeof examCode !== "string") return null;
+		const typeCaption = line[PEDAGOGICAL.obligationType] || {};
+		return {
+			examCode,
+			componentType: typeCaption.en || typeCaption.fr || ""
+		};
+	}
 	//#endregion
 	//#region src/lib/auriga/marks.js
 	var _menuConfig = null;
@@ -507,13 +657,37 @@
 		};
 		_menuConfig = {
 			grades: entries[MENU_CODES.grades],
-			synthesis: entries[MENU_CODES.synthesis]
+			synthesis: entries[MENU_CODES.synthesis],
+			pedagogical: entries[MENU_CODES.pedagogical]
 		};
 		if (!_menuConfig.grades) throw new Error(`Menu entries not found: grades (${MENU_CODES.grades}). Available: ${Object.keys(entries).join(", ")}. Auriga may have renamed its menu structure.`);
 		if (!_menuConfig.synthesis) throw new Error(`Menu entries not found: synthesis (${MENU_CODES.synthesis}). Available: ${Object.keys(entries).join(", ")}. Auriga may have renamed its menu structure.`);
 		return _menuConfig;
 	}
 	var _cachedSynthesisEntries = null;
+	var _componentTypesPromise;
+	/**
+	* Fetch component type map from the pedagogical registration endpoint.
+	* Returns a Map<examCode, componentType> (e.g. "Semester", "EU Resource", etc.)
+	* Falls back to null if the endpoint is unavailable.
+	*/
+	function getComponentTypes() {
+		if (_componentTypesPromise) return _componentTypesPromise;
+		_componentTypesPromise = (async () => {
+			const config = await getMenuConfig();
+			if (!config.pedagogical) return null;
+			try {
+				const entries = (await fetchAllSearchResults(config.pedagogical.menuEntryId, config.pedagogical.queryId)).map(parsePedagogicalLine).filter(Boolean);
+				const types = /* @__PURE__ */ new Map();
+				for (const { examCode, componentType } of entries) types.set(examCode, componentType);
+				return types;
+			} catch (err) {
+				console.warn("[Infinity Auriga] Failed to fetch pedagogical data, using fallback:", err.message);
+				return null;
+			}
+		})();
+		return _componentTypesPromise;
+	}
 	async function getMarksFilters() {
 		const synth = (await getMenuConfig()).synthesis;
 		const rawLines = await fetchAllSearchResults(synth.menuEntryId, synth.queryId);
@@ -546,24 +720,47 @@
 		if (!semFilter) throw new Error("No semester selected");
 		const [semester, year] = semFilter.split("_");
 		const config = await getMenuConfig();
-		const rawGrades = await fetchAllSearchResults(config.grades.menuEntryId, config.grades.queryId);
-		const gradeEntries = rawGrades.map(parseGradeLine).filter(Boolean);
-		validateParseResults("grades", rawGrades, gradeEntries);
-		const filteredGrades = gradeEntries.filter((g) => {
+		const [rawGrades, synthesisEntries, componentTypes] = await Promise.all([
+			fetchAllSearchResults(config.grades.menuEntryId, config.grades.queryId).then((raw) => {
+				const entries = raw.map(parseGradeLine).filter(Boolean);
+				validateParseResults("grades", raw, entries);
+				return entries;
+			}),
+			_cachedSynthesisEntries ? Promise.resolve(_cachedSynthesisEntries) : fetchAllSearchResults(config.synthesis.menuEntryId, config.synthesis.queryId).then((raw) => {
+				const entries = raw.map(parseSynthesisLine).filter(Boolean);
+				validateParseResults("synthesis", raw, entries);
+				return entries;
+			}),
+			getComponentTypes()
+		]);
+		const filteredGrades = rawGrades.filter((g) => {
 			const parsed = parseExamCode(g.examCode);
 			return parsed && parsed.year === year && parsed.semester === semester;
 		});
-		let synthesisEntries = _cachedSynthesisEntries;
-		if (!synthesisEntries) {
-			const rawSynth = await fetchAllSearchResults(config.synthesis.menuEntryId, config.synthesis.queryId);
-			synthesisEntries = rawSynth.map(parseSynthesisLine).filter(Boolean);
-			validateParseResults("synthesis", rawSynth, synthesisEntries);
-		}
 		const filteredSynthesis = synthesisEntries.filter((e) => {
 			const parsed = parseExamCode(e.examCode);
 			return parsed && parsed.year === year && parsed.semester === semester;
 		});
-		const marks = buildGradeTree(filteredGrades, buildNameLookup(synthesisEntries));
+		const nameLookup = buildNameLookup(synthesisEntries);
+		let gradesToBuild = filteredGrades;
+		if (filteredGrades.length === 0) {
+			const parents = /* @__PURE__ */ new Set();
+			const candidates = filteredSynthesis.filter((e) => {
+				const p = parseExamCode(e.examCode);
+				return p && p.path.length >= 2;
+			});
+			for (const e of candidates) {
+				const parts = e.examCode.split("_");
+				for (let i = 1; i < parts.length; i++) parents.add(parts.slice(0, i).join("_"));
+			}
+			gradesToBuild = candidates.filter((e) => !parents.has(e.examCode)).map((e) => ({
+				examCode: e.examCode,
+				mark: null,
+				coefficient: 100,
+				examType: null
+			}));
+		}
+		const marks = buildGradeTree(gradesToBuild, nameLookup, componentTypes);
 		let classAverage = null;
 		const promoValues = filteredSynthesis.filter((e) => e.avgPreRatt != null).map((e) => parseFloat(e.avgPreRatt)).filter((v) => !isNaN(v) && v > 0);
 		if (promoValues.length > 0) classAverage = promoValues.reduce((s, v) => s + v, 0) / promoValues.length;
@@ -649,12 +846,20 @@
 	var s07_2526_fisa_default;
 	var init_s07_2526_fisa = __esmMin((() => {
 		s07_2526_fisa_default = {
-			"2526_I_INF_FISA_S07_AEE_EAE3_EX": 8,
-			"2526_I_INF_FISA_S07_CS_FR_MSE_EX": 2,
-			"2526_I_INF_FISA_S07_CS_GR_WS_EX": 2,
-			"2526_I_INF_FISA_S07_CS_SAE_DEVSEC_PROJ_EX": 3,
-			"2526_I_INF_FISA_S07_PL_GPRO2_EX": 2,
-			"2526_I_INF_FISA_S07_PR_42SH_EX": 4
+			"2526_I_INF_FISA_S07_AEE": 8,
+			"2526_I_INF_FISA_S07_AG": 1,
+			"2526_I_INF_FISA_S07_CN": 3,
+			"2526_I_INF_FISA_S07_FR": 2,
+			"2526_I_INF_FISA_S07_GR": 3,
+			"2526_I_INF_FISA_S07_PR": 3,
+			"2526_I_INF_FISA_S07_PR_42SH": {
+				"ects": 2,
+				"module": "SAE 42SH",
+				"name": "Projet Shell"
+			},
+			"2526_I_INF_FISA_S07_DEVSEC": 3,
+			"2526_I_INF_FISA_S07_INT": 4,
+			"2526_I_INF_FISA_S07_PL": 1
 		};
 	}));
 	//#endregion
@@ -703,36 +908,41 @@
 		const [semester, year] = semesterKey.split("_");
 		const filename = `${semesterKey}_${track}`.toLowerCase() + ".js";
 		const yearLabel = `20${year.slice(0, 2)}/20${year.slice(2)}`;
-		const entries = [];
+		const allCodes = [];
 		for (const mod of marks) {
-			const modEntries = [];
-			for (const sub of mod.subjects) for (const mark of sub.marks) modEntries.push({
-				code: mark._code,
-				name: mark.name
-			});
-			if (modEntries.length > 0) entries.push({
-				module: mod.name,
-				marks: modEntries
-			});
+			allCodes.push(mod._code);
+			for (const sub of mod.subjects) allCodes.push(sub._code);
 		}
-		const maxLen = Math.max(...entries.flatMap((e) => e.marks.map((m) => m.code.length)));
+		const maxLen = Math.max(...allCodes.map((c) => c.length));
 		const lines = [
 			`/**`,
 			` * Coefficients — ${semester} ${track} ${yearLabel}`,
 			` * Filename: ${filename}`,
-			` * Only list entries whose coefficient is NOT 1.`,
+			` * Set ECTS at module level (applies equally to all subjects).`,
+			` * If a module mixes UEs with different ECTS, uncomment the`,
+			` * subject lines below it and set their ECTS individually.`,
 			` */`,
 			`export default {`
 		];
-		for (let i = 0; i < entries.length; i++) {
-			const { module: modName, marks: modMarks } = entries[i];
-			lines.push(`    // ── ${modName} ${"─".repeat(Math.max(1, 50 - modName.length))}`);
-			for (const { code, name } of modMarks) {
-				const coef = overrides?.get(code) ?? 1;
-				const pad = " ".repeat(Math.max(1, maxLen - code.length));
-				lines.push(`    '${code}': ${coef},${pad} // ${name}`);
+		const modsWithMarks = marks.filter((m) => m.subjects.some((s) => s.marks.length > 0));
+		for (let i = 0; i < modsWithMarks.length; i++) {
+			const mod = modsWithMarks[i];
+			const rawCoef = overrides?.get(mod._code) ?? 1;
+			const coef = typeof rawCoef === "object" ? JSON.stringify(rawCoef) : rawCoef;
+			const pad = " ".repeat(Math.max(1, maxLen - mod._code.length));
+			lines.push(`    '${mod._code}': ${coef},${pad} // ${mod.name}`);
+			if (mod.subjects.length > 1) {
+				if (!mod.subjects.some((s) => overrides?.has(s._code))) lines.push(`    // Uncomment below to override individual subjects (when they have different ECTS):`);
+				for (const sub of mod.subjects) {
+					const raw = overrides?.get(sub._code);
+					const subPad = " ".repeat(Math.max(1, maxLen - sub._code.length));
+					if (raw != null) {
+						const val = typeof raw === "object" ? JSON.stringify(raw) : raw;
+						lines.push(`    '${sub._code}': ${val},${subPad} // └ ${sub.name || sub.id}`);
+					} else lines.push(`    // '${sub._code}': ?,${subPad} // └ ${sub.name || sub.id}`);
+				}
 			}
-			if (i < entries.length - 1) lines.push("");
+			if (i < modsWithMarks.length - 1) lines.push("");
 		}
 		lines.push(`};`, "");
 		return {
@@ -748,29 +958,52 @@
 	* @returns {{ average: number|null }}
 	*/
 	function applyCoefficients(marks, overrides) {
+		function applyOverride(node) {
+			if (!overrides?.has(node._code)) return;
+			const val = overrides.get(node._code);
+			if (typeof val === "object" && val !== null) {
+				node.coefficient = val.ects;
+				if (val.name) node.name = val.name;
+				if (val.module) node._promoteTo = val.module;
+			} else node.coefficient = val;
+			node._overridden = true;
+		}
 		for (const mod of marks) {
-			if (overrides?.has(mod._code)) {
-				mod.coefficient = overrides.get(mod._code);
-				mod._overridden = true;
-			}
+			applyOverride(mod);
 			if (!mod.coefficient || mod.coefficient === 100) mod.coefficient = 1;
 			for (const sub of mod.subjects) {
-				if (overrides?.has(sub._code)) {
-					sub.coefficient = overrides.get(sub._code);
-					sub._overridden = true;
-				}
+				applyOverride(sub);
 				if (sub.coefficient === 100) sub.coefficient = 1;
 				for (const mark of sub.marks) {
-					if (overrides?.has(mark._code)) {
-						mark.coefficient = overrides.get(mark._code);
-						mark._overridden = true;
-					}
+					applyOverride(mark);
 					if (mark.coefficient === 100) mark.coefficient = 1;
 				}
 			}
 		}
-		let totalSum = 0;
-		let totalWeight = 0;
+		const promoted = /* @__PURE__ */ new Map();
+		for (const mod of marks) {
+			const detached = mod.subjects.filter((s) => s._promoteTo);
+			if (detached.length === 0) continue;
+			mod.subjects = mod.subjects.filter((s) => !s._promoteTo);
+			for (const sub of detached) {
+				const modName = sub._promoteTo;
+				if (promoted.has(modName)) promoted.get(modName).subjects.push(sub);
+				else {
+					const newMod = {
+						id: sub.id,
+						_code: sub._code,
+						name: modName,
+						average: null,
+						classAverage: sub.classAverage,
+						coefficient: sub.coefficient,
+						_overridden: true,
+						subjects: [sub]
+					};
+					promoted.set(modName, newMod);
+					marks.push(newMod);
+				}
+			}
+		}
 		for (const mod of marks) {
 			for (const sub of mod.subjects) {
 				let subTotal = 0;
@@ -778,8 +1011,6 @@
 				for (const mark of sub.marks) if (mark.value != null && mark.value !== .01) {
 					subTotal += mark.value * mark.coefficient;
 					subWeight += mark.coefficient;
-					totalSum += mark.value * mark.coefficient;
-					totalWeight += mark.coefficient;
 				}
 				sub.average = subWeight > 0 ? subTotal / subWeight : null;
 				if (!sub._overridden) sub.coefficient = subWeight || 1;
@@ -797,10 +1028,34 @@
 			mod.average = modWeight > 0 ? modTotal / modWeight : null;
 			if (!mod._overridden) mod.coefficient = modWeight || 1;
 		}
+		let totalSum = 0;
+		let totalWeight = 0;
+		for (const mod of marks) if (mod.average != null) {
+			totalSum += mod.average * mod.coefficient;
+			totalWeight += mod.coefficient;
+		}
 		return { average: totalWeight > 0 ? totalSum / totalWeight : null };
 	}
 	//#endregion
 	//#region src/lib/session.js
+	var FILTERS_KEY = "auriga_filters";
+	/** Detect track (e.g. "FISA") from grade codes. */
+	function detectTrack(marks) {
+		return (marks.flatMap((m) => m.subjects.flatMap((s) => s.marks)).find((m) => m._code)?._code)?.split("_")[3] ?? null;
+	}
+	/** Load coefficients + generate template for a given marks tree. */
+	async function loadCoeffData(marks, filtersValues) {
+		const track = detectTrack(marks);
+		if (!track) return {
+			coeffData: null,
+			coeffTemplate: null
+		};
+		const coeffData = await loadCoefficients(filtersValues.semester, track);
+		return {
+			coeffData,
+			coeffTemplate: generateTemplate(marks, filtersValues.semester, track, coeffData?.overrides ?? null)
+		};
+	}
 	/**
 	* Load initial session: user name, available filters, last selection.
 	*/
@@ -809,7 +1064,7 @@
 		const name = await getName().catch(() => "Etudiant");
 		status?.step("Récupération des filtres...");
 		const filters = await getMarksFilters();
-		const saved = localStorage.getItem("auriga_filters");
+		const saved = localStorage.getItem(FILTERS_KEY);
 		return {
 			name,
 			filters,
@@ -821,20 +1076,17 @@
 	*/
 	async function fetchMarksAndUpdates(filtersValues, status) {
 		status?.step("Récupération des notes...");
-		const result = await getMarks(filtersValues);
-		const marks = result.marks;
-		const track = (marks.flatMap((m) => m.subjects.flatMap((s) => s.marks)).find((m) => m._code)?._code)?.split("_")[3] ?? null;
+		const { marks, classAverage } = await getMarks(filtersValues);
 		status?.step("Application des coefficients...");
-		const coeffData = track ? await loadCoefficients(filtersValues.semester, track) : null;
+		const { coeffData, coeffTemplate } = await loadCoeffData(marks, filtersValues);
 		const { average } = applyCoefficients(marks, coeffData?.overrides ?? null);
 		status?.step("Calcul des changements...");
 		const updates = getUpdates(filtersValues, marks);
-		const coeffTemplate = track ? generateTemplate(marks, filtersValues.semester, track, coeffData?.overrides ?? null) : null;
 		return {
 			marks,
 			averages: {
 				student: average,
-				promo: result.classAverage
+				promo: classAverage
 			},
 			updates,
 			coeffSource: coeffData?.file ?? null,
@@ -845,43 +1097,45 @@
 	* Try to load marks from localStorage cache (saved by the updates system).
 	* Returns a render-ready data object, or null if no cache exists.
 	*/
-	function loadCachedMarks(filtersValues) {
+	async function loadCachedMarks(filtersValues) {
 		const save = JSON.parse(localStorage.getItem("auriga_marks_save") || "{}");
 		const key = JSON.stringify(filtersValues);
 		const marks = save[key];
 		if (!marks || marks.length === 0) return null;
-		let totalSum = 0;
-		let totalWeight = 0;
-		for (const mod of marks) for (const sub of mod.subjects) for (const mark of sub.marks) if (mark.value != null && mark.value !== .01) {
-			const coef = mark._rawCoefficient ?? mark.coefficient;
-			totalSum += mark.value * coef;
-			totalWeight += coef;
-		}
+		const { coeffData, coeffTemplate } = await loadCoeffData(marks, filtersValues);
+		const { average } = applyCoefficients(marks, coeffData?.overrides ?? null);
 		const updates = JSON.parse(localStorage.getItem("auriga_updates") || "{}");
 		return {
 			marks,
 			averages: {
-				student: totalWeight > 0 ? totalSum / totalWeight : null,
+				student: average,
 				promo: null
 			},
 			updates: updates[key] || [],
-			coeffSource: null,
-			coeffTemplate: null
+			coeffSource: coeffData?.file ?? null,
+			coeffTemplate
 		};
+	}
+	/**
+	* Load saved semester filter from localStorage.
+	*/
+	function loadSavedFilters() {
+		const saved = localStorage.getItem(FILTERS_KEY);
+		return saved ? JSON.parse(saved) : {};
 	}
 	/**
 	* Persist semester selection.
 	*/
 	function saveSemesterFilter(value) {
 		const filtersValues = { semester: value };
-		localStorage.setItem("auriga_filters", JSON.stringify(filtersValues));
+		localStorage.setItem(FILTERS_KEY, JSON.stringify(filtersValues));
 		return filtersValues;
 	}
 	//#endregion
 	//#region package.json
 	var version;
 	var init_package = __esmMin((() => {
-		version = "1.6.0";
+		version = "1.6.1";
 	}));
 	//#endregion
 	//#region src/app.js
@@ -1138,18 +1392,19 @@
 		const codeLabel = useNameAsLabel ? fullName : rawCode;
 		const metaParts = [];
 		if (subject.classAverage != null) metaParts.push(`promo: ${formatGrade(subject.classAverage)}`);
-		if (subject.coefficient != null && subject.coefficient !== 1) metaParts.push(`coeff. ${formatGrade(subject.coefficient)}`);
-		const subOverriddenEl = subject._overridden ? h("span", { class: "coeff-override" }, `\u00d7${subject.coefficient}`) : null;
+		if (!subject._overridden && subject.coefficient != null && subject.coefficient !== 1) metaParts.push(`coeff. ${formatGrade(subject.coefficient)}`);
+		const subOverriddenEl = subject._overridden ? h("span", { class: "coeff-override" }, `${subject.coefficient} ECTS`) : null;
 		const info = h("div", { class: "info" }, h("div", { class: "top" }, h("div", { class: "id" }, copyCodeEl(subject._code, codeLabel))), h("div", { class: "bottom" }, h("div", { class: "average" }, gradeSpan(subject.average), "\xA0/ 20"), ...metaParts.length || subOverriddenEl ? [h("div", { class: "class-average" }, ...metaParts.length ? [`(${metaParts.join(", ")})`] : [], ...subOverriddenEl ? [subOverriddenEl] : [])] : []), h("hr", { class: "bottom-line" }));
-		const marksContent = subject.marks.map((mark) => {
+		function renderMark(mark) {
 			const meta = [];
 			if (mark.classAverage != null) meta.push(`moyenne: ${formatGrade(mark.classAverage)}`);
 			if (!hasEqualCoefficients(subject) && !mark._overridden) meta.push(`${Math.round(mark.coefficient * 100)}%`);
-			const overriddenEl = mark._overridden && mark._rawCoefficient != null ? h("span", { class: "coeff-override" }, `\u00d7${mark._rawCoefficient}`) : null;
+			const overriddenEl = mark._overridden && mark._rawCoefficient != null ? h("span", { class: "coeff-override" }, `${mark._rawCoefficient} ECTS`) : null;
 			let markName = mark.name;
-			if (fullName) {
-				if (markName.startsWith(fullName + " - ")) markName = markName.slice(fullName.length + 3);
-				else if (markName.startsWith(fullName + " ")) markName = markName.slice(fullName.length + 1);
+			const prefix = mark._group || fullName;
+			if (prefix) {
+				if (markName.startsWith(prefix + " - ")) markName = markName.slice(prefix.length + 3);
+				else if (markName.startsWith(prefix + " ")) markName = markName.slice(prefix.length + 1);
 			}
 			return h("div", { class: "mark" }, h("div", { class: "point" }), h("div", { class: "line" }, h("div", { class: "name" }, copyCodeEl(mark._code, markName)), "\xA0:\xA0", h("div", { class: "value" }, h("span", {
 				class: "itself",
@@ -1159,8 +1414,17 @@
 				meta.join(", "),
 				h("span", { class: "parenthesis" }, ")")
 			] : [], ...overriddenEl ? [overriddenEl] : [])] : []);
-		});
-		return h("div", { class: "subject card" }, info, subject.marks.length === 0 ? h("div", { class: "no-marks" }, "Aucune note") : h("div", { class: "marks" }, ...fullName && !useNameAsLabel ? [h("div", { class: "marks-title" }, fullName)] : [], ...marksContent));
+		}
+		const marksContent = [];
+		let lastGroup = null;
+		for (const mark of subject.marks) {
+			if (mark._group && mark._group !== lastGroup) {
+				marksContent.push(h("div", { class: "marks-title" }, mark._group));
+				lastGroup = mark._group;
+			}
+			marksContent.push(renderMark(mark));
+		}
+		return h("div", { class: "subject card" }, info, subject.marks.length === 0 ? h("div", { class: "no-marks" }, "Aucune note") : h("div", { class: "marks" }, ...fullName && !useNameAsLabel && !lastGroup ? [h("div", { class: "marks-title" }, fullName)] : [], ...marksContent));
 	}
 	function renderFooter() {
 		const resetLink = h("a", {
@@ -1191,28 +1455,35 @@
 	//#endregion
 	//#region src/render/app.js
 	/**
-	* Build a dismissable warning banner shown when the API failed but cached data is available.
+	* Build the error panel shown in the #background sidebar when the API fails.
+	* Adapts its message depending on whether cached grades are available.
 	*/
-	function createApiBanner(error, onRetry, filtersValues) {
-		const banner = h("div", { class: "api-banner" }, h("div", { class: "api-banner-text" }, h("span", { class: "api-banner-title" }, "Hors-ligne"), h("span", { class: "api-banner-detail" }, " — impossible de contacter Auriga. Vos notes peuvent être obsolètes.")), h("div", { class: "api-banner-actions" }, h("a", {
-			href: "#",
-			class: "api-banner-btn",
-			onclick: (e) => {
-				e.preventDefault();
-				onRetry(filtersValues.semester);
+	function createApiErrorPanel(error, hasCachedData) {
+		const message = error?.message || String(error);
+		let hint = "";
+		if (message.includes("Menu entries not found") || message.includes("menu")) hint = "Le format du menu Auriga a peut-être changé. ";
+		else if (message.includes("API error") || message.includes("fetch")) hint = "Le serveur Auriga ne répond pas correctement. ";
+		else if (message.includes("access token") || message.includes("401")) hint = "Votre session a expiré. ";
+		else if (message.includes("API format changed") || message.includes("parse")) hint = "Le format des données Auriga a changé. ";
+		const desc = hasCachedData ? hint + "Vos notes en cache sont affichées à droite, mais elles peuvent être obsolètes." : hint + "Essayez de recharger la page. Si le problème persiste, signalez-le.";
+		const reportUrl = `${app.repository}/issues/new?title=${encodeURIComponent("Erreur: " + message.substring(0, 80))}&body=${encodeURIComponent("## Erreur\n```\n" + message + "\n```\n\n## Contexte\n- Version: " + app.version + "\n- URL: " + window.location.href + "\n- Date: " + (/* @__PURE__ */ new Date()).toISOString())}`;
+		return h("div", { class: "api-error-panel" }, h("div", { class: "api-error-title" }, "Oups, quelque chose a cassé"), h("div", { class: "api-error-desc" }, desc), h("pre", { class: "api-error-box" }, message), h("div", { class: "api-error-actions" }, h("button", {
+			class: "api-error-btn primary",
+			onclick: () => window.location.reload()
+		}, "Recharger"), h("a", {
+			href: reportUrl,
+			target: "_blank",
+			class: "api-error-btn"
+		}, "Signaler"), h("button", {
+			class: "api-error-btn muted",
+			onclick: () => {
+				localStorage.clear();
+				window.location.reload();
 			}
-		}, "Réessayer"), h("a", {
-			href: "#",
-			class: "api-banner-dismiss",
-			onclick: (e) => {
-				e.preventDefault();
-				banner.remove();
-			}
-		}, "✕")));
-		return banner;
+		}, "Reset cache")));
 	}
 	/**
-	* Copy coefficient template to clipboard and link to the GitHub folder.
+	* Copy coefficient template to clipboard.
 	*/
 	function createCopyTemplateBtn({ content }) {
 		const btn = h("a", {
@@ -1230,7 +1501,8 @@
 	}
 	function renderApp(container, { name, marks, averages, filters, filtersValues, updates, coeffSource, coeffTemplate, apiError, onSemesterChange }) {
 		container.replaceChildren();
-		container.appendChild(h("div", { id: "background" }, html("div", {
+		const hasCachedData = marks.length > 0;
+		container.appendChild(apiError ? h("div", { id: "background" }, createApiErrorPanel(apiError, hasCachedData)) : h("div", { id: "background" }, html("div", {
 			id: "top-triangle",
 			class: "triangle"
 		}, top_triangle_default), html("div", {
@@ -1248,7 +1520,7 @@
 			colored: false
 		}];
 		const moduleEls = marks.flatMap((mod) => {
-			const modOverriddenEl = mod._overridden ? h("span", { class: "coeff-override" }, `\u00d7${mod.coefficient}`) : null;
+			const modOverriddenEl = mod._overridden ? h("span", { class: "coeff-override" }, `${mod.coefficient} ECTS`) : null;
 			return [h("div", { class: "header module" }, h("div", { class: "text" }, h("div", { class: "name" }, copyCodeEl(mod._code, mod.name)), h("div", { class: "point" }), h("div", { class: "bottom" }, h("span", {
 				class: "average",
 				style: { color: gradeColor(mod.average) }
@@ -1267,24 +1539,31 @@
 				e.preventDefault();
 				window.location.href = "https://ionisepita-auth.np-auriga.nfrance.net/auth/realms/npionisepita/protocol/openid-connect/logout?post_logout_redirect_uri=" + encodeURIComponent("https://auriga.epita.fr");
 			}
-		}, "Se deconnecter")] : []), h("div", { id: "main" }, h("div", { class: "content" }, ...apiError ? [createApiBanner(apiError, onSemesterChange, filtersValues)] : [], h("div", { class: "filters" }, ...filters.map((f) => renderComboBox(f.name, f.values, filtersValues[f.id], (choice) => {
-			if (f.id === "semester") onSemesterChange(choice.value);
-		}))), h("div", { class: "header" }, "Derniers changements", h("hr")), ...visibleUpdates.length === 0 ? [h("div", { class: "no-updates" }, "Aucun changement depuis votre derniere visite.")] : [], h("div", { class: "updates" }, ...visibleUpdates.map(renderUpdate)), h("div", { class: "header" }, "Moyennes", h("hr")), h("div", { class: "big-list" }, ...avgEntries.map((e) => h("div", { class: "entry" }, h("div", { class: "point" }), h("div", { class: "name" }, e.label), h("div", { class: "point small" }), h("div", { class: "mark" }, h("span", {
-			class: "value",
-			style: { color: e.colored ? gradeColor(e.value) : "auto" }
-		}, formatGrade(e.value)), "\xA0/ 20")))), h("div", { class: "coeff-info" }, h("div", { class: "coeff-main" }, h("div", { class: "point" }), h("div", { class: "coeff-content" }, coeffSource ? h("span", {}, "Coefficients corrigés par la communauté") : h("span", {}, "Coefficients non corrigés ", h("span", { class: "coeff-muted" }, "(Auriga les considère tous égaux)")))), h("div", { class: "coeff-links" }, ...coeffSource ? [h("a", {
-			href: `${app.repository}/blob/master/src/lib/coefficients/${coeffSource}`,
-			target: "_blank",
-			class: "link colored"
-		}, "Voir la source"), ...coeffTemplate ? ["\xA0·\xA0", createCopyTemplateBtn(coeffTemplate)] : []] : [
-			createCopyTemplateBtn(coeffTemplate),
-			"\xA0·\xA0",
-			h("a", {
+		}, "Se deconnecter")] : []), h("div", { id: "main" }, h("div", { class: "content" }, ...!apiError ? [
+			h("div", { class: "filters" }, ...filters.map((f) => renderComboBox(f.name, f.values, filtersValues[f.id], (choice) => {
+				if (f.id === "semester") onSemesterChange(choice.value);
+			}))),
+			h("div", { class: "header" }, "Derniers changements", h("hr")),
+			...visibleUpdates.length === 0 ? [h("div", { class: "no-updates" }, "Aucun changement depuis votre derniere visite.")] : [],
+			h("div", { class: "updates" }, ...visibleUpdates.map(renderUpdate)),
+			h("div", { class: "header" }, "Moyennes", h("hr")),
+			h("div", { class: "big-list" }, ...avgEntries.map((e) => h("div", { class: "entry" }, h("div", { class: "point" }), h("div", { class: "name" }, e.label), h("div", { class: "point small" }), h("div", { class: "mark" }, h("span", {
+				class: "value",
+				style: { color: e.colored ? gradeColor(e.value) : "auto" }
+			}, formatGrade(e.value)), "\xA0/ 20"))))
+		] : [], ...!hasCachedData && apiError ? [h("div", { class: "empty-state" }, h("div", { class: "empty-state-text" }, "Aucune note en cache"), h("div", { class: "empty-state-hint" }, "Les notes seront disponibles ici une fois la connexion rétablie."))] : [
+			h("div", { class: "coeff-info" }, h("div", { class: "coeff-main" }, h("div", { class: "point" }), h("div", { class: "coeff-content" }, coeffSource ? h("span", {}, "Coefficients corrigés par la communauté") : h("span", {}, "Coefficients non corrigés ", h("span", { class: "coeff-muted" }, "(Auriga les considère tous égaux)")))), h("div", { class: "coeff-links" }, ...coeffSource ? [h("a", {
+				href: `${app.repository}/blob/master/src/lib/coefficients/${coeffSource}`,
+				target: "_blank",
+				class: "link colored"
+			}, "Voir la source"), ...coeffTemplate ? ["\xA0·\xA0", createCopyTemplateBtn(coeffTemplate)] : []] : [...coeffTemplate ? [createCopyTemplateBtn(coeffTemplate), "\xA0·\xA0"] : [], h("a", {
 				href: `${app.repository}/tree/master/src/lib/coefficients`,
 				target: "_blank",
 				class: "link colored"
-			}, "Contribuer")
-		])), h("hr", { class: "separator" }), ...moduleEls)), renderFooter()));
+			}, "Contribuer")])),
+			h("hr", { class: "separator" }),
+			...moduleEls
+		])), renderFooter()));
 	}
 	var init_app = __esmMin((() => {
 		init_app$1();
@@ -1354,7 +1633,16 @@
 	}));
 	//#endregion
 	//#region src/boot.js
-	init_app$1();
+	var EMPTY_DATA = {
+		marks: [],
+		averages: {
+			student: null,
+			promo: null
+		},
+		updates: [],
+		coeffSource: null,
+		coeffTemplate: null
+	};
 	/**
 	* Shared boot sequence for both dev (main.js) and prod (userscript-entry.js).
 	*
@@ -1392,87 +1680,33 @@
 					});
 				} catch (err) {
 					console.error("[Infinity Auriga]", err);
-					const cached = loadCachedMarks(filtersValues);
-					if (cached) renderApp(container, {
+					const cached = await loadCachedMarks(filtersValues);
+					renderApp(container, {
 						name,
 						filters,
 						filtersValues,
-						...cached,
+						...cached || EMPTY_DATA,
 						apiError: err,
 						onSemesterChange
 					});
-					else renderError(container, err);
 				}
 			}
 			await refresh();
 		} catch (err) {
 			console.error("[Infinity Auriga]", err);
-			const savedFilter = localStorage.getItem("auriga_filters");
-			if (savedFilter) {
-				const filtersValues = JSON.parse(savedFilter);
-				const cached = loadCachedMarks(filtersValues);
-				if (cached) {
-					renderApp(container, {
-						name: "Etudiant",
-						filters: [],
-						filtersValues,
-						...cached,
-						apiError: err,
-						onSemesterChange(value) {
-							localStorage.setItem("auriga_filters", JSON.stringify({ semester: value }));
-							window.location.reload();
-						}
-					});
-					return;
+			const filtersValues = loadSavedFilters();
+			renderApp(container, {
+				name: "Etudiant",
+				filters: [],
+				filtersValues,
+				...await loadCachedMarks(filtersValues) || EMPTY_DATA,
+				apiError: err,
+				onSemesterChange(value) {
+					saveSemesterFilter(value);
+					window.location.reload();
 				}
-			}
-			renderError(container, err);
+			});
 		}
-	}
-	/**
-	* Show a user-facing error screen with context about what went wrong.
-	* Provides actionable next steps instead of a blank page.
-	*/
-	function renderError(container, err) {
-		const message = err?.message || String(err);
-		let hint = "";
-		if (message.includes("Menu entries not found") || message.includes("menu")) hint = "Le format du menu Auriga a peut-être changé. ";
-		else if (message.includes("API error") || message.includes("fetch")) hint = "Le serveur Auriga ne répond pas correctement. ";
-		else if (message.includes("access token") || message.includes("401")) hint = "Votre session a expiré. ";
-		else if (message.includes("API format changed") || message.includes("parse")) hint = "Le format des données Auriga a changé. ";
-		container.replaceChildren();
-		const panel = document.createElement("div");
-		panel.style.cssText = "display:flex;flex-direction:column;align-items:center;justify-content:center;height:100dvh;font-family:system-ui;background:#151925;color:#fff;padding:20px;text-align:center;";
-		const title = document.createElement("div");
-		title.style.cssText = "font-size:24px;font-weight:700;margin-bottom:16px;color:#e34e4e;";
-		title.textContent = "Oups, quelque chose a cassé";
-		const desc = document.createElement("div");
-		desc.style.cssText = "font-size:15px;color:#aaa;max-width:500px;line-height:1.6;margin-bottom:24px;";
-		desc.textContent = hint + "Essayez de recharger la page. Si le problème persiste, signalez-le.";
-		const errorBox = document.createElement("pre");
-		errorBox.style.cssText = "background:#1e2233;color:#ff6b6b;padding:16px 24px;border-radius:10px;font-size:12px;max-width:600px;overflow-x:auto;margin-bottom:24px;text-align:left;white-space:pre-wrap;word-break:break-word;";
-		errorBox.textContent = message;
-		const actions = document.createElement("div");
-		actions.style.cssText = "display:flex;gap:12px;";
-		const reload = document.createElement("button");
-		reload.style.cssText = "padding:10px 24px;border:none;border-radius:10px;background:#fff;color:#151925;font-weight:600;font-size:14px;cursor:pointer;";
-		reload.textContent = "Recharger";
-		reload.addEventListener("click", () => window.location.reload());
-		const report = document.createElement("a");
-		report.href = `${app.repository}/issues/new?title=${encodeURIComponent("Erreur: " + message.substring(0, 80))}&body=${encodeURIComponent("## Erreur\n```\n" + message + "\n```\n\n## Contexte\n- Version: " + app.version + "\n- Navigateur: " + navigator.userAgent + "\n- URL: " + window.location.href + "\n- Date: " + (/* @__PURE__ */ new Date()).toISOString())}`;
-		report.target = "_blank";
-		report.style.cssText = "padding:10px 24px;border:1px solid #444;border-radius:10px;color:#aaa;font-weight:600;font-size:14px;text-decoration:none;cursor:pointer;";
-		report.textContent = "Signaler";
-		const resetBtn = document.createElement("button");
-		resetBtn.style.cssText = "padding:10px 24px;border:1px solid #444;border-radius:10px;background:none;color:#888;font-size:14px;cursor:pointer;";
-		resetBtn.textContent = "Reset cache";
-		resetBtn.addEventListener("click", () => {
-			localStorage.clear();
-			window.location.reload();
-		});
-		actions.append(reload, report, resetBtn);
-		panel.append(title, desc, errorBox, actions);
-		container.appendChild(panel);
 	}
 	//#endregion
 	//#region src/style.css
