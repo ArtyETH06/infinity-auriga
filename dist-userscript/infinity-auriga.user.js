@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Infinity Auriga
 // @namespace    infinity-auriga
-// @version      1.6.1
+// @version      1.7.0
 // @description  Make Auriga Great Again - enhanced grades UI for EPITA
 // @author       KazeTachinuu & contributors
 // @match        https://auriga.epita.fr/*
@@ -13,7 +13,7 @@
 // @downloadURL  https://raw.githubusercontent.com/KazeTachinuu/infinity-auriga/master/dist-userscript/infinity-auriga.user.js
 // ==/UserScript==
 
-;(function(){if(localStorage.getItem('infinity_auriga_enabled')==='0')return;var s=document.createElement('style');s.setAttribute('data-infinity','1');s.textContent="*,*:before,*:after{box-sizing:border-box}body{margin:0;overflow:hidden}div{display:flex}div,hr{box-sizing:border-box}button{outline:none;border:none;background:none}a{color:inherit;text-decoration:inherit}:root{--bg-dark: #343D55;--bg-darker: #151925;--text-primary: #151925;--text-muted: #868DA0;--text-meta: #909090;--surface: #FFFFFF;--surface-alt: #F3F4F5;--dot-color: #D5D9DC;--accent: #3D69ED;--radius: 6px;--content-px: clamp(25px, 5vw, 75px);--font-header: clamp(20px, 3vw, 32px);--font-body: clamp(13px, 1.5vw, 18px);-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif}#app{height:100dvh}button,a,.clickable{cursor:pointer;user-select:none;transition:opacity .15s}button:not(.opaque):hover,a:not(.opaque):hover,.clickable:not(.opaque):hover{opacity:.8}button:not(.opaque):active,a:not(.opaque):active,.clickable:not(.opaque):active{opacity:.6}.subtext{color:var(--text-muted);font-size:clamp(13px,1.5vw,16px);line-height:22px;text-align:center}.link.colored{color:var(--accent)}.card{border-radius:var(--radius);box-shadow:#00000026 0 2px 8px;transition:all .2s}.card.clickable:hover{box-shadow:#00000040 0 2px 9px;transform:translateY(-1px)}.variable{transition:width .6s cubic-bezier(.65,0,.35,1),margin .6s cubic-bezier(.65,0,.35,1)}.class-average{color:var(--text-meta)}.point{flex-shrink:0;width:8px;height:8px;background-color:var(--dot-color);border-radius:50%}.point.big{width:10px;height:10px}.point.small{width:6px;height:6px}#background{position:relative;z-index:1;flex-grow:1;overflow:hidden;background:linear-gradient(-212deg,var(--bg-dark) 0%,var(--bg-darker) 95%)}.triangle{position:absolute}#top-triangle{top:-175px;left:-175px;width:500px;filter:drop-shadow(3px 3px 15px rgba(0,0,0,.25))}#bottom-triangle{bottom:-75px;right:-100px;width:600px;filter:drop-shadow(-3px -3px 15px rgba(0,0,0,.25))}#content{flex-direction:column;justify-content:space-between;align-items:center;z-index:2;width:575px;padding:35px 0;overflow-y:auto;background-color:var(--surface)}#content.wide{width:1200px}#content.wide #header #logo{width:300px;margin:0}#header{width:100%;padding:20px var(--content-px);justify-content:space-between;align-items:center;flex-shrink:0;overflow:hidden}#header #logo{flex-shrink:0;width:400px;margin-top:25px;margin-left:12.5px}#header #logo svg{width:100%;height:auto}#header #logout{color:#251515;font-size:clamp(16px,2vw,22px);font-weight:500}#footer{flex-direction:column;flex-shrink:0}#footer #links{justify-content:center;margin-bottom:8px;font-weight:500;font-size:clamp(16px,2vw,22px);color:var(--text-primary)}#main{flex-direction:column;flex-grow:1;justify-content:center;width:100%}.loading{flex-direction:column;align-items:center;padding:0 var(--content-px)}.loading-step{margin-top:clamp(20px,4vw,40px);font-size:clamp(16px,2vw,20px);font-weight:600;color:var(--text-primary);text-align:center}.loading-request{margin-top:6px;min-height:1.4em;max-width:100%;font-size:clamp(11px,1.2vw,13px);font-family:SF Mono,Cascadia Code,Fira Code,monospace;color:var(--text-muted);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:0;transition:opacity .15s}.loading-request:not(:empty){opacity:1}.loading-quote{margin-top:clamp(25px,4vw,40px);font-size:clamp(13px,1.4vw,15px);font-style:italic;color:var(--text-muted);text-align:center;opacity:.6}.spinner{width:clamp(60px,8vw,85px);animation:spin .75s linear infinite}.spinner svg{width:100%;height:100%}@keyframes spin{to{transform:rotate(360deg)}}.content{flex-direction:column;flex-grow:1;align-items:flex-start;padding:5px var(--content-px);margin-bottom:25px;overflow-y:auto}.header{flex-direction:column;position:relative;font-weight:700;font-size:var(--font-header)}.header hr{width:100%;border-bottom:0;border-color:var(--surface);position:relative;z-index:-1}.filters{justify-content:space-between;width:100%;margin-bottom:clamp(30px,4vw,50px)}.combo-box{flex-direction:column;position:relative}.combo-box .name{height:20px;margin-bottom:clamp(5px,1vw,8px);margin-left:1px;color:#343434;font-size:clamp(14px,1.5vw,16px)}.combo-box .box{justify-content:space-between;align-items:center;min-width:clamp(200px,30vw,400px);height:clamp(32px,4vw,40px);padding:0 12px;border-radius:var(--radius);background-color:var(--surface-alt);font-size:clamp(12px,1.5vw,16px)}.combo-box .box svg{height:clamp(8px,1vw,10px);margin-top:2px;transition:transform .125s}.combo-box .box.opened svg{transform:rotate(180deg)}.combo-box .choices{flex-direction:column;position:absolute;top:75px;z-index:2;width:100%;background-color:var(--surface);border-radius:var(--radius);font-size:clamp(12px,1.5vw,16px)}.combo-box .choices .choice{padding:8px 12px;transition:background-color .15s}.combo-box .choices .choice:hover{background-color:#0000000d}.combo-box .choices .choice:active{background-color:#0000001a}.combo-box .choices .choice:first-child{border-top-left-radius:var(--radius);border-top-right-radius:var(--radius)}.combo-box .choices .choice:last-child{border-bottom-left-radius:var(--radius);border-bottom-right-radius:var(--radius)}.no-updates{margin-bottom:20px;font-size:var(--font-body)}.updates{flex-direction:column;width:100%;margin-bottom:15px}.updates .update{align-items:center;margin-bottom:10px;padding-left:35px;font-size:clamp(18px,2.5vw,28px)}.updates .update .top{align-items:center}.updates .update .top .id{margin-left:15px;margin-right:10px;font-weight:700}.updates .update .top .dash{margin-right:10px;font-size:clamp(18px,2vw,24px)}.updates .update .top .name{font-size:var(--font-body);margin-right:10px}.updates .update .top .name .target{font-weight:500}.updates .update .mark{align-items:center;margin-bottom:1px;font-weight:500}.updates .update .mark .point{margin-left:2px;margin-right:12px}.updates .update .mark .from{color:#a5a9b5;text-decoration:line-through}.updates .update .mark .update-arrow{margin:0 10px}.updates .update .mark .type-sign{margin-left:12px;margin-bottom:2px}.updates .update .mark .type-sign svg{width:30px}.big-list{flex-direction:column;margin-bottom:20px;padding-top:5px;transition:opacity .15s}.big-list .entry{align-items:center;margin-bottom:12px;padding-left:clamp(15px,3vw,35px);font-size:clamp(18px,2.8vw,26px)}.big-list .entry .name{margin-left:12px;margin-right:10px}.big-list .entry .mark{margin-left:10px}.big-list .entry .mark .value{font-weight:700}.coeff-info{flex-direction:column;margin-top:8px;padding-left:clamp(15px,3vw,35px);font-size:clamp(14px,1.8vw,18px)}.coeff-main{align-items:center;gap:12px;font-weight:500}.coeff-muted{color:var(--text-muted);font-weight:400}.coeff-links{margin-top:5px;margin-left:20px;font-size:clamp(12px,1.4vw,15px);font-weight:500}.coeff-copied{color:#44b732!important}.api-error-panel{flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;padding:40px 30px;gap:16px;z-index:2}.api-error-title{font-size:22px;font-weight:700;color:#e34e4e}.api-error-desc{font-size:14px;color:#aaa;line-height:1.6;max-width:400px}.api-error-box{background:#1e2233;color:#ff6b6b;padding:12px 18px;border-radius:10px;font-size:11px;max-width:100%;overflow-x:auto;text-align:left;white-space:pre-wrap;word-break:break-word}.api-error-actions{gap:10px;flex-wrap:wrap;justify-content:center}.api-error-btn{padding:8px 20px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;border:1px solid #444;background:none;color:#aaa;text-decoration:none}.api-error-btn.primary{background:#fff;color:#151925;border-color:#fff}.api-error-btn.muted{color:#666;border-color:#444;font-weight:400}.api-error-btn:hover{opacity:.85}.empty-state{flex-direction:column;align-items:center;justify-content:center;width:100%;flex-grow:1;padding:60px 20px;text-align:center;gap:8px}.empty-state-text{font-size:18px;font-weight:600;color:var(--text-primary)}.empty-state-hint{font-size:14px;color:var(--text-muted)}hr.separator{width:100%;margin-top:25px;opacity:.3;border-bottom:0;border-color:var(--surface)}.header.module{max-width:100%;margin-top:50px}.header.module .text{align-items:center}.header.module .name,.header.module .average,.header.module .class-average,.header.module .max{white-space:nowrap}.header.module .name{display:inline-block;overflow:hidden;text-overflow:ellipsis;padding-bottom:2px}.header.module .point{margin:2px 10px 0}.header.module .class-average{margin-left:10px;font-weight:400}.subject{width:100%;margin:15px 0}.subject .info{flex-direction:column;align-items:center;flex-shrink:0;width:250px;padding-top:15px;padding-bottom:17px}.subject .info .top,.subject .info .bottom{display:contents}.subject .info .id{font-weight:700;font-size:24px;word-break:break-word}.subject .info .point{display:none}.subject .info .average{margin-top:10px;font-size:24px}.subject .info .average .value{font-weight:700}.subject .info .class-average{font-size:14px}.subject .info .bottom-line{display:none}.subject .marks{flex-direction:column;flex-grow:1;justify-content:center;max-width:calc(100% - 275px);padding:15px 0;font-size:16px}.subject .marks .marks-title{font-weight:600;font-size:15px;margin-bottom:6px;color:#444}.subject .marks .mark{align-items:center;max-width:100%;margin:3px 0}.subject .marks .mark .point{margin-bottom:1px}.subject .marks .mark .line{display:contents}.subject .marks .mark .name,.subject .marks .mark .value,.subject .marks .mark .class-average{white-space:nowrap}.subject .marks .mark .name{display:inline-block;margin-left:15px;overflow:hidden;text-overflow:ellipsis;padding-bottom:2px}.subject .marks .mark .value{justify-content:flex-end;margin-left:1px;font-weight:700}.subject .marks .mark .class-average{margin-left:10px}.coeff-override{margin-left:8px;color:var(--text-muted);font-weight:400;font-size:.75em;opacity:.7}.copy-code{display:inline-block;border-bottom:1px dashed var(--dot-color)}.copy-code:hover{border-bottom-color:var(--text-muted)}.code-tooltip{position:fixed;z-index:9999;padding:5px 12px;border-radius:5px;background:var(--bg-darker);color:#e8eaed;font-size:13px;font-weight:500;letter-spacing:.3px;font-family:SF Mono,Cascadia Code,Fira Code,monospace;white-space:nowrap;pointer-events:none;box-shadow:0 4px 12px #0000004d;opacity:0;transition:opacity .12s}.code-tooltip.copied{background:var(--accent);color:#fff;font-family:inherit}.no-marks{flex-grow:1;justify-content:center;align-items:center;width:100%;font-size:28px}@media (max-width: 850px){.filters{flex-direction:column;gap:15px}.header hr{margin-top:9px}.updates{margin-top:4px;margin-bottom:12px}.updates .update{display:grid;grid-template-columns:17px 100%;margin-bottom:6px;padding-left:15px}.updates .update>.point{width:6px;height:6px}.updates .update .top .id{margin-left:0;margin-right:6px}.updates .update .top .name{display:inline-block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.updates .update .top .name .target{display:none}.updates .update .mark{grid-column:2 / 3;height:23px}.updates .update .mark .point{display:none}.updates .update .mark .update-arrow{width:20px;margin:0 6px 1px}.updates .update .mark .type-sign{width:14px;margin-left:6px;margin-bottom:2px}.header.module{margin-top:20px;margin-bottom:6px}.header.module .text{flex-direction:column;align-items:flex-start;margin-left:-1px}.header.module .text .name{max-width:100%;margin-bottom:2px;font-size:20px}.header.module .text .point{display:none}.header.module .text .bottom{align-items:center;font-size:16px}.header.module .text .bottom .class-average{margin-left:5px;font-size:14px}.header.module .bottom-line{margin-top:7px;margin-bottom:1px;opacity:.6}.subject{flex-direction:column;margin:10px 0;padding:10px 14px}.subject .no-marks{margin:4px 0;font-size:14px}.subject .info{align-items:flex-start;width:100%;padding:0}.subject .info .top,.subject .info .bottom{display:flex;align-items:center;max-width:100%}.subject .info .id{font-size:18px}.subject .info .point{display:block;width:5px;height:5px;margin:0 8px}.subject .info .average{margin:0;font-size:14px}.subject .info .class-average{margin-left:5px;font-size:12px}.subject .info .bottom-line{display:block;width:100%;border-bottom:0;border-color:var(--surface);opacity:.3}.subject .marks{max-width:100%;padding:0}.subject .marks .mark{display:grid;grid-template-columns:12px calc(100% - 5px);padding:0 5px}.subject .marks .mark .point{width:5px;height:5px;margin-top:1px}.subject .marks .mark .line{display:flex;flex-direction:row-reverse;justify-content:flex-end;font-size:13px}.subject .marks .mark .line .name{margin-left:0}.subject .marks .mark .line .value{width:auto;margin-left:0}.subject .marks .mark .class-average{grid-column:2 / 3;margin-left:0;font-size:11px}.subject .marks .mark .class-average .parenthesis{display:none}}@media (max-width: 575px){#header{flex-direction:column;padding:0;justify-content:center;margin-bottom:20px}#header #logo{margin-top:15px;margin-left:0;max-width:80%}#content{padding:15px 0}hr.separator{margin-top:0;margin-bottom:5px}}@media (max-height: 650px){#header #logo{margin-top:0}#header #logo svg{height:115px}}@media (max-height: 550px){#header{margin-bottom:10px}#header #logo svg{height:100px}#header #logout{font-size:16px}}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--dot-color);border-radius:3px}\n";(document.head||document.documentElement).appendChild(s)})();
+;(function(){if(localStorage.getItem('infinity_auriga_enabled')==='0')return;var s=document.createElement('style');s.setAttribute('data-infinity','1');s.textContent="*,*:before,*:after{box-sizing:border-box}body{margin:0;overflow:hidden}div{display:flex}div,hr{box-sizing:border-box}button{outline:none;border:none;background:none}a{color:inherit;text-decoration:inherit}:root{--bg-dark: #343D55;--bg-darker: #151925;--text-primary: #151925;--text-muted: #868DA0;--text-meta: #909090;--surface: #FFFFFF;--surface-alt: #F3F4F5;--dot-color: #D5D9DC;--accent: #3D69ED;--radius: 6px;--content-px: clamp(25px, 5vw, 75px);--font-header: clamp(20px, 3vw, 32px);--font-body: clamp(13px, 1.5vw, 18px);-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif}#app{height:100dvh}button,a,.clickable{cursor:pointer;user-select:none;transition:opacity .15s}button:not(.opaque):hover,a:not(.opaque):hover,.clickable:not(.opaque):hover{opacity:.8}button:not(.opaque):active,a:not(.opaque):active,.clickable:not(.opaque):active{opacity:.6}.subtext{color:var(--text-muted);font-size:clamp(13px,1.5vw,16px);line-height:22px;text-align:center}.link.colored{color:var(--accent)}.card{border-radius:var(--radius);box-shadow:#00000026 0 2px 8px;transition:all .2s}.card.clickable:hover{box-shadow:#00000040 0 2px 9px;transform:translateY(-1px)}.variable{transition:width .6s cubic-bezier(.65,0,.35,1),margin .6s cubic-bezier(.65,0,.35,1)}.class-average{color:var(--text-meta)}.point{flex-shrink:0;width:8px;height:8px;background-color:var(--dot-color);border-radius:50%}.point.big{width:10px;height:10px}.point.small{width:6px;height:6px}#background{position:relative;z-index:1;flex-grow:1;overflow:hidden;background:linear-gradient(-212deg,var(--bg-dark) 0%,var(--bg-darker) 95%)}.triangle{position:absolute}#top-triangle{top:-175px;left:-175px;width:500px;filter:drop-shadow(3px 3px 15px rgba(0,0,0,.25))}#bottom-triangle{bottom:-75px;right:-100px;width:600px;filter:drop-shadow(-3px -3px 15px rgba(0,0,0,.25))}#content{flex-direction:column;justify-content:space-between;align-items:center;z-index:2;width:575px;padding:35px 0;overflow-y:auto;background-color:var(--surface)}#content.wide{width:1200px}#content.wide #header #logo{width:300px;margin:0}#header{width:100%;padding:20px var(--content-px);justify-content:space-between;align-items:center;flex-shrink:0;overflow:hidden}#header #logo{flex-shrink:0;width:400px;margin-top:25px;margin-left:12.5px}#header #logo svg{width:100%;height:auto}#header #logout{color:#251515;font-size:clamp(16px,2vw,22px);font-weight:500}#footer{flex-direction:column;flex-shrink:0}#footer #links{justify-content:center;margin-bottom:8px;font-weight:500;font-size:clamp(16px,2vw,22px);color:var(--text-primary)}#main{flex-direction:column;flex-grow:1;justify-content:center;width:100%}.loading{flex-direction:column;align-items:center;padding:0 var(--content-px)}.loading-step{margin-top:clamp(20px,4vw,40px);font-size:clamp(16px,2vw,20px);font-weight:600;color:var(--text-primary);text-align:center}.loading-request{margin-top:6px;min-height:1.4em;max-width:100%;font-size:clamp(11px,1.2vw,13px);font-family:SF Mono,Cascadia Code,Fira Code,monospace;color:var(--text-muted);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:0;transition:opacity .15s}.loading-request:not(:empty){opacity:1}.loading-quote{margin-top:clamp(25px,4vw,40px);font-size:clamp(13px,1.4vw,15px);font-style:italic;color:var(--text-muted);text-align:center;opacity:.6}.spinner{width:clamp(60px,8vw,85px);animation:spin .75s linear infinite}.spinner svg{width:100%;height:100%}@keyframes spin{to{transform:rotate(360deg)}}.content{flex-direction:column;flex-grow:1;align-items:flex-start;padding:5px var(--content-px);margin-bottom:25px;overflow-y:auto}.header{flex-direction:column;position:relative;font-weight:700;font-size:var(--font-header)}.header hr{width:100%;border-bottom:0;border-color:var(--surface);position:relative;z-index:-1}.filters{justify-content:space-between;width:100%;margin-bottom:clamp(30px,4vw,50px)}.combo-box{flex-direction:column;position:relative}.combo-box .name{height:20px;margin-bottom:clamp(5px,1vw,8px);margin-left:1px;color:#343434;font-size:clamp(14px,1.5vw,16px)}.combo-box .box{justify-content:space-between;align-items:center;min-width:clamp(200px,30vw,400px);height:clamp(32px,4vw,40px);padding:0 12px;border-radius:var(--radius);background-color:var(--surface-alt);font-size:clamp(12px,1.5vw,16px)}.combo-box .box svg{height:clamp(8px,1vw,10px);margin-top:2px;transition:transform .125s}.combo-box .box.opened svg{transform:rotate(180deg)}.combo-box .choices{flex-direction:column;position:absolute;top:75px;z-index:2;width:100%;background-color:var(--surface);border-radius:var(--radius);font-size:clamp(12px,1.5vw,16px)}.combo-box .choices .choice{padding:8px 12px;transition:background-color .15s}.combo-box .choices .choice:hover{background-color:#0000000d}.combo-box .choices .choice:active{background-color:#0000001a}.combo-box .choices .choice:first-child{border-top-left-radius:var(--radius);border-top-right-radius:var(--radius)}.combo-box .choices .choice:last-child{border-bottom-left-radius:var(--radius);border-bottom-right-radius:var(--radius)}.no-updates{margin-bottom:20px;font-size:var(--font-body)}.updates{flex-direction:column;width:100%;margin-bottom:15px}.updates .update{align-items:center;margin-bottom:10px;padding-left:35px;font-size:clamp(18px,2.5vw,28px)}.updates .update .top{align-items:center}.updates .update .top .id{margin-left:15px;margin-right:10px;font-weight:700}.updates .update .top .dash{margin-right:10px;font-size:clamp(18px,2vw,24px)}.updates .update .top .name{font-size:var(--font-body);margin-right:10px}.updates .update .top .name .target{font-weight:500}.updates .update .mark{align-items:center;margin-bottom:1px;font-weight:500}.updates .update .mark .point{margin-left:2px;margin-right:12px}.updates .update .mark .from{color:#a5a9b5;text-decoration:line-through}.updates .update .mark .update-arrow{margin:0 10px}.updates .update .mark .type-sign{margin-left:12px;margin-bottom:2px}.updates .update .mark .type-sign svg{width:30px}.big-list{flex-direction:column;margin-bottom:20px;padding-top:5px;transition:opacity .15s}.big-list .entry{align-items:center;margin-bottom:12px;padding-left:clamp(15px,3vw,35px);font-size:clamp(18px,2.8vw,26px)}.big-list .entry .name{margin-left:12px;margin-right:10px}.big-list .entry .mark{margin-left:10px}.big-list .entry .mark .value{font-weight:700}.track-info{flex-direction:column}.track-info-name{font-weight:700;font-size:var(--font-header)}.track-info-detail{font-size:clamp(12px,1.4vw,15px);color:var(--text-muted);margin-top:2px}.coeff-info{flex-direction:column;margin-top:8px;padding-left:clamp(15px,3vw,35px);font-size:clamp(14px,1.8vw,18px)}.coeff-main{align-items:center;gap:12px;font-weight:500}.coeff-muted{color:var(--text-muted);font-weight:400}.coeff-links{margin-top:5px;margin-left:20px;font-size:clamp(12px,1.4vw,15px);font-weight:500}.coeff-copied{color:#44b732!important}.api-error-panel{flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;padding:40px 30px;gap:16px;z-index:2}.api-error-title{font-size:22px;font-weight:700;color:#e34e4e}.api-error-desc{font-size:14px;color:#aaa;line-height:1.6;max-width:400px}.api-error-box{background:#1e2233;color:#ff6b6b;padding:12px 18px;border-radius:10px;font-size:11px;max-width:100%;overflow-x:auto;text-align:left;white-space:pre-wrap;word-break:break-word}.api-error-actions{gap:10px;flex-wrap:wrap;justify-content:center}.api-error-btn{padding:8px 20px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;border:1px solid #444;background:none;color:#aaa;text-decoration:none}.api-error-btn.primary{background:#fff;color:#151925;border-color:#fff}.api-error-btn.muted{color:#666;border-color:#444;font-weight:400}.api-error-btn:hover{opacity:.85}.empty-state{flex-direction:column;align-items:center;justify-content:center;width:100%;flex-grow:1;padding:60px 20px;text-align:center;gap:8px}.empty-state-text{font-size:18px;font-weight:600;color:var(--text-primary)}.empty-state-hint{font-size:14px;color:var(--text-muted)}hr.separator{width:100%;margin-top:25px;opacity:.3;border-bottom:0;border-color:var(--surface)}.header.module{max-width:100%;margin-top:50px}.header.module .text{align-items:center}.header.module .name,.header.module .average,.header.module .class-average,.header.module .max{white-space:nowrap}.header.module .name{display:inline-block;overflow:hidden;text-overflow:ellipsis;padding-bottom:2px}.header.module .point{margin:2px 10px 0}.header.module .class-average{margin-left:10px;font-weight:400}.subject{width:100%;margin:15px 0}.subject .info{flex-direction:column;align-items:center;flex-shrink:0;width:250px;padding-top:15px;padding-bottom:17px}.subject .info .top,.subject .info .bottom{display:contents}.subject .info .id{font-weight:700;font-size:24px;word-break:break-word}.subject .info .point{display:none}.subject .info .average{margin-top:10px;font-size:24px}.subject .info .average .value{font-weight:700}.subject .info .class-average{font-size:14px}.subject .info .bottom-line{display:none}.subject .marks{flex-direction:column;flex-grow:1;justify-content:center;max-width:calc(100% - 275px);padding:15px 0;font-size:16px}.subject .marks .marks-title{font-weight:600;font-size:15px;margin-bottom:6px;color:#444}.subject .marks .mark{align-items:center;max-width:100%;margin:3px 0}.subject .marks .mark .point{margin-bottom:1px}.subject .marks .mark .line{display:contents}.subject .marks .mark .name,.subject .marks .mark .value,.subject .marks .mark .class-average{white-space:nowrap}.subject .marks .mark .name{display:inline-block;margin-left:15px;overflow:hidden;text-overflow:ellipsis;padding-bottom:2px}.subject .marks .mark .value{justify-content:flex-end;margin-left:1px;font-weight:700}.subject .marks .mark .class-average{margin-left:10px}.coeff-override{margin-left:8px;color:var(--text-muted);font-weight:400;font-size:.75em;opacity:.7}.copy-code{display:inline-block;border-bottom:1px dashed var(--dot-color)}.copy-code:hover{border-bottom-color:var(--text-muted)}.code-tooltip{position:fixed;z-index:9999;padding:5px 12px;border-radius:5px;background:var(--bg-darker);color:#e8eaed;font-size:13px;font-weight:500;letter-spacing:.3px;font-family:SF Mono,Cascadia Code,Fira Code,monospace;white-space:nowrap;pointer-events:none;box-shadow:0 4px 12px #0000004d;opacity:0;transition:opacity .12s}.code-tooltip.copied{background:var(--accent);color:#fff;font-family:inherit}.no-marks{flex-grow:1;justify-content:center;align-items:center;width:100%;font-size:28px}@media (max-width: 850px){.filters{flex-direction:column;gap:15px}.header hr{margin-top:9px}.updates{margin-top:4px;margin-bottom:12px}.updates .update{display:grid;grid-template-columns:17px 100%;margin-bottom:6px;padding-left:15px}.updates .update>.point{width:6px;height:6px}.updates .update .top .id{margin-left:0;margin-right:6px}.updates .update .top .name{display:inline-block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.updates .update .top .name .target{display:none}.updates .update .mark{grid-column:2 / 3;height:23px}.updates .update .mark .point{display:none}.updates .update .mark .update-arrow{width:20px;margin:0 6px 1px}.updates .update .mark .type-sign{width:14px;margin-left:6px;margin-bottom:2px}.header.module{margin-top:20px;margin-bottom:6px}.header.module .text{flex-direction:column;align-items:flex-start;margin-left:-1px}.header.module .text .name{max-width:100%;margin-bottom:2px;font-size:20px}.header.module .text .point{display:none}.header.module .text .bottom{align-items:center;font-size:16px}.header.module .text .bottom .class-average{margin-left:5px;font-size:14px}.header.module .bottom-line{margin-top:7px;margin-bottom:1px;opacity:.6}.subject{flex-direction:column;margin:10px 0;padding:10px 14px}.subject .no-marks{margin:4px 0;font-size:14px}.subject .info{align-items:flex-start;width:100%;padding:0}.subject .info .top,.subject .info .bottom{display:flex;align-items:center;max-width:100%}.subject .info .id{font-size:18px}.subject .info .point{display:block;width:5px;height:5px;margin:0 8px}.subject .info .average{margin:0;font-size:14px}.subject .info .class-average{margin-left:5px;font-size:12px}.subject .info .bottom-line{display:block;width:100%;border-bottom:0;border-color:var(--surface);opacity:.3}.subject .marks{max-width:100%;padding:0}.subject .marks .mark{display:grid;grid-template-columns:12px calc(100% - 5px);padding:0 5px}.subject .marks .mark .point{width:5px;height:5px;margin-top:1px}.subject .marks .mark .line{display:flex;flex-direction:row-reverse;justify-content:flex-end;font-size:13px}.subject .marks .mark .line .name{margin-left:0}.subject .marks .mark .line .value{width:auto;margin-left:0}.subject .marks .mark .class-average{grid-column:2 / 3;margin-left:0;font-size:11px}.subject .marks .mark .class-average .parenthesis{display:none}}@media (max-width: 575px){#header{flex-direction:column;padding:0;justify-content:center;margin-bottom:20px}#header #logo{margin-top:15px;margin-left:0;max-width:80%}#content{padding:15px 0}hr.separator{margin-top:0;margin-bottom:5px}}@media (max-height: 650px){#header #logo{margin-top:0}#header #logo svg{height:115px}}@media (max-height: 550px){#header{margin-bottom:10px}#header #logo svg{height:100px}#header #logout{font-size:16px}}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--dot-color);border-radius:3px}\n";(document.head||document.documentElement).appendChild(s)})();
 (function() {
 	//#region \0rolldown/runtime.js
 	var __create = Object.create;
@@ -48,7 +48,7 @@
 		enumerable: true
 	}) : target, mod));
 	//#endregion
-	//#region src/lib/auriga/api.js
+	//#region src/auriga/api.js
 	var AURIGA_API = "/api";
 	var _accessToken = null;
 	var _onApiRequest = null;
@@ -73,8 +73,9 @@
 				...options.headers
 			}
 		});
+		const TOKEN_REFRESH_DELAY_MS = 2e3;
 		if (response.status === 401 && !_retried) {
-			await new Promise((r) => setTimeout(r, 2e3));
+			await new Promise((r) => setTimeout(r, TOKEN_REFRESH_DELAY_MS));
 			return apiFetch(path, options, true);
 		}
 		if (!response.ok) throw new Error(`Auriga API error: ${response.status} ${response.statusText} (${url})`);
@@ -85,10 +86,7 @@
 			throw new Error(`Auriga API returned invalid JSON for ${url} (got ${text.substring(0, 100)}...)`);
 		}
 	}
-	/**
-	* Fetch all pages of a search result endpoint.
-	* Handles pagination transparently - returns all lines across pages.
-	*/
+	/** Fetch all pages of a search result endpoint, returning all lines across pages. */
 	async function fetchAllSearchResults(menuEntryId, queryId) {
 		const body = (await apiFetch(`/menuEntries/${menuEntryId}/query/${queryId}`)).queryDefinition;
 		let allLines = [];
@@ -106,7 +104,7 @@
 		return allLines;
 	}
 	//#endregion
-	//#region src/lib/auriga/auth.js
+	//#region src/auriga/auth.js
 	var _userInfo = null;
 	var _tokenListeners = [];
 	/**
@@ -181,7 +179,7 @@
 		return (await getUserInfo()).fullName;
 	}
 	//#endregion
-	//#region src/lib/toggle.js
+	//#region src/toggle.js
 	var PREF_KEY = "infinity_auriga_enabled";
 	function isInfinityEnabled() {
 		return localStorage.getItem(PREF_KEY) !== "0";
@@ -224,7 +222,7 @@
 		});
 	}
 	//#endregion
-	//#region src/lib/auriga/hierarchy.js
+	//#region src/auriga/hierarchy.js
 	/**
 	* Parse an Auriga exam code into its hierarchical components.
 	*
@@ -524,7 +522,7 @@
 		return result;
 	}
 	//#endregion
-	//#region src/lib/auriga/schema.js
+	//#region src/auriga/schema.js
 	/**
 	* Auriga API response schema — column mappings and line parsers.
 	*
@@ -644,7 +642,7 @@
 		};
 	}
 	//#endregion
-	//#region src/lib/auriga/marks.js
+	//#region src/auriga/marks.js
 	var _menuConfig = null;
 	async function getMenuConfig() {
 		if (_menuConfig) return _menuConfig;
@@ -666,11 +664,7 @@
 	}
 	var _cachedSynthesisEntries = null;
 	var _componentTypesPromise;
-	/**
-	* Fetch component type map from the pedagogical registration endpoint.
-	* Returns a Map<examCode, componentType> (e.g. "Semester", "EU Resource", etc.)
-	* Falls back to null if the endpoint is unavailable.
-	*/
+	/** Fetch component type map from the pedagogical endpoint, or null if unavailable. */
 	function getComponentTypes() {
 		if (_componentTypesPromise) return _componentTypesPromise;
 		_componentTypesPromise = (async () => {
@@ -770,7 +764,7 @@
 		};
 	}
 	//#endregion
-	//#region src/lib/updates.js
+	//#region src/updates.js
 	var UPDATE_EXPIRATION_MS = 1e3 * 60 * 60 * 24 * 7;
 	function getUpdates(filters, marks) {
 		const save = JSON.parse(localStorage.getItem("auriga_marks_save") || "{}");
@@ -811,12 +805,10 @@
 		localStorage.setItem("auriga_updates", JSON.stringify(updates));
 		return result;
 	}
-	/**
-	* Add or merge an update entry into the result list.
-	*/
+	/** Add or merge an update entry into the result list. */
 	function pushUpdate(result, subjectId, type, id, name, value, old) {
 		const existing = result.find((u) => u.subject === subjectId && u.id === id && u.name === name);
-		if (existing && (!(existing.type === "average-update" || type === "average-update") || existing.type === type)) {
+		if (existing && (existing.type === type || existing.type !== "average-update" && type !== "average-update")) {
 			existing.type = type;
 			existing.date = /* @__PURE__ */ new Date();
 			existing.value = value;
@@ -833,19 +825,27 @@
 			...old != null ? { old } : {}
 		});
 	}
-	/**
-	* Remove updates older than the expiration delay.
-	*/
+	/** Remove updates older than the expiration delay. */
 	function removeExpired(updates) {
 		const cutoff = Date.now() - UPDATE_EXPIRATION_MS;
 		return updates.filter((u) => new Date(u.date).getTime() > cutoff);
 	}
 	//#endregion
-	//#region src/lib/coefficients/s07_2526_fisa.js
-	var s07_2526_fisa_exports = /* @__PURE__ */ __exportAll({ default: () => s07_2526_fisa_default });
-	var s07_2526_fisa_default;
-	var init_s07_2526_fisa = __esmMin((() => {
-		s07_2526_fisa_default = {
+	//#region coefficients/s07_2526_fisa_cs.js
+	var s07_2526_fisa_cs_exports = /* @__PURE__ */ __exportAll({
+		default: () => s07_2526_fisa_cs_default,
+		meta: () => meta$1
+	});
+	var meta$1, s07_2526_fisa_cs_default;
+	var init_s07_2526_fisa_cs = __esmMin((() => {
+		meta$1 = {
+			semester: "S07",
+			year: "2526",
+			track: "FISA",
+			major: "CS",
+			name: "Cybersécurité et Systèmes"
+		};
+		s07_2526_fisa_cs_default = {
 			"2526_I_INF_FISA_S07_AEE": 8,
 			"2526_I_INF_FISA_S07_AG": 1,
 			"2526_I_INF_FISA_S07_CN": 3,
@@ -863,65 +863,108 @@
 		};
 	}));
 	//#endregion
-	//#region src/lib/coefficients/index.js
-	/**
-	* Coefficient override system — flat weighted average.
-	*
-	* Auriga treats all exams as equally weighted (coefficient 100).
-	* This module applies the real coefficients contributed by the community.
-	*
-	* The student average is a flat weighted average of all marks:
-	*   Σ(mark × coef) / Σ(coef)
-	*
-	* Subject and module weights are derived from the sum of their children's
-	* coefficients by default, but can be explicitly overridden if needed.
-	*
-	* Only entries whose coefficient is NOT 1 need to be listed.
-	*/
-	var modules = /* @__PURE__ */ Object.assign({ "./s07_2526_fisa.js": () => Promise.resolve().then(() => (init_s07_2526_fisa(), s07_2526_fisa_exports)).then((m) => m["default"]) });
-	/**
-	* Load coefficient overrides for a semester/track combo.
-	* Returns { overrides: Map, file: string } or null.
-	*/
-	async function loadCoefficients(semesterKey, track) {
-		const file = `${semesterKey}_${track}`.toLowerCase() + ".js";
-		const loader = modules[`./${file}`];
-		if (!loader) return null;
-		const data = await loader();
+	//#region coefficients/s07_2526_fisa_dev.js
+	var s07_2526_fisa_dev_exports = /* @__PURE__ */ __exportAll({
+		default: () => s07_2526_fisa_dev_default,
+		meta: () => meta
+	});
+	var meta, s07_2526_fisa_dev_default;
+	var init_s07_2526_fisa_dev = __esmMin((() => {
+		meta = {
+			semester: "S07",
+			year: "2526",
+			track: "FISA",
+			major: "DEV",
+			name: "Développement web et nouvelles applications"
+		};
+		s07_2526_fisa_dev_default = {
+			"2526_I_INF_FISA_S07_AEE": 8,
+			"2526_I_INF_FISA_S07_AG": 1,
+			"2526_I_INF_FISA_S07_CN": 3,
+			"2526_I_INF_FISA_S07_PR": 2,
+			"2526_I_INF_FISA_S07_PR_42SH": {
+				"ects": 2,
+				"module": "SAE 42SH",
+				"name": "Projet Shell"
+			},
+			"2526_I_INF_FISA_S07_PL": 3,
+			"2526_I_INF_FISA_S07_DEV_CI": 3,
+			"2526_I_INF_FISA_S07_DEV_CI_BADG1_EX": 2,
+			"2526_I_INF_FISA_S07_DEV_OC": 3,
+			"2526_I_INF_FISA_S07_DEV_OC_PPAR_EX": 2,
+			"2526_I_INF_FISA_S07_DEV_WMM": 8.5,
+			"2526_I_INF_FISA_S07_DEV_WMM_AWEB_EX": 3,
+			"2526_I_INF_FISA_S07_DEV_WMM_IANDO_EX": 2,
+			"2526_I_INF_FISA_S07_DEV_WMM_IJST_EX": 1.5,
+			"2526_I_INF_FISA_S07_DEV_WMM_J2E_EX": .5,
+			"2526_I_INF_FISA_S07_DEV_WMM_J2E_PROJET": 1.5,
+			"2526_I_INF_FISA_S07_DEV_WEB1": 1.5
+		};
+	}));
+	//#endregion
+	//#region src/coefficients/index.js
+	/** Coefficient override system — applies community-contributed ECTS weights to Auriga's flat grades. */
+	var modules = /* @__PURE__ */ Object.assign({
+		"../../coefficients/s07_2526_fisa_cs.js": () => Promise.resolve().then(() => (init_s07_2526_fisa_cs(), s07_2526_fisa_cs_exports)),
+		"../../coefficients/s07_2526_fisa_dev.js": () => Promise.resolve().then(() => (init_s07_2526_fisa_dev(), s07_2526_fisa_dev_exports))
+	});
+	/** Parse filename: s07_2526_fisa_cs.js → { semester, year, track, major } */
+	function parseFilename(path) {
+		const parts = path.replace(/^.*\//, "").replace(".js", "").split("_");
+		if (parts.length < 3) return null;
 		return {
-			overrides: new Map(Object.entries(data)),
-			file
+			semester: parts[0].toUpperCase(),
+			year: parts[1],
+			track: parts[2].toUpperCase(),
+			major: parts[3]?.toUpperCase() || null
 		};
 	}
-	/**
-	* Generate a pre-filled coefficient template from the current grade tree.
-	* All marks are listed with coefficient 1, organized by module/subject with
-	* human-readable comments — ready for a contributor to fill in real values.
-	*
-	* @param {Module[]} marks - grade tree
-	* @param {string} semesterKey - e.g. "S07_2526"
-	* @param {string} track - e.g. "FISA"
-	* @param {Map|null} [overrides] - existing coefficient overrides to pre-fill
-	* @returns {{ filename: string, content: string }}
-	*/
-	function generateTemplate(marks, semesterKey, track, overrides = null) {
+	/** Load coefficients for a semester/track/major. Major-specific first, then track-only fallback. */
+	async function loadCoefficients(semesterKey, track, major = null) {
 		const [semester, year] = semesterKey.split("_");
-		const filename = `${semesterKey}_${track}`.toLowerCase() + ".js";
-		const yearLabel = `20${year.slice(0, 2)}/20${year.slice(2)}`;
-		const allCodes = [];
-		for (const mod of marks) {
-			allCodes.push(mod._code);
-			for (const sub of mod.subjects) allCodes.push(sub._code);
+		const candidates = Object.entries(modules);
+		const passes = major ? [major.toLowerCase(), null] : [null];
+		for (const wantMajor of passes) {
+			const hit = candidates.find(([path]) => {
+				const f = parseFilename(path);
+				if (!f) return false;
+				return f.semester === semester && f.year === year && f.track === track && (wantMajor ? f.major?.toLowerCase() === wantMajor : !f.major);
+			});
+			if (!hit) continue;
+			const [path, loader] = hit;
+			const mod = await loader();
+			const { meta } = mod;
+			if (!meta) continue;
+			if (!(meta.semester?.toUpperCase() === semester && meta.year === year && meta.track?.toUpperCase() === track && (wantMajor ? meta.major?.toLowerCase() === wantMajor : !meta.major))) continue;
+			return {
+				overrides: new Map(Object.entries(mod.default)),
+				file: path.replace(/^.*\//, ""),
+				meta
+			};
 		}
+		return null;
+	}
+	/** Generate a pre-filled template from the grade tree for contributors. */
+	function generateTemplate(marks, semesterKey, track, major = null, overrides = null) {
+		const [semester, year] = semesterKey.split("_");
+		const filename = `${semesterKey}_${track}${major ? `_${major}` : ""}`.toLowerCase() + ".js";
+		const yearLabel = `20${year.slice(0, 2)}/20${year.slice(2)}`;
+		const majorLabel = major ? ` [${major.toUpperCase()}]` : "";
+		const allCodes = marks.flatMap((mod) => [mod._code, ...mod.subjects.map((s) => s._code)]);
 		const maxLen = Math.max(...allCodes.map((c) => c.length));
 		const lines = [
 			`/**`,
-			` * Coefficients — ${semester} ${track} ${yearLabel}`,
+			` * Coefficients — ${semester} ${track}${majorLabel} ${yearLabel}`,
 			` * Filename: ${filename}`,
-			` * Set ECTS at module level (applies equally to all subjects).`,
-			` * If a module mixes UEs with different ECTS, uncomment the`,
-			` * subject lines below it and set their ECTS individually.`,
 			` */`,
+			`export const meta = {`,
+			`    semester: '${semester}',`,
+			`    year: '${year}',`,
+			`    track: '${track}',`,
+			...major ? [`    major: '${major.toUpperCase()}',`] : [`    major: null,`],
+			`    name: '',  // TODO: fill in display name`,
+			`};`,
+			``,
 			`export default {`
 		];
 		const modsWithMarks = marks.filter((m) => m.subjects.some((s) => s.marks.length > 0));
@@ -932,7 +975,7 @@
 			const pad = " ".repeat(Math.max(1, maxLen - mod._code.length));
 			lines.push(`    '${mod._code}': ${coef},${pad} // ${mod.name}`);
 			if (mod.subjects.length > 1) {
-				if (!mod.subjects.some((s) => overrides?.has(s._code))) lines.push(`    // Uncomment below to override individual subjects (when they have different ECTS):`);
+				if (!mod.subjects.some((s) => overrides?.has(s._code))) lines.push(`    // Uncomment below to override individual subjects:`);
 				for (const sub of mod.subjects) {
 					const raw = overrides?.get(sub._code);
 					const subPad = " ".repeat(Math.max(1, maxLen - sub._code.length));
@@ -950,13 +993,7 @@
 			content: lines.join("\n")
 		};
 	}
-	/**
-	* Apply coefficient overrides and compute all averages.
-	*
-	* @param {Module[]} marks - grade tree (mutated in place)
-	* @param {Map|null} overrides - from loadCoefficients
-	* @returns {{ average: number|null }}
-	*/
+	/** Apply coefficient overrides and compute all averages (mutates marks in place). */
 	function applyCoefficients(marks, overrides) {
 		function applyOverride(node) {
 			if (!overrides?.has(node._code)) return;
@@ -968,46 +1005,41 @@
 			} else node.coefficient = val;
 			node._overridden = true;
 		}
+		function normalize(node) {
+			applyOverride(node);
+			if (!node.coefficient || node.coefficient === 100) node.coefficient = 1;
+		}
 		for (const mod of marks) {
-			applyOverride(mod);
-			if (!mod.coefficient || mod.coefficient === 100) mod.coefficient = 1;
+			normalize(mod);
 			for (const sub of mod.subjects) {
-				applyOverride(sub);
-				if (sub.coefficient === 100) sub.coefficient = 1;
-				for (const mark of sub.marks) {
-					applyOverride(mark);
-					if (mark.coefficient === 100) mark.coefficient = 1;
-				}
+				normalize(sub);
+				for (const mark of sub.marks) normalize(mark);
 			}
 		}
 		const promoted = /* @__PURE__ */ new Map();
 		for (const mod of marks) {
 			const detached = mod.subjects.filter((s) => s._promoteTo);
-			if (detached.length === 0) continue;
+			if (!detached.length) continue;
 			mod.subjects = mod.subjects.filter((s) => !s._promoteTo);
-			for (const sub of detached) {
-				const modName = sub._promoteTo;
-				if (promoted.has(modName)) promoted.get(modName).subjects.push(sub);
-				else {
-					const newMod = {
-						id: sub.id,
-						_code: sub._code,
-						name: modName,
-						average: null,
-						classAverage: sub.classAverage,
-						coefficient: sub.coefficient,
-						_overridden: true,
-						subjects: [sub]
-					};
-					promoted.set(modName, newMod);
-					marks.push(newMod);
-				}
+			for (const sub of detached) if (promoted.has(sub._promoteTo)) promoted.get(sub._promoteTo).subjects.push(sub);
+			else {
+				const newMod = {
+					id: sub.id,
+					_code: sub._code,
+					name: sub._promoteTo,
+					average: null,
+					classAverage: sub.classAverage,
+					coefficient: sub.coefficient,
+					_overridden: true,
+					subjects: [sub]
+				};
+				promoted.set(sub._promoteTo, newMod);
+				marks.push(newMod);
 			}
 		}
 		for (const mod of marks) {
 			for (const sub of mod.subjects) {
-				let subTotal = 0;
-				let subWeight = 0;
+				let subTotal = 0, subWeight = 0;
 				for (const mark of sub.marks) if (mark.value != null && mark.value !== .01) {
 					subTotal += mark.value * mark.coefficient;
 					subWeight += mark.coefficient;
@@ -1016,11 +1048,10 @@
 				if (!sub._overridden) sub.coefficient = subWeight || 1;
 				if (subWeight > 0) for (const mark of sub.marks) {
 					mark._rawCoefficient = mark.coefficient;
-					mark.coefficient = mark.coefficient / subWeight;
+					mark.coefficient /= subWeight;
 				}
 			}
-			let modTotal = 0;
-			let modWeight = 0;
+			let modTotal = 0, modWeight = 0;
 			for (const sub of mod.subjects) if (sub.average != null) {
 				modTotal += sub.average * sub.coefficient;
 				modWeight += sub.coefficient;
@@ -1028,8 +1059,7 @@
 			mod.average = modWeight > 0 ? modTotal / modWeight : null;
 			if (!mod._overridden) mod.coefficient = modWeight || 1;
 		}
-		let totalSum = 0;
-		let totalWeight = 0;
+		let totalSum = 0, totalWeight = 0;
 		for (const mod of marks) if (mod.average != null) {
 			totalSum += mod.average * mod.coefficient;
 			totalWeight += mod.coefficient;
@@ -1037,11 +1067,26 @@
 		return { average: totalWeight > 0 ? totalSum / totalWeight : null };
 	}
 	//#endregion
-	//#region src/lib/session.js
+	//#region src/session.js
 	var FILTERS_KEY = "auriga_filters";
 	/** Detect track (e.g. "FISA") from grade codes. */
 	function detectTrack(marks) {
 		return (marks.flatMap((m) => m.subjects.flatMap((s) => s.marks)).find((m) => m._code)?._code)?.split("_")[3] ?? null;
+	}
+	/**
+	* Detect major (e.g. "cs") from the transparent prefix in grade codes.
+	* After buildGradeTree, the transparent prefix (CS, DEV, ...) is stripped
+	* from module IDs but still present in raw mark codes. If mark._code has a
+	* path segment that doesn't match its module ID, that segment is the major.
+	*/
+	function detectMajor(marks) {
+		for (const mod of marks) for (const sub of mod.subjects) for (const mark of sub.marks) {
+			const parts = mark._code.split("_");
+			if (parts.length < 7) continue;
+			const afterSem = parts[5];
+			if (afterSem !== mod.id) return afterSem.toLowerCase();
+		}
+		return null;
 	}
 	/** Load coefficients + generate template for a given marks tree. */
 	async function loadCoeffData(marks, filtersValues) {
@@ -1050,15 +1095,14 @@
 			coeffData: null,
 			coeffTemplate: null
 		};
-		const coeffData = await loadCoefficients(filtersValues.semester, track);
+		const major = detectMajor(marks);
+		const coeffData = await loadCoefficients(filtersValues.semester, track, major);
 		return {
 			coeffData,
-			coeffTemplate: generateTemplate(marks, filtersValues.semester, track, coeffData?.overrides ?? null)
+			coeffTemplate: generateTemplate(marks, filtersValues.semester, track, major, coeffData?.overrides ?? null)
 		};
 	}
-	/**
-	* Load initial session: user name, available filters, last selection.
-	*/
+	/** Load initial session: user name, available filters, last selection. */
 	async function loadSession(status) {
 		status?.step("Récupération du profil...");
 		const name = await getName().catch(() => "Etudiant");
@@ -1071,9 +1115,7 @@
 			filtersValues: saved ? JSON.parse(saved) : filters[0]?.values.length > 0 ? { semester: filters[0].values[0].value } : {}
 		};
 	}
-	/**
-	* Fetch marks, apply coefficient overrides, compute updates.
-	*/
+	/** Fetch marks, apply coefficient overrides, and compute updates. */
 	async function fetchMarksAndUpdates(filtersValues, status) {
 		status?.step("Récupération des notes...");
 		const { marks, classAverage } = await getMarks(filtersValues);
@@ -1090,13 +1132,11 @@
 			},
 			updates,
 			coeffSource: coeffData?.file ?? null,
+			coeffMeta: coeffData?.meta ?? null,
 			coeffTemplate
 		};
 	}
-	/**
-	* Try to load marks from localStorage cache (saved by the updates system).
-	* Returns a render-ready data object, or null if no cache exists.
-	*/
+	/** Load marks from localStorage cache, or null if no cache exists. */
 	async function loadCachedMarks(filtersValues) {
 		const save = JSON.parse(localStorage.getItem("auriga_marks_save") || "{}");
 		const key = JSON.stringify(filtersValues);
@@ -1113,19 +1153,16 @@
 			},
 			updates: updates[key] || [],
 			coeffSource: coeffData?.file ?? null,
+			coeffMeta: coeffData?.meta ?? null,
 			coeffTemplate
 		};
 	}
-	/**
-	* Load saved semester filter from localStorage.
-	*/
+	/** Load saved semester filter from localStorage. */
 	function loadSavedFilters() {
 		const saved = localStorage.getItem(FILTERS_KEY);
 		return saved ? JSON.parse(saved) : {};
 	}
-	/**
-	* Persist semester selection.
-	*/
+	/** Persist semester selection to localStorage. */
 	function saveSemesterFilter(value) {
 		const filtersValues = { semester: value };
 		localStorage.setItem(FILTERS_KEY, JSON.stringify(filtersValues));
@@ -1135,7 +1172,7 @@
 	//#region package.json
 	var version;
 	var init_package = __esmMin((() => {
-		version = "1.6.1";
+		version = "1.7.0";
 	}));
 	//#endregion
 	//#region src/app.js
@@ -1436,7 +1473,7 @@
 			}
 		}, "Reset");
 		return h("div", { id: "footer" }, h("div", { id: "links" }, h("a", {
-			href: `${app.repository}/tree/master/src/lib/coefficients`,
+			href: `${app.repository}/tree/master/coefficients`,
 			target: "_blank"
 		}, "Coefficients"), "\xA0·\xA0", h("a", {
 			href: app.repository,
@@ -1499,7 +1536,7 @@
 		}, "Copier les codes");
 		return btn;
 	}
-	function renderApp(container, { name, marks, averages, filters, filtersValues, updates, coeffSource, coeffTemplate, apiError, onSemesterChange }) {
+	function renderApp(container, { name, marks, averages, filters, filtersValues, updates, coeffSource, coeffMeta, coeffTemplate, apiError, onSemesterChange }) {
 		container.replaceChildren();
 		const hasCachedData = marks.length > 0;
 		container.appendChild(apiError ? h("div", { id: "background" }, createApiErrorPanel(apiError, hasCachedData)) : h("div", { id: "background" }, html("div", {
@@ -1552,12 +1589,13 @@
 				style: { color: e.colored ? gradeColor(e.value) : "auto" }
 			}, formatGrade(e.value)), "\xA0/ 20"))))
 		] : [], ...!hasCachedData && apiError ? [h("div", { class: "empty-state" }, h("div", { class: "empty-state-text" }, "Aucune note en cache"), h("div", { class: "empty-state-hint" }, "Les notes seront disponibles ici une fois la connexion rétablie."))] : [
+			...coeffMeta ? [h("div", { class: "header" }, h("div", { class: "track-info" }, h("span", { class: "track-info-name" }, coeffMeta.name || [coeffMeta.track, coeffMeta.major].filter(Boolean).join(" ")), h("span", { class: "track-info-detail" }, `${coeffMeta.track} ${coeffMeta.semester} — 20${coeffMeta.year.slice(0, 2)}/20${coeffMeta.year.slice(2)}`)), h("hr"))] : [],
 			h("div", { class: "coeff-info" }, h("div", { class: "coeff-main" }, h("div", { class: "point" }), h("div", { class: "coeff-content" }, coeffSource ? h("span", {}, "Coefficients corrigés par la communauté") : h("span", {}, "Coefficients non corrigés ", h("span", { class: "coeff-muted" }, "(Auriga les considère tous égaux)")))), h("div", { class: "coeff-links" }, ...coeffSource ? [h("a", {
-				href: `${app.repository}/blob/master/src/lib/coefficients/${coeffSource}`,
+				href: `${app.repository}/blob/master/coefficients/${coeffSource}`,
 				target: "_blank",
 				class: "link colored"
 			}, "Voir la source"), ...coeffTemplate ? ["\xA0·\xA0", createCopyTemplateBtn(coeffTemplate)] : []] : [...coeffTemplate ? [createCopyTemplateBtn(coeffTemplate), "\xA0·\xA0"] : [], h("a", {
-				href: `${app.repository}/tree/master/src/lib/coefficients`,
+				href: `${app.repository}/tree/master/coefficients`,
 				target: "_blank",
 				class: "link colored"
 			}, "Contribuer")])),
@@ -1641,6 +1679,7 @@
 		},
 		updates: [],
 		coeffSource: null,
+		coeffMeta: null,
 		coeffTemplate: null
 	};
 	/**
