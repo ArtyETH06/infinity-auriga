@@ -34,5 +34,7 @@ export default {
     '2526_I_INF_FISE_S03_PR_GM': 2,      // └ Gestion de la mémoire C
     '2526_I_INF_FISE_S03_PR_GRAPHS': 3,  // └ Graphes
     '2526_I_INF_FISE_S03_PR_NAC': 3,     // └ Notions avancées C
+    '2526_I_INF_FISE_S03_PR_RIE_EXA': 1, // Robotique et informatique embarquee
+    '2526_I_INF_FISE_S03_PR_RIE_PRJ': 1, // Robotique et informatique embarquee - TP
     '2526_I_INF_FISE_S03_PR_SEM': 1,     // └ Séminaire C
 };
