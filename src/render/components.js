@@ -167,8 +167,11 @@ export function renderSubject(subject, moduleId) {
 
 export function renderFooter() {
     const resetLink = h('a', { href: '#', onclick: (e) => { e.preventDefault(); localStorage.clear(); window.location.reload(); } }, 'Reset');
+    const exportBtn = h('a', { href: '#', onclick: (e) => { e.preventDefault(); window.print(); } }, 'Exporter PDF');
     return h('div', { id: 'footer' },
         h('div', { id: 'links' },
+            exportBtn,
+            '\u00a0\u00b7\u00a0',
             h('a', { href: `${app.repository}/tree/master/coefficients`, target: '_blank' }, 'Coefficients'),
             '\u00a0\u00b7\u00a0',
             h('a', { href: app.repository, target: '_blank' }, 'Sources'),

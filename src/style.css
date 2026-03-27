@@ -329,3 +329,92 @@ hr.separator { width: 100%; margin-top: 25px; opacity: .3; border-bottom: 0; bor
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--dot-color); border-radius: 3px; }
+
+/* ===== PRINT VIEW (hidden on screen) ===== */
+#print-view { display: none; }
+
+/* ===== PRINT / PDF EXPORT ===== */
+@media print {
+    @page { size: A4 portrait; margin: 0; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { overflow: visible; margin: 0; background: #fff; }
+    #app { height: auto; display: block; }
+    #print-view { padding: 18mm 16mm !important; }
+
+    /* hide entire web UI + toggle */
+    #background, #content, #view-switcher { display: none !important; }
+
+    /* show print view */
+    #print-view {
+        display: block !important;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        color: #1a1a2e;
+    }
+
+    /* ── header ── */
+    .p-header {
+        display: flex; justify-content: space-between; align-items: flex-end;
+        margin-bottom: 22px; padding-bottom: 16px;
+        border-bottom: 2.5px solid #3b6fa0;
+    }
+    .p-header-left { display: flex; flex-direction: column; gap: 1px; }
+    .p-info { font-size: 11.5px; color: #555; line-height: 1.5; }
+    .p-student { font-size: 13px; font-weight: 700; margin-top: 6px; color: #1a1a2e; }
+    .p-header-right {
+        font-size: 24px; font-weight: 800; color: #1a1a2e;
+        letter-spacing: -0.01em; text-align: right; flex-shrink: 0; margin-left: 30px;
+    }
+
+    /* ── table globals ── */
+    .p-table { width: 100%; border-collapse: collapse; font-size: 12px; line-height: 1.35; }
+    .p-table th, .p-table td { padding: 7px 12px; border: 1px solid #c0ccd8; vertical-align: middle; }
+    .p-left { text-align: left !important; }
+
+    /* column widths */
+    .p-col-name { width: 48%; }
+    .p-col-ects { width: 12%; }
+    .p-col-avg { width: 20%; }
+
+    /* ── thead ── */
+    .p-table thead th {
+        background: #4a7fb5 !important; color: #fff !important;
+        font-weight: 700; font-size: 11px; text-align: center;
+        text-transform: uppercase; letter-spacing: 0.05em;
+        padding: 10px 12px;
+    }
+
+    /* ── UE rows — prominent ── */
+    .p-table .p-ue td {
+        background: #d6e4f0 !important;
+        font-weight: 800; text-align: center;
+        font-size: 13px;
+        padding: 9px 12px;
+        border-color: #a8bdd2;
+    }
+
+    /* ── subject rows ── */
+    .p-table .p-sub td {
+        text-align: center;
+        font-size: 11.5px;
+        padding: 5px 12px;
+    }
+    .p-table .p-sub td:first-child { padding-left: 22px; }
+    .p-table .p-sub td:last-child { font-weight: 700; }
+    .p-coef { margin-left: 6px; font-size: 9px; color: #7a8a9e; font-weight: 600; }
+
+    /* ── general average — same weight as thead ── */
+    .p-table .p-total td {
+        background: #4a7fb5 !important; color: #fff !important;
+        font-weight: 800; font-size: 13px; text-align: center;
+        padding: 9px 12px; border-color: #3a6a9a;
+    }
+
+    /* ── notes ── */
+    .p-notes { margin-top: 16px; font-size: 10px; color: #555; line-height: 1.6; }
+
+    /* ── footer ── */
+    .p-footer {
+        margin-top: 12px; font-size: 9px; color: #aaa; text-align: center;
+        letter-spacing: 0.02em;
+    }
+}

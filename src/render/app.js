@@ -6,6 +6,7 @@ import { app } from '../app.js';
 import { h, html, gradeColor, formatGrade, topTriangle, bottomTriangle, LogoSvg } from './dom.js';
 import { copyCodeEl } from './tooltip.js';
 import { renderComboBox, renderUpdate, renderSubject, renderFooter } from './components.js';
+import { renderPrintView } from './print.js';
 
 /**
  * Build the error panel shown in the #background sidebar when the API fails.
@@ -196,4 +197,14 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
         ),
         renderFooter()
     ));
+
+    // Dedicated print view — hidden on screen, shown only in @media print
+    if (hasCachedData) {
+        container.appendChild(renderPrintView(marks, averages, coeffMeta, name));
+        // Set page title for PDF filename (browsers use document.title as default save name)
+        const parts = ['Bulletin'];
+        if (coeffMeta?.semester) parts.push(coeffMeta.semester);
+        if (name) parts.push(name);
+        document.title = parts.join(' — ');
+    }
 }
