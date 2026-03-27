@@ -96,7 +96,7 @@ export function renderSubject(subject, moduleId) {
     if (subject.classAverage != null) metaParts.push(`promo: ${formatGrade(subject.classAverage)}`);
     if (!subject._overridden && subject.coefficient != null && subject.coefficient !== 1) metaParts.push(`coeff. ${formatGrade(subject.coefficient)}`);
     const subOverriddenEl = subject._overridden
-        ? h('span', { class: 'coeff-override' }, `${subject.coefficient} ECTS`)
+        ? h('span', { class: 'coeff-badge coef' }, `coef. ${subject.coefficient}`)
         : null;
 
     const info = h('div', { class: 'info' },
@@ -117,7 +117,7 @@ export function renderSubject(subject, moduleId) {
         if (mark.classAverage != null) meta.push(`moyenne: ${formatGrade(mark.classAverage)}`);
         if (!hasEqualCoefficients(subject) && !mark._overridden) meta.push(`${Math.round(mark.coefficient * 100)}%`);
         const overriddenEl = mark._overridden && mark._rawCoefficient != null
-            ? h('span', { class: 'coeff-override' }, `${mark._rawCoefficient} ECTS`)
+            ? h('span', { class: 'coeff-badge coef' }, `coef. ${mark._rawCoefficient}`)
             : null;
 
         // Strip subject/group name prefix from mark name to avoid redundancy

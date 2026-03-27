@@ -230,7 +230,12 @@ hr.separator { width: 100%; margin-top: 25px; opacity: .3; border-bottom: 0; bor
 .subject .marks .mark .name { display: inline-block; margin-left: 15px; overflow: hidden; text-overflow: ellipsis; padding-bottom: 2px; }
 .subject .marks .mark .value { justify-content: flex-end; margin-left: 1px; font-weight: bold; }
 .subject .marks .mark .class-average { margin-left: 10px; }
-.coeff-override { margin-left: 8px; color: var(--text-muted); font-weight: 400; font-size: 0.75em; opacity: 0.7; }
+.coeff-badge {
+    display: inline-block; margin-left: 8px; padding: 1px 7px; border-radius: 4px;
+    font-size: 0.7em; font-weight: 600; letter-spacing: 0.02em; vertical-align: middle;
+}
+.coeff-badge.ects { background: #e8f5e9; color: #2e7d32; }
+.coeff-badge.coef { background: var(--surface-alt); color: var(--text-muted); }
 
 /* ===== COPY CODE ===== */
 .copy-code { display: inline-block; border-bottom: 1px dashed var(--dot-color); }

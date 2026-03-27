@@ -92,7 +92,7 @@ export function renderApp(container, { name, marks, averages, filters, filtersVa
 
     const moduleEls = marks.flatMap(mod => {
         const modOverriddenEl = mod._overridden
-            ? h('span', { class: 'coeff-override' }, `${mod.coefficient} ECTS`)
+            ? h('span', { class: 'coeff-badge ects' }, `${mod.coefficient} ECTS`)
             : null;
         return [
         h('div', { class: 'header module' },

@@ -26,8 +26,8 @@ export default {
 
     '2526_I_INF_FISA_S07_GR': 3,          // Gérer
     // Uncomment below to override individual subjects:
-    // '2526_I_INF_FISA_S07_GR_LAN': ?,      // └ LAN concepts
-    // '2526_I_INF_FISA_S07_GR_WS': ?,       // └ Windows sécurité
+     // '2526_I_INF_FISA_S07_GR_LAN': 1,      // └ LAN concepts
+     '2526_I_INF_FISA_S07_GR_WS': 2,       // └ Windows sécurité
 
     '2526_I_INF_FISA_S07_PR': 3,          // Produire
     // '2526_I_INF_FISA_S07_PR_ASM': ?,      // └ Assembleur
