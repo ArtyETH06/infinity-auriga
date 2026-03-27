@@ -83,6 +83,16 @@ button:not(.opaque):active, a:not(.opaque):active, .clickable:not(.opaque):activ
 #export-btn:hover { background: var(--dot-color); }
 .export-icon { display: flex; align-items: center; }
 .export-icon svg { width: clamp(14px, 1.5vw, 18px); height: auto; }
+#update-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 8px;
+    background: var(--accent); color: #fff;
+    font-size: clamp(13px, 1.5vw, 16px); font-weight: 600;
+    transition: background .15s, opacity .15s;
+}
+#update-btn:hover { opacity: .85; }
+.update-icon { display: flex; align-items: center; }
+.update-icon svg { width: clamp(14px, 1.5vw, 18px); height: auto; }
 #header #logout { color: #251515; font-size: clamp(16px, 2vw, 22px); font-weight: 500; }
 
 /* ===== FOOTER ===== */

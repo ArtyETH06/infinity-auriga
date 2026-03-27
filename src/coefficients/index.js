@@ -1,6 +1,8 @@
 /** Coefficient override system — applies community-contributed ECTS weights to Auriga's flat grades. */
 
-const CDN_BASE = `https://cdn.jsdelivr.net/gh/KazeTachinuu/infinity-auriga@master/coefficients`;
+import { app } from '../app.js';
+
+const CDN_BASE = `${app.cdnBase}/coefficients`;
 
 /** Bundled coefficients as fallback when CDN is unreachable. */
 const bundled = import.meta.glob('../../coefficients/*.js');
