@@ -19,7 +19,7 @@ function isNewer(remote, local) {
  */
 export async function checkForUpdate() {
     try {
-        const res = await fetch(`${app.cdnBase}/package.json`);
+        const res = await fetch(`${app.cdnBase}/package.json`, { cache: 'no-cache' });
         if (!res.ok) return { available: false };
         const pkg = await res.json();
         if (isNewer(pkg.version, app.version)) {

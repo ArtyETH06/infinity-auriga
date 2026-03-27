@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Infinity Auriga
 // @namespace    infinity-auriga
-// @version      1.9.1
+// @version      1.9.2
 // @description  Make Auriga Great Again - enhanced grades UI for EPITA
 // @author       KazeTachinuu & contributors
 // @match        https://auriga.epita.fr/*
@@ -834,7 +834,7 @@
 	//#region package.json
 	var version;
 	var init_package = __esmMin((() => {
-		version = "1.9.1";
+		version = "1.9.2";
 	}));
 	//#endregion
 	//#region src/app.js
@@ -1016,7 +1016,7 @@
 	/** Try fetching a coefficient file from jsDelivr CDN. */
 	async function fetchRemote(filename) {
 		const url = `${CDN_BASE}/${filename}`;
-		const res = await fetch(url);
+		const res = await fetch(url, { cache: "no-cache" });
 		if (!res.ok) return null;
 		return parseModuleText(await res.text());
 	}
@@ -1659,7 +1659,7 @@
 	*/
 	async function checkForUpdate() {
 		try {
-			const res = await fetch(`${app.cdnBase}/package.json`);
+			const res = await fetch(`${app.cdnBase}/package.json`, { cache: "no-cache" });
 			if (!res.ok) return { available: false };
 			const pkg = await res.json();
 			if (isNewer(pkg.version, app.version)) return {

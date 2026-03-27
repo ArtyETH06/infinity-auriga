@@ -53,7 +53,7 @@ export function buildFilename(semester, year, track, major) {
 /** Try fetching a coefficient file from jsDelivr CDN. */
 async function fetchRemote(filename) {
     const url = `${CDN_BASE}/${filename}`;
-    const res = await fetch(url);
+    const res = await fetch(url, { cache: 'no-cache' });
     if (!res.ok) return null;
     const text = await res.text();
     return parseModuleText(text);
